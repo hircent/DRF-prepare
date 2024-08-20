@@ -11,7 +11,7 @@ from rest_framework.permissions import AllowAny
 class BlogPostListCreate(generics.ListCreateAPIView):
     queryset = BlogPost.objects.all()
     serializer_class = BlogPostSerializer
-    permission_classes = [AllowAny]
+    # permission_classes = [AllowAny]
     
 
 class BlogPostRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
