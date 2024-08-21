@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import SuperAdminListView
+from .views import UserListView
 
 urlpatterns = [
-    path("accounts/",SuperAdminListView.as_view(),name="super-admin-list"),    
+    path("accounts/",UserListView.as_view(),name="super-admin-list"),    
 ]

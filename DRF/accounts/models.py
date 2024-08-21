@@ -33,30 +33,37 @@ class MyAccountManager(BaseUserManager):
         )
 
         user.is_admin = True
-        user.is_active = True
         user.is_staff = True
         user.is_superadmin = True
+        user.is_superuser = True
         user.save(using=self._db)
 
         return user
 
         
     
+class Role(models.Model):
+    name = models.CharField(max_length=20, unique=True)
+
+    def __str__(self):
+        return self.name
+    
 # Create your models here.
-class SuperAdmin(AbstractBaseUser):
+class User(AbstractBaseUser):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     username = models.CharField(max_length=50,unique=True)
     email = models.EmailField(max_length=100,unique=True)
-    phone_number = models.CharField(max_length=50)
+    roles = models.ManyToManyField(Role,related_name='users')
 
-    date_joined = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now_add=True)
 
-    is_admin = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=True)
     is_superadmin = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+    is_password_changed = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
 
@@ -67,19 +74,26 @@ class SuperAdmin(AbstractBaseUser):
     objects = MyAccountManager()
 
     class Meta:
-        db_table = 'superadmins'
-        verbose_name = 'Super Admin'
-        verbose_name_plural = 'Super Admins'
+        db_table = 'users'
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
 
     def __str__(self) -> str:
         return self.email
     
     def has_perm(self,permission,obj=None)->bool:
-        return self.is_admin
+        return self.is_superuser
     
     def has_module_perms(self,add_label)->bool:
         return True
     
     def get_all_permissions(user=None):
-        if user.is_superadmin:
+        if user.is_superuser:
             return set()
+        
+    def has_role(self, role_name):
+        return self.roles.filter(name=role_name).exists()
+    
+    def has_superadmin_role(self)->bool:
+        return self.is_superadmin
+    

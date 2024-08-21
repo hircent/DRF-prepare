@@ -1,7 +1,27 @@
 from rest_framework import serializers
-from .models import SuperAdmin
+from .models import User ,Role
 
-class SuperAdminSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
+    roles = serializers.PrimaryKeyRelatedField(many=True, queryset=Role.objects.all())
+
     class Meta:
-        model = SuperAdmin
-        fields = ["id","email","phone_number","username","first_name","last_name","date_joined","last_login"]
+        model = User
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "password",
+            "roles",
+            "created_at"
+        ]
+        extra_kwargs = {"password":{"write_only":True}}
+
+    def create(self, validated_data):
+
+        roles = validated_data.pop('roles', [])
+        user = User.objects.create_user(**validated_data)
+        user.roles.set(roles)
+        user.save()
+        return user

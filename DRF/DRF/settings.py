@@ -88,7 +88,7 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1)
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=12)
     }
 
 WSGI_APPLICATION = 'DRF.wsgi.application'
@@ -162,4 +162,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = "accounts.SuperAdmin"
+AUTH_USER_MODEL = "accounts.User"
