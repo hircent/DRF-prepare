@@ -1,7 +1,7 @@
 
 from django.urls import path
 
-from accounts.views import UserListView
+from accounts.views import UserListView , UserCreateView , UserRUDView
 from . import views
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -14,7 +14,9 @@ urlpatterns = [
     path('blogpostlist/', views.BlogPostList.as_view(),name="blogpost-list"),
     path('blogpost/<int:pk>/', views.BlogPostRetrieveUpdateDestroy.as_view(),name="blogpost-update-destroy"),
 
-    path("accounts/",UserListView.as_view(),name="super-admin-list"), 
+    path("users/list/",UserListView.as_view(),name="user-list"), 
+    path("users/create/",UserCreateView.as_view(),name="user-create"), 
+    path("users/rud/<int:pk>",UserRUDView.as_view(),name="user-rud"), 
     
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
