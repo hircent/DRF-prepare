@@ -1,6 +1,7 @@
 
 from django.urls import path
 
+from branches.views import BranchListView
 from accounts.views import UserListView , UserCreateView , UserRUDView
 from . import views
 from rest_framework_simplejwt.views import (
@@ -9,7 +10,7 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView
 )
 
-from ..branches.views import BranchListView
+
 
 urlpatterns = [
     path('blogpost/', views.BlogPostListCreate.as_view(),name="blogpost-view-create"),

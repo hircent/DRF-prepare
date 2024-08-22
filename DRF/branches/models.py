@@ -1,5 +1,5 @@
 from django.db import models
-from ..accounts.models import User
+from accounts.models import User
 # Create your models here.
 class Branch(models.Model):
     name = models.CharField(max_length=100,unique=True)
