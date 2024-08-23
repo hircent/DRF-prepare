@@ -1,5 +1,7 @@
 env/
 
-migrations/
+**/migrations/*
+!**/migrations/__init__.py
+!**/class_initialisation/migrations/role_initial.py
 
 **/__pycache__/
