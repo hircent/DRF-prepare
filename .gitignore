@@ -5,3 +5,5 @@ env/
 !**/class_initialisation/migrations/role_initial.py
 
 **/__pycache__/
+
+*.sqlite3
