@@ -91,7 +91,7 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(hours=18)
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=2)
     }
 
 WSGI_APPLICATION = 'DRF.wsgi.application'
@@ -106,17 +106,28 @@ WSGI_APPLICATION = 'DRF.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'DRF',
+#         'USER': 'root',
+#         'PASSWORD': '',
+#         'HOST':'127.0.0.1',
+#         'PORT':'3306',
+#     }
+# }
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'DRF',
+        'NAME': 'drf',
         'USER': 'postgres',
         'PASSWORD': 'admin',
         'HOST':'127.0.0.1',
         'PORT':'5432',
     }
 }
+
 
 
 JAZZMIN_SETTINGS = {
