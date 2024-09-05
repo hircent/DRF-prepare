@@ -1,7 +1,7 @@
 
 from django.urls import path
 
-from branches.views import BranchListView
+from branches.views import BranchListView ,BranchRUDView
 from accounts.views import UserListView , UserCreateView , UserRUDView
 from .views import CustomTokenObtainPairView
 from rest_framework_simplejwt.views import (
@@ -20,6 +20,7 @@ urlpatterns = [
     
     #Branch
     path("branch/list/",BranchListView.as_view(),name="branch-list"),
+    path("branch/rud/<int:pk>",BranchRUDView.as_view(),name="branch-rud"),
 
     #Token
     path('login/', CustomTokenObtainPairView.as_view(), name='login_token_obtain_pair'),

@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'class_initialisation',
     'api',
     'accounts',
     'branches',
@@ -82,7 +81,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
     ),
     'EXCEPTION_HANDLER': 'DRF.utils.exception_handler.custom_exception_handler',
     
@@ -91,7 +90,7 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=2)
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=20)
     }
 
 WSGI_APPLICATION = 'DRF.wsgi.application'
