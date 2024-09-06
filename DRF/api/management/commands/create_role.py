@@ -18,13 +18,13 @@ class Command(BaseCommand):
             self.create_initial_roles()
 
     def create_initial_roles(self):
-        roles = ['principal', 'manager', 'teacher', 'parent', 'student']
+        roles = ['superadmin', 'admin', 'principal', 'manager', 'teacher','parent','student']
         for role_name in roles:
             if not Role.objects.filter(name=role_name).exists():
                 Role.objects.create(name=role_name)
         self.stdout.write(self.style.SUCCESS('Successfully created initial roles'))
 
     def delete_initial_roles(self):
-        roles_to_delete = ['superadmin', 'principal', 'manager', 'teacher', 'parent', 'student']
+        roles_to_delete = ['superadmin', 'admin', 'principal', 'manager', 'teacher','parent','student']
         Role.objects.filter(name__in=roles_to_delete).delete()
         self.stdout.write(self.style.SUCCESS('Successfully deleted initial roles'))

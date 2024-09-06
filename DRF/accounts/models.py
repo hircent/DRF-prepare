@@ -1,3 +1,4 @@
+from typing import Iterable
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
 
@@ -44,14 +45,25 @@ class MyAccountManager(BaseUserManager):
     
 class Role(models.Model):
     name = models.CharField(max_length=20, unique=True)
-
+    display_name = models.CharField(max_length=20,null=True,blank=True)
+    desciption = models.CharField(max_length=20,null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'roles'
     
     def __str__(self):
         return self.name
+    
+    def save(self,*args, **kwargs) -> None:
+        if not self.display_name:
+            self.display_name = self.name.capitalize()
+        if not self.display_name:
+            self.display_name = self.name.capitalize()
+
+        super(Role,self).save(*args,**kwargs)
+
     
 
     
