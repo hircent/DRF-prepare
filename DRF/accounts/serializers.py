@@ -12,6 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "username",
             "email",
+            'branch',
             "password",
             "roles",
             "created_at"

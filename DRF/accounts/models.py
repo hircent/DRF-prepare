@@ -1,11 +1,11 @@
 from typing import Iterable
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
-
+from branches.models import Branch
 
 class MyAccountManager(BaseUserManager):
 
-    def create_user(self,first_name,last_name,username,email,password=None):
+    def create_user(self,first_name,last_name,username,email,branch,password=None):
         if not email:
             raise ValueError("Kindly fill in the email")
         
@@ -16,7 +16,8 @@ class MyAccountManager(BaseUserManager):
             email = self.normalize_email(email),
             username = username,
             first_name = first_name,
-            last_name = last_name
+            last_name = last_name,
+            branch = Branch.objects.get(id=branch)
         )
 
         user.set_password(password)
@@ -24,13 +25,14 @@ class MyAccountManager(BaseUserManager):
 
         return user
     
-    def create_superuser(self, first_name,last_name,username,email, password):
+    def create_superuser(self, first_name,last_name,username,email,branch, password):
 
         user = self.create_user(
             first_name,
             last_name,
             username,
             email=self.normalize_email(email),
+            branch = branch,
             password=password
         )
 
@@ -96,7 +98,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(max_length=100,unique=True)
     email_verified_at = models.DateTimeField(null=True,blank=True)
     roles = models.ManyToManyField(Role,related_name='users')
-
+    branch = models.ForeignKey(Branch,on_delete=models.CASCADE,related_name="users")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     last_login = models.DateTimeField(auto_now_add=True)
@@ -109,7 +111,7 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = 'username'
 
     REQUIRED_FIELDS=[
-        'first_name','last_name','email'
+        'first_name','last_name','email','branch'
     ]
 
     objects = MyAccountManager()

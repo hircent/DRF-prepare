@@ -24,7 +24,18 @@ class Command(BaseCommand):
                             self.stdout.write(self.style.ERROR(f'Error executing statement: {e}'))
                             
             self.stdout.write(self.style.SUCCESS('Successfully imported data from SQL file'))
+
         except Exception as e:
             self.stdout.write(self.style.ERROR(f'Error importing data: {e}'))
+
+        '''
+        Run this command if using Postgress
+        '''
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT setval(pg_get_serial_sequence('branches', 'id'), (SELECT MAX(id) FROM branches))")
+                self.stdout.write(self.style.SUCCESS("Pg_get_serial_sequence for branch success"))
+        except Exception as e:
+            self.stdout.write(self.style.ERROR("Pg_get_serial_sequence error"))
 
         

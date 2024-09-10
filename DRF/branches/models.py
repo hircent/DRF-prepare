@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import User
+# from accounts.models import User
 # Create your models here.
 
 class BranchGrade(models.Model):
@@ -27,7 +27,7 @@ class Branch(models.Model):
     principal = Principal.objects.get(id=1)
     academies = principal.academies.all()  # Access all academies related to the principal
     '''
-    principal = models.ForeignKey(User,blank=True,null=True,on_delete=models.SET_NULL,related_name="academies")
+    # principal = models.ForeignKey(User,blank=True,null=True,on_delete=models.SET_NULL,related_name="academies")
     operation_date = models.DateField(null=False,blank=False)
     is_headquaters = models.BooleanField(default=False)
 
