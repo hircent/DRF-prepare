@@ -71,7 +71,7 @@ class Role(models.Model):
 class User(AbstractBaseUser):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    username = models.CharField(max_length=50)
+    username = models.CharField(max_length=50,unique=True)
     email = models.EmailField(max_length=100,unique=True)
     roles = models.ManyToManyField(Role,related_name='users')
 
@@ -84,10 +84,10 @@ class User(AbstractBaseUser):
     is_superuser = models.BooleanField(default=False)
     is_password_changed = models.BooleanField(default=False)
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'username'
 
     REQUIRED_FIELDS=[
-        'username','first_name','last_name'
+        'first_name','last_name','email'
     ]
 
     objects = MyAccountManager()
