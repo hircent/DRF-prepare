@@ -5,7 +5,7 @@ from .models import User, Role
 class UserAdmin(UserAdmin):
     model = User
     # Define which fields should be displayed on the admin site.
-    list_display = ('first_name', 'last_name', 'email', 'is_superuser','is_superadmin','is_active')
+    list_display = ('first_name', 'last_name', 'email','is_superadmin','is_active')
     
     # Define which fields should be editable in the admin list view.
     list_editable = ('is_active',)
@@ -17,7 +17,7 @@ class UserAdmin(UserAdmin):
     fieldsets = (
         ('Login Credential', {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name')}),
-        ('Permissions', {'fields': ('is_active', 'is_superuser', 'is_superadmin', 'roles')}),
+        ('Permissions', {'fields': ('is_active','is_superadmin', 'roles')}),
         ('Important dates', {'fields': ('last_login', 'created_at','is_password_changed')}),
     )
     
