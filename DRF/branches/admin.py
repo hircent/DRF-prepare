@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Branch,BranchGrade
+from .models import Branch,BranchGrade,UserBranchRole
 
 class BranchAdmin(admin.ModelAdmin):
     list_display = ("id","display_name","created_at","is_headquaters")
@@ -12,3 +12,4 @@ class BranchGradeAdmin(admin.ModelAdmin):
 # Register your models here.
 admin.site.register(Branch,BranchAdmin)
 admin.site.register(BranchGrade,BranchGradeAdmin)
+admin.site.register(UserBranchRole)

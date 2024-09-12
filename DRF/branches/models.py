@@ -1,5 +1,5 @@
 from django.db import models
-# from accounts.models import User
+from accounts.models import User ,Role
 # Create your models here.
 
 class BranchGrade(models.Model):
@@ -52,3 +52,16 @@ class Branch(models.Model):
         return self.name
     
 
+class UserBranchRole(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='users')
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE,related_name='user_branch')
+    role = models.ForeignKey(Role, on_delete=models.CASCADE,related_name='user_roles')
+
+    class Meta:
+        db_table = "user_branch_roles"
+        verbose_name = "User_Branch_Roles"
+        verbose_name_plural = "User_Branch_Roles"
+        unique_together = ('branch', 'role', 'user')
+
+    def __str__(self):
+        return f'{self.user.email} is {self.role.name} at {self.branch.name}'

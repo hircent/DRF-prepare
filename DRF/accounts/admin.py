@@ -8,19 +8,19 @@ admin.site.unregister(Group)
 class UserAdmin(UserAdmin):
     model = User
     # Define which fields should be displayed on the admin site.
-    list_display = ("id",'first_name', 'last_name', 'email','is_superadmin','is_active','branch')
+    list_display = ("id",'first_name', 'last_name', 'email','is_superadmin','is_active')
     
     # Define which fields should be editable in the admin list view.
     list_editable = ('is_active',)
     
     # Define which fields to filter by in the admin list view.
-    list_filter = ("id",'is_superadmin', 'is_active', 'roles')
+    list_filter = ("id",'is_superadmin', 'is_active')
     
     # Define which fields should be displayed on the detail view page.
     fieldsets = (
         ('Login Credential', {'fields': ('username', 'password')}),
         ('Personal info', {'fields': ('id','first_name', 'last_name', 'email')}),
-        ('Permissions', {'fields': ('is_active','is_superadmin', 'branch','roles')}),
+        ('Permissions', {'fields': ('is_active','is_superadmin')}),
         ('Important dates', {'fields': ('last_login', 'created_at','updated_at','is_password_changed')}),
     )
     
@@ -31,7 +31,7 @@ class UserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'username','first_name', 'last_name', 'password1', 'password2','branch','roles')}
+            'fields': ('email', 'username','first_name', 'last_name', 'password1', 'password2')}
         ),
     )
     
@@ -40,7 +40,7 @@ class UserAdmin(UserAdmin):
     # ordering = ('email',)
 
     # Define which fields use a multi-select interface (for many-to-many fields).
-    filter_horizontal = ('roles',)
+    filter_horizontal = ()
 
 class RoleAdmin(admin.ModelAdmin):
     list_display = ("id","name")

@@ -1,29 +1,30 @@
 from django.core.management.base import BaseCommand
 from django.db import connection
+from pathlib import Path
 
 class Command(BaseCommand):
     help = 'Import data from an SQL file'
-
+    BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
+    
     def handle(self, *args, **kwargs):
         # Replace with the path to your SQL file
-        file_path = 'D:/python/deemcee/DRF-prepare/DRF/sql/branches.sql'
-        # file_path = 'D:/python/DRF/DRF/branches.sql'
+        file_path = self.BASE_DIR/'sql/branches.sql'
 
         try:
             with open(file_path, 'r', encoding='utf-8') as sqlfile:
                 sql_content = sqlfile.read()
 
-            with connection.cursor() as cursor:
-                # Split SQL content into individual statements (assuming semicolon as delimiter)
-                statements = sql_content.split(';')
-                for statement in statements:
-                    if statement.strip():  # Avoid empty statements
-                        try:
-                            cursor.execute(statement)
-                        except Exception as e:
-                            self.stdout.write(self.style.ERROR(f'Error executing statement: {e}'))
-                            
-            self.stdout.write(self.style.SUCCESS('Successfully imported data from SQL file'))
+                with connection.cursor() as cursor:
+                    # Split SQL content into individual statements (assuming semicolon as delimiter)
+                    statements = sql_content.split(';')
+                    for statement in statements:
+                        if statement.strip():  # Avoid empty statements
+                            try:
+                                cursor.execute(statement)
+                            except Exception as e:
+                                self.stdout.write(self.style.ERROR(f'Error executing statement: {e}'))
+                                
+                    self.stdout.write(self.style.SUCCESS('Successfully imported data from SQL file'))
 
         except Exception as e:
             self.stdout.write(self.style.ERROR(f'Error importing data: {e}'))
