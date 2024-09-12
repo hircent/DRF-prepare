@@ -6,7 +6,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Replace with the path to your SQL file
-        file_path = 'D:/python/deemcee/DRF-prepare/DRF/branches.sql'
+        file_path = 'D:/python/deemcee/DRF-prepare/DRF/sql/branches.sql'
         # file_path = 'D:/python/DRF/DRF/branches.sql'
 
         try:
