@@ -49,7 +49,7 @@ class Branch(models.Model):
         super(Branch,self).save(*args,**kwargs)
 
     def __str__(self):
-        return self.name
+        return self.name.capitalize()
     
 
 class UserBranchRole(models.Model):

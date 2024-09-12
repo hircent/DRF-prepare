@@ -50,7 +50,7 @@ class Role(models.Model):
         db_table = 'roles'
     
     def __str__(self):
-        return self.name
+        return self.name.capitalize()
     
     def save(self,*args, **kwargs) -> None:
         if not self.desciption:
@@ -117,7 +117,7 @@ class User(AbstractBaseUser):
         verbose_name_plural = 'Users'
 
     def __str__(self) -> str:
-        return self.email
+        return self.username.capitalize()
     
     def has_perm(self,permission,obj=None)->bool:
         return self.is_superadmin
