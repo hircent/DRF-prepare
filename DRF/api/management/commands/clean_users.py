@@ -10,14 +10,19 @@ class Command(BaseCommand):
 
     def handle(self, *args: Any, **options: Any) -> str | None:
         
-        df = pd.read_csv(self.BASE_DIR/'csv/users_role12345.csv')
+        try:
+            df = pd.read_csv(self.BASE_DIR/'csv/users.csv')
 
-        df = self.add_column(['username','is_staff','is_active','is_superadmin','is_password_changed'],df)
+            df = self.add_column(['username','is_staff','is_active','is_superadmin','is_password_changed'],df)
 
-        df = self.replace_value('is_active',1,df)
-        df = self.replace_username(df)
+            df = self.replace_value('is_active',1,df)
+            df = self.replace_username(df)
 
-        df.to_csv(self.SAVE_TO,index=False)
+            df.to_csv(self.SAVE_TO,index=False)
+        
+            self.stdout.write(self.style.SUCCESS("Clean users successful!"))
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(f"Clean users failed : {e}"))
 
     def rearrange_column(self,column_order,df):
         df = df[column_order]
@@ -46,7 +51,6 @@ class Command(BaseCommand):
 
         return df
 
-    def replace_username(self,df):
-        df['username'] = df['first_name'].str.replace(" ",'').str.lower()
-
+    def replace_username(self, df):
+        df['username'] = df['email'].str.replace(r'[@\.](?=.*\.)', '', regex=True).str.lower()
         return df

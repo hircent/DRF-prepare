@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
 
 class MyAccountManager(BaseUserManager):
 
-    def create_user(self,first_name,last_name,username,email,password=None):
+    def create_user(self,username,email,password=None):
         if not email:
             raise ValueError("Kindly fill in the email")
         
@@ -14,8 +14,6 @@ class MyAccountManager(BaseUserManager):
         user = self.model(
             email = self.normalize_email(email),
             username = username,
-            first_name = first_name,
-            last_name = last_name,
         )
 
         user.set_password(password)
@@ -23,11 +21,9 @@ class MyAccountManager(BaseUserManager):
 
         return user
     
-    def create_superuser(self, first_name,last_name,username,email, password):
+    def create_superuser(self,username,email, password):
 
         user = self.create_user(
-            first_name,
-            last_name,
             username,
             email=self.normalize_email(email),
             password=password
@@ -89,8 +85,8 @@ class Role(models.Model):
 # Create your models here.
 class User(AbstractBaseUser):
 
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=50,null=True,blank=True)
+    last_name = models.CharField(max_length=50,null=True,blank=True)
     username = models.CharField(max_length=50,unique=True)
     email = models.EmailField(max_length=100,unique=True)
     email_verified_at = models.DateTimeField(null=True,blank=True)
@@ -106,7 +102,7 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = 'username'
 
     REQUIRED_FIELDS=[
-        'first_name','last_name','email'
+        'email'
     ]
 
     objects = MyAccountManager()
