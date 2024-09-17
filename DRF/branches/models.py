@@ -56,6 +56,8 @@ class UserBranchRole(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='users')
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE,related_name='user_branch')
     role = models.ForeignKey(Role, on_delete=models.CASCADE,related_name='user_roles')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = "user_branch_roles"
