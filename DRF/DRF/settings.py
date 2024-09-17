@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'api',
     'accounts',
     'branches',
+    'students',
     'rest_framework',
     'rest_framework_simplejwt'
 ]

@@ -26,7 +26,7 @@ class Command(BaseCommand):
         log_dir.mkdir(exist_ok=True)
         
         # Create a file handler
-        file_handler = logging.FileHandler(log_dir / 'branch_user_roles.log')
+        file_handler = logging.FileHandler(log_dir / 'import_branch_user_roles.log')
         file_handler.setLevel(logging.INFO)
         
         # Create a logging format
