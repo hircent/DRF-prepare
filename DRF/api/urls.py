@@ -1,8 +1,9 @@
 
 from django.urls import path
 
-from branches.views import BranchListView ,BranchRUDView
 from accounts.views import UserListView , UserCreateView , UserRUDView
+from branches.views import BranchListView ,BranchRUDView
+from students.views import StudentListView
 from .views import CustomTokenObtainPairView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -26,4 +27,7 @@ urlpatterns = [
     path('login/', CustomTokenObtainPairView.as_view(), name='login_token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+
+    #Students
+    path('students/list/',StudentListView.as_view(),name='student-list')
 ]
