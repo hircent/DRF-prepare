@@ -10,8 +10,8 @@ class BranchGrade(models.Model):
 
     class Meta:
         db_table = "branch_grades"
-        verbose_name = "Branch_Grade"
-        verbose_name_plural = "Branch_Grades"
+        verbose_name = "Branch Grade"
+        verbose_name_plural = "Branch Grades"
 
     def __str__(self):
         return self.name
@@ -61,8 +61,8 @@ class UserBranchRole(models.Model):
 
     class Meta:
         db_table = "user_branch_roles"
-        verbose_name = "User_Branch_Roles"
-        verbose_name_plural = "User_Branch_Roles"
+        verbose_name = "User Branch Role"
+        verbose_name_plural = "User Branch Roles"
         unique_together = ('branch', 'role', 'user')
 
     def __str__(self):

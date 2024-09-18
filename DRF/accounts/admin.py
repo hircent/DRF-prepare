@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Role
+from .models import User, Role ,UserProfile
 from django.contrib.auth.models import Group
 
 admin.site.unregister(Group)
@@ -45,6 +45,10 @@ class UserAdmin(UserAdmin):
 class RoleAdmin(admin.ModelAdmin):
     list_display = ("id","name")
     ordering = ('id',)
+    
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ("id","user","gender","personal_email")
 # Register your models with the admin site.
 admin.site.register(User, UserAdmin)
 admin.site.register(Role,RoleAdmin)
+admin.site.register(UserProfile,UserProfileAdmin)

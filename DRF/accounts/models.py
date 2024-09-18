@@ -131,3 +131,31 @@ class User(AbstractBaseUser):
     def has_superadmin_role(self)->bool:
         return self.roles.filter(name='superadmin').exists()
     
+class UserProfile(models.Model):
+    GENDER = [('male','Male'),('female','Female')]
+    
+    user = models.OneToOneField(User,on_delete=models.CASCADE,related_name='user_profile')
+    gender = models.CharField(choices=GENDER,max_length=6)
+    dob = models.DateField(null=True,blank=True)
+    ic_number = models.CharField(max_length=100,null=True,blank=True)
+    occupation = models.CharField(max_length=100,null=True,blank=True)
+    spouse_name = models.CharField(max_length=100,null=True,blank=True) 
+    spouse_phone = models.CharField(max_length=100,null=True,blank=True) 
+    spouse_occupation = models.CharField(max_length=100,null=True,blank=True) 
+    no_of_children = models.IntegerField(null=True,blank=True) 
+    personal_email = models.EmailField(null=True,blank=True) 
+    bank_name = models.CharField(max_length=100,null=True,blank=True) 
+    bank_account_name = models.CharField(max_length=100,null=True,blank=True) 
+    bank_account_number = models.CharField(max_length=100,null=True,blank=True) 
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'user_profile'
+        verbose_name = 'User Profile'
+        verbose_name_plural = 'User Profiles'
+        
+    def __str__(self):
+        return f"{self.user}'s profile" 
+    
