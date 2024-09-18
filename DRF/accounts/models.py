@@ -36,11 +36,11 @@ class MyAccountManager(BaseUserManager):
         return user
 
 class Role(models.Model):
-    name = models.CharField(max_length=20, unique=True)
-    display_name = models.CharField(max_length=20,null=True,blank=True)
-    desciption = models.CharField(max_length=20,null=True,blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    name            = models.CharField(max_length=20, unique=True)
+    display_name    = models.CharField(max_length=20,null=True,blank=True)
+    desciption      = models.CharField(max_length=20,null=True,blank=True)
+    created_at      = models.DateTimeField(auto_now_add=True)
+    updated_at      = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'roles'
@@ -85,18 +85,18 @@ class Role(models.Model):
 # Create your models here.
 class User(AbstractBaseUser):
 
-    first_name = models.CharField(max_length=50,null=True,blank=True)
-    last_name = models.CharField(max_length=50,null=True,blank=True)
-    username = models.CharField(max_length=50,unique=True)
-    email = models.EmailField(max_length=100,unique=True)
-    email_verified_at = models.DateTimeField(null=True,blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    last_login = models.DateTimeField(auto_now_add=True)
+    first_name          = models.CharField(max_length=50,null=True,blank=True)
+    last_name           = models.CharField(max_length=50,null=True,blank=True)
+    username            = models.CharField(max_length=50,unique=True)
+    email               = models.EmailField(max_length=100,unique=True)
+    email_verified_at   = models.DateTimeField(null=True,blank=True)
+    created_at          = models.DateTimeField(auto_now_add=True)
+    updated_at          = models.DateTimeField(auto_now=True)
+    last_login          = models.DateTimeField(auto_now_add=True)
 
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=True)
-    is_superadmin = models.BooleanField(default=False)
+    is_active           = models.BooleanField(default=True)
+    is_staff            = models.BooleanField(default=True)
+    is_superadmin       = models.BooleanField(default=False)
     is_password_changed = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'username'
@@ -134,22 +134,22 @@ class User(AbstractBaseUser):
 class UserProfile(models.Model):
     GENDER = [('male','Male'),('female','Female')]
     
-    user = models.OneToOneField(User,on_delete=models.CASCADE,related_name='user_profile')
-    gender = models.CharField(choices=GENDER,max_length=6)
-    dob = models.DateField(null=True,blank=True)
-    ic_number = models.CharField(max_length=100,null=True,blank=True)
-    occupation = models.CharField(max_length=100,null=True,blank=True)
-    spouse_name = models.CharField(max_length=100,null=True,blank=True) 
-    spouse_phone = models.CharField(max_length=100,null=True,blank=True) 
-    spouse_occupation = models.CharField(max_length=100,null=True,blank=True) 
-    no_of_children = models.IntegerField(null=True,blank=True) 
-    personal_email = models.EmailField(null=True,blank=True) 
-    bank_name = models.CharField(max_length=100,null=True,blank=True) 
-    bank_account_name = models.CharField(max_length=100,null=True,blank=True) 
+    user                = models.OneToOneField(User,on_delete=models.CASCADE,related_name='user_profile')
+    gender              = models.CharField(choices=GENDER,max_length=6)
+    dob                 = models.DateField(null=True,blank=True)
+    ic_number           = models.CharField(max_length=100,null=True,blank=True)
+    occupation          = models.CharField(max_length=100,null=True,blank=True)
+    spouse_name         = models.CharField(max_length=100,null=True,blank=True) 
+    spouse_phone        = models.CharField(max_length=100,null=True,blank=True) 
+    spouse_occupation   = models.CharField(max_length=100,null=True,blank=True) 
+    no_of_children      = models.IntegerField(null=True,blank=True) 
+    personal_email      = models.EmailField(null=True,blank=True) 
+    bank_name           = models.CharField(max_length=100,null=True,blank=True) 
+    bank_account_name   = models.CharField(max_length=100,null=True,blank=True) 
     bank_account_number = models.CharField(max_length=100,null=True,blank=True) 
     
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at          = models.DateTimeField(auto_now_add=True)
+    updated_at          = models.DateTimeField(auto_now=True)
     
     class Meta:
         db_table = 'user_profile'

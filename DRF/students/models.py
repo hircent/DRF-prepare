@@ -42,7 +42,7 @@ class Students(models.Model):
     parent                  = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,related_name='children')
     first_name              = models.CharField(max_length=50,null=True,blank=True)
     last_name               = models.CharField(max_length=50,null=True,blank=True)
-    fullname               = models.CharField(max_length=50,null=True,blank=True)
+    fullname                = models.CharField(max_length=50,null=True,blank=True)
     gender                  = models.CharField(choices=GENDER,max_length=6)
     dob                     = models.DateField()
     school                  = models.CharField(max_length=100)
