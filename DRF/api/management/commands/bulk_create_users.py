@@ -6,6 +6,7 @@ from django.utils.timezone import make_aware
 from datetime import datetime
 from pathlib import Path
 from django.db import connection,transaction
+from django.contrib.auth.hashers import make_password
 
 
 class Command(BaseCommand):
@@ -47,6 +48,7 @@ class Command(BaseCommand):
 
         start_time = datetime.now()
         self.logger.info(f"Starting user import from {file_path}")
+        default_hashed_password = make_password('password')
 
         try:
             with transaction.atomic():
@@ -59,6 +61,7 @@ class Command(BaseCommand):
                         user = User(
                             id=row['id'],
                             first_name=row['first_name'],
+                            password=default_hashed_password,
                             email=row['email'],
                             username=row['username'],
                             last_name=row['last_name'],
@@ -71,7 +74,7 @@ class Command(BaseCommand):
                             is_password_changed=self.parse_bool(row['is_password_changed']),
                         )
 
-                        user.set_password('password')
+                        # user.set_password('password')
                         users.append(user)
                         self.stdout.write(self.style.SUCCESS(f"User id:{row['id']} has appended at time {datetime.now()}"))
 
