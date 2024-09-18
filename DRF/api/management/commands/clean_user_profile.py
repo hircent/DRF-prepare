@@ -12,6 +12,8 @@ class Command(BaseCommand):
         try:
             df = pd.read_csv(self.BASE_DIR/'csv/user_profile.csv')
 
+            df = df.replace('\\N', None)
+            
             df['gender'] = df['gender'].str.lower()
 
             df.to_csv(self.SAVE_TO,index=False)

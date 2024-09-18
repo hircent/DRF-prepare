@@ -66,10 +66,12 @@ class Command(BaseCommand):
                             # If the user doesn't exist, log the error and skip to the next row
                             self.logger.warning(f"User with id {row['user_id']} does not exist. Skipping this row.")
                             continue
+                        
+                        dob = row['dob'] if row['dob'] and row['dob'] != '\\N' else None
                         user_profile = UserProfile(
                             user = user,
                             gender = row['gender'],
-                            # dob = row['dob'],
+                            dob = dob,
                             ic_number = row['ic_number'],
                             occupation = row['occupation'],
                             spouse_name = row['spouse_name'], 
