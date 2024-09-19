@@ -51,7 +51,7 @@ class Students(models.Model):
     # referral                = models.IntegerField()
     status                  = models.CharField(choices=STATUS,max_length=12,default='in_progress')
 
-    enrolment_date          = models.DateTimeField(auto_now_add=True)
+    enrolment_date          = models.DateField()
     created_at              = models.DateTimeField(auto_now_add=True)
     updated_at              = models.DateTimeField(auto_now=True)
 
