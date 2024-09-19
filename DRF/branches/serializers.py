@@ -11,7 +11,6 @@ class BranchSerializer(serializers.ModelSerializer):
             "display_name",
             "business_reg_no",
             "description",
-            # "principal",
             "operation_date",
             "is_headquaters"
         ]

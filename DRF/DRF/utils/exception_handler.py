@@ -15,7 +15,6 @@ def custom_exception_handler(exc, context):
                 formatted_errors[field] = str(messages) if isinstance(messages, ErrorDetail) else messages
         
         response.data = {
-            "status": response.status_code,
             "success":False,
             "msg": " ".join(formatted_errors.values())
         }

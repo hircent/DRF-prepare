@@ -5,7 +5,7 @@ from .models import Branch
 from rest_framework.exceptions import PermissionDenied
 from accounts.permission import IsSuperAdmin
 # Create your views here.
-class BranchListView(generics.ListCreateAPIView):
+class BranchListView(generics.ListAPIView):
     queryset = Branch.objects.all()
     serializer_class = BranchSerializer
     permission_classes = [IsSuperAdmin]
@@ -20,8 +20,14 @@ class BranchListView(generics.ListCreateAPIView):
             "data": serializer.data
         }
         return Response(response_data)
+
+class BranchCreateView(generics.CreateAPIView):
+    queryset = Branch.objects.all()
+    serializer_class = BranchSerializer
+    permission_classes = [IsSuperAdmin]
     
 class BranchRUDView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Branch.objects.all()
     serializer_class = BranchSerializer
     permission_classes = [IsSuperAdmin]
+    
