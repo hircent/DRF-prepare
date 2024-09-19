@@ -1,10 +1,21 @@
-from .models import Role, User
+from .models import User
 from .serializers import UserSerializer ,serializers
 from rest_framework import generics,status
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import IsAuthenticated
+from .permission import IsSuperAdmin,IsPrincipalOrHigher,IsManagerOrHigher,IsTeacherOrHigher,IsParentOrHigher
 # Create your views here.
+
+class BaseCustomListAPIView(generics.ListAPIView):
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        response_data = {
+            "success":True,
+            "data": serializer.data
+        }
+        return Response(response_data)
 
 class UserListView(generics.ListCreateAPIView):
     queryset = User.objects.all()
@@ -79,3 +90,50 @@ class UserRUDView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = "pk"
+
+# class SuperadminListView(BaseCustomListAPIView):
+#     queryset = User.objects.filter(users__role__name='superadmin')
+#     serializer_class = UserSerializer
+#     permission_classes = [IsSuperAdmin]
+    
+# class PrincipalListView(BaseCustomListAPIView):
+#     queryset = User.objects.filter(users__role__name='principal')
+#     serializer_class = UserSerializer
+#     permission_classes = [IsPrincipalOrHigher]
+    
+# class ManagerListView(BaseCustomListAPIView):
+#     queryset = User.objects.filter(users__role__name='manager')
+#     serializer_class = UserSerializer
+#     permission_classes = [IsManagerOrHigher]
+    
+# class TeacherListView(BaseCustomListAPIView):
+#     queryset = User.objects.filter(users__role__name='teacher')
+#     serializer_class = UserSerializer
+#     permission_classes = [IsTeacherOrHigher]
+    
+# class ParentListView(BaseCustomListAPIView):
+#     queryset = User.objects.filter(users__role__name='parent')
+#     serializer_class = UserSerializer
+#     permission_classes = [IsParentOrHigher]
+    
+class RoleBasesUserListView(BaseCustomListAPIView):
+    serializer_class = UserSerializer
+    def get_queryset(self):    
+        role = self.kwargs.get('role')
+        return User.objects.filter(users__role__name=role)
+    
+    def get_permissions(self):
+        permissions = []
+        role = self.kwargs.get('role')
+        if role == 'superadmin':
+            permissions = [IsSuperAdmin()]
+        elif role == 'principal':
+            permissions = [IsPrincipalOrHigher()]
+        elif role == 'manager':
+            permissions = [IsManagerOrHigher()]
+        elif role == 'teacher':
+            permissions = [IsTeacherOrHigher()]
+        elif role == 'parent':
+            permissions = [IsParentOrHigher()]
+        return permissions
+    
