@@ -14,7 +14,7 @@ from rest_framework_simplejwt.views import (
 
 
 urlpatterns = [
-    path("users/<str:role>/list",RoleBasesUserListView.as_view(),name="user-role-based-list"), 
+    path("users/<str:role>/branch/<int:branch_id>/list",RoleBasesUserListView.as_view(),name="user-role-based-list"), 
     # Superadmin 
     # path("superadmin/list",SuperadminListView.as_view(),name="superadmin-list"), 
     # path("superadmin/create",UserCreateView.as_view(),name="superadmin-create"), 
