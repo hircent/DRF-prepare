@@ -1,12 +1,11 @@
 
 from django.urls import path
 
-from accounts.views import RoleBasesUserListView
+from accounts.views import RoleBasesUserListView,RoleBasedUserCreateView,RoleBasedUserDeleteView,RoleBasedUserUpdateView
 from branches.views import BranchListView ,BranchRUDView,BranchCreateView
 from students.views import StudentListView
 from .views import CustomTokenObtainPairView
 from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
     TokenRefreshView,
     TokenVerifyView
 )
@@ -15,6 +14,10 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path("users/<str:role>/branch/<int:branch_id>/list",RoleBasesUserListView.as_view(),name="user-role-based-list"), 
+    path("users/create/<str:role>/branch/<int:branch_id>",RoleBasedUserCreateView.as_view(),name="create-user"), 
+    path("users/update/<str:role>/<int:pk>/branch/<int:branch_id>",RoleBasedUserUpdateView.as_view(),name="update-user"), 
+    path("users/delete/<str:role>/<int:pk>/branch/<int:branch_id>",RoleBasedUserDeleteView.as_view(),name="delete-user"), 
+    # path("users/details/<str:role>/<int:pk>/branch/<int:branch_id>",RoleBasesUserListView.as_view(),name="user-role-based-list"), 
     # Superadmin 
     # path("superadmin/list",SuperadminListView.as_view(),name="superadmin-list"), 
     # path("superadmin/create",UserCreateView.as_view(),name="superadmin-create"), 
