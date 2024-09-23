@@ -39,7 +39,7 @@ class BaseRoleBasedUserView(GenericAPIView):
         is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
 
         queryset = User.objects.filter(id=user_id, users__role__name=role, users__branch_id=branch_id)
-
+        
         if not is_superadmin and not any(ubr['branch_id'] == branch_id for ubr in user_branch_roles):
             raise PermissionDenied("You don't have access to this branch or role.")
 

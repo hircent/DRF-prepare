@@ -2,14 +2,15 @@
 from api.global_customViews import BaseCustomListAPIView,BaseRoleBasedUserView
 from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher,IsManagerOrHigher,IsTeacherOrHigher,IsParentOrHigher
 from branches.models import Branch ,UserBranchRole
+from django.shortcuts import get_object_or_404
 
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import DestroyAPIView,UpdateAPIView,CreateAPIView
+from rest_framework.generics import DestroyAPIView,UpdateAPIView,CreateAPIView,RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework import status
 
 from .models import User ,Role
-from .serializers import UserSerializer
+from .serializers import UserSerializer,UserDetailSerializer
 # Create your views here.
     
 class RoleBasesUserListView(BaseCustomListAPIView):
@@ -63,22 +64,20 @@ class RoleBasedUserCreateView(BaseRoleBasedUserView, CreateAPIView):
         if not is_superadmin and not any(ubr['branch_id'] == branch_id for ubr in user_branch_roles):
             raise PermissionDenied("You don't have access to this branch or role.")
 
-        serializer = self.get_serializer(data=request.data)
+        data = request.data.copy()
+        data['role'] = role
+        data['branch_id'] = branch_id
+        if 'details' in request.data:
+            data['details'] = request.data.get('details')
+
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response({"success": True, "data": serializer.data}, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
-        role = self.kwargs.get('role')
-        branch_id = self.kwargs.get('branch_id')
-        role_obj = Role.objects.get(name=role)  # Fetch the Role object
-        branch_obj = Branch.objects.get(id=branch_id)  # Fetch the Branch object
-
-        # Save the user with the related role and branch
-        user = serializer.save()  # Save the basic user data
-        # Now, link the user to the role and branch
-        UserBranchRole.objects.create(user=user,branch=branch_obj,role=role_obj)
+        serializer.save()
     
     def get_permissions(self):
         role = self.kwargs.get('role')
@@ -116,6 +115,41 @@ class RoleBasedUserDeleteView(BaseRoleBasedUserView,DestroyAPIView):
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response({"success": True, "message": "User deleted successfully"})
+    
+    def get_permissions(self):
+        role = self.kwargs.get('role')
+        permission_classes = {
+            'superadmin': [IsSuperAdmin],
+            'principal': [IsSuperAdmin],
+            'manager': [IsPrincipalOrHigher],
+            'teacher': [IsManagerOrHigher],
+            'parent': [IsTeacherOrHigher]
+        }
+        return [permission() for permission in permission_classes.get(role, [])]
+
+class RoleBasedUserDetailsView(BaseRoleBasedUserView,RetrieveAPIView):
+    serializer_class = UserDetailSerializer  # Assuming this includes UserProfile data
+    queryset = User.objects.all()
+
+    def get_object(self):
+        # Get the user object by ID
+        user_id = self.kwargs.get('pk')  # 'pk' corresponds to the user ID in the URL
+        branch_id = self.kwargs.get('branch_id')
+        user = get_object_or_404(User, id=user_id)
+        
+        # You can add permission checks here based on user roles
+        user_branch_roles = self.extract_jwt_info("branch_role")
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+        
+        if not is_superadmin and not any(ubr['branch_id'] == branch_id for ubr in user_branch_roles):
+            raise PermissionDenied("You don't have access to this branch or role.")
+
+        return user
+
+    def get(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = self.get_serializer(user)  # Serialize the user instance
+        return Response({"success": True, "data": serializer.data}, status=status.HTTP_200_OK)
     
     def get_permissions(self):
         role = self.kwargs.get('role')
