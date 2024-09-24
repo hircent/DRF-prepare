@@ -166,6 +166,31 @@ class RoleBasedUserDetailsView(BaseRoleBasedUserView,RetrieveAPIView):
         if not is_superadmin and not any(ubr['branch_id'] == branch_id for ubr in user_branch_roles):
             raise PermissionDenied("You don't have access to this branch or role.")
 
+        '''
+        # Extract user roles from JWT
+        user_branch_roles = self.extract_jwt_info("branch_role")
+        
+        # Check if the user is a superadmin
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+
+        # Fetch the user
+        user = get_object_or_404(User, id=user_id)
+        
+        if is_superadmin:
+            # Superadmins can access any user regardless of branch
+            return user
+        else:
+            # For non-superadmins, check if they have access to the specified branch
+            if not any(ubr['branch_id'] == branch_id for ubr in user_branch_roles):
+                raise PermissionDenied("You don't have access to this branch.")
+
+            # Check if the requested user belongs to the specified branch
+            user_branch_role = UserBranchRole.objects.filter(user=user, branch_id=branch_id).first()
+            if not user_branch_role:
+                raise PermissionDenied("The requested user does not belong to the specified branch.")
+
+            return user
+        '''
         return user
 
     def get(self, request, *args, **kwargs):
