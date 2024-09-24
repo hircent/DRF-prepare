@@ -175,12 +175,11 @@ class RoleBasedUserDetailsView(BaseRoleBasedUserView,RetrieveAPIView):
     
     def get_permissions(self):
         role = self.kwargs.get('role')
-        print(role)
         permission_classes = {
             'superadmin': [IsSuperAdmin],
-            'principal': [IsSuperAdmin],
-            'manager': [IsPrincipalOrHigher],
-            'teacher': [IsManagerOrHigher],
+            'principal': [IsPrincipalOrHigher],
+            'manager': [IsManagerOrHigher],
+            'teacher': [IsTeacherOrHigher],
             'parent': [IsTeacherOrHigher]
         }
         return [permission() for permission in permission_classes.get(role, [])]

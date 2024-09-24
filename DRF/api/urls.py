@@ -18,31 +18,6 @@ urlpatterns = [
     path("users/create/<str:role>/branch/<int:branch_id>",RoleBasedUserCreateView.as_view(),name="create-user"), 
     path("users/update/<str:role>/<int:pk>/branch/<int:branch_id>",RoleBasedUserUpdateView.as_view(),name="update-user"), 
     path("users/delete/<str:role>/<int:pk>/branch/<int:branch_id>",RoleBasedUserDeleteView.as_view(),name="delete-user"), 
-    # path("users/details/<str:role>/<int:pk>/branch/<int:branch_id>",RoleBasesUserListView.as_view(),name="user-role-based-list"), 
-    # Superadmin 
-    # path("superadmin/list",SuperadminListView.as_view(),name="superadmin-list"), 
-    # path("superadmin/create",UserCreateView.as_view(),name="superadmin-create"), 
-    # path("superadmin/<int:pk>",UserRUDView.as_view(),name="superadmin-rud"), 
-    
-    # # Principal 
-    # path("principal/list",PrincipalListView.as_view(),name="principal-list"), 
-    # path("principal/create",UserCreateView.as_view(),name="principal-create"), 
-    # path("principal/<int:pk>",UserRUDView.as_view(),name="principal-rud"), 
-    
-    # # Manager 
-    # path("manager/list",ManagerListView.as_view(),name="manager-list"), 
-    # path("manager/create",UserCreateView.as_view(),name="manager-create"), 
-    # path("manager/<int:pk>",UserRUDView.as_view(),name="manager-rud"), 
-    
-    # # Teacher 
-    # path("teacher/list",TeacherListView.as_view(),name="teacher-list"), 
-    # path("teacher/create",UserCreateView.as_view(),name="teacher-create"), 
-    # path("teacher/<int:pk>",UserRUDView.as_view(),name="teacher-rud"), 
-    
-    # # Parent 
-    # path("parent/list",ParentListView.as_view(),name="parent-list"), 
-    # path("parent/create",UserCreateView.as_view(),name="parent-create"), 
-    # path("parent/<int:pk>",UserRUDView.as_view(),name="parent-rud"), 
     
     # # Student 
     # path("student/list",ParentListView.as_view(),name="student-list"), 
