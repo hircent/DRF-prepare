@@ -26,6 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
     details = UserProfileSerializer(required=False)
     role = serializers.CharField(write_only=True)
     branch_id =serializers.IntegerField(write_only=True)
+    user_branch_roles = UserBranchRoleSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
@@ -40,9 +41,10 @@ class UserSerializer(serializers.ModelSerializer):
             "updated_at",
             "details",
             'role',
-            'branch_id'
+            'branch_id',
+            'user_branch_roles'
         ]
-        extra_kwargs = {"password":{"write_only":True}}
+        extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
         branch_id = validated_data.pop('branch_id')
@@ -73,11 +75,12 @@ class UserSerializer(serializers.ModelSerializer):
             for attr, value in details_data.items():
                 setattr(detail_data, attr, value)
             detail_data.save()
+        
         return instance
 
 class UserDetailSerializer(serializers.ModelSerializer):
-    details = UserProfileSerializer(source='user_profile', read_only=True)
-    user_branch_roles = serializers.SerializerMethodField()
+    details = UserProfileSerializer(source='user_profile', required=False)
+    user_branch_roles = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
@@ -93,9 +96,22 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "details",
             "user_branch_roles"
         ]
+        read_only_fields = ["id", "created_at", "updated_at", "user_branch_roles"]
         extra_kwargs = {"password": {"write_only": True}}
 
     
     def get_user_branch_roles(self, obj):
         user_branch_roles = UserBranchRole.objects.filter(user=obj)
         return UserBranchRoleSerializer(user_branch_roles, many=True).data
+    
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop('user_profile', {})
+        instance = super().update(instance, validated_data)
+
+        # Update or create the user profile
+        profile, created = UserProfile.objects.get_or_create(user=instance)
+        for attr, value in profile_data.items():
+            setattr(profile, attr, value)
+        profile.save()
+
+        return instance

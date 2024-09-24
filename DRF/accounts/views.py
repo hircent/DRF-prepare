@@ -91,12 +91,34 @@ class RoleBasedUserCreateView(BaseRoleBasedUserView, CreateAPIView):
         return [permission() for permission in permission_classes.get(role, [])]
     
 class RoleBasedUserUpdateView(BaseRoleBasedUserView,UpdateAPIView):
+    serializer_class = UserDetailSerializer
+
     def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
+        
+        if not serializer.is_valid():
+            return Response({
+                "success": False,
+                "msg": "Validation failed",
+                "errors": serializer.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
         self.perform_update(serializer)
-        return Response({"success": True, "data": serializer.data})
+
+        updated_instance = self.get_object()
+        updated_serializer = self.get_serializer(updated_instance)
+        
+        return Response({
+            "success": True,
+            "data": updated_serializer.data
+        })
+    
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
     
     def get_permissions(self):
         role = self.kwargs.get('role')
@@ -153,6 +175,7 @@ class RoleBasedUserDetailsView(BaseRoleBasedUserView,RetrieveAPIView):
     
     def get_permissions(self):
         role = self.kwargs.get('role')
+        print(role)
         permission_classes = {
             'superadmin': [IsSuperAdmin],
             'principal': [IsSuperAdmin],

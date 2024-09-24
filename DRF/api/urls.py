@@ -14,7 +14,7 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path("users/<str:role>/branch/<int:branch_id>/list",RoleBasesUserListView.as_view(),name="user-role-based-list"), 
-    path("users/details/<int:pk>/branch/<int:branch_id>",RoleBasedUserDetailsView.as_view(),name="user-details"), 
+    path("users/<str:role>/details/<int:pk>/branch/<int:branch_id>",RoleBasedUserDetailsView.as_view(),name="user-details"), 
     path("users/create/<str:role>/branch/<int:branch_id>",RoleBasedUserCreateView.as_view(),name="create-user"), 
     path("users/update/<str:role>/<int:pk>/branch/<int:branch_id>",RoleBasedUserUpdateView.as_view(),name="update-user"), 
     path("users/delete/<str:role>/<int:pk>/branch/<int:branch_id>",RoleBasedUserDeleteView.as_view(),name="delete-user"), 
