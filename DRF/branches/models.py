@@ -63,8 +63,8 @@ class BranchAddress(models.Model):
     created_at      = models.DateTimeField(auto_now_add=True)
     updated_at      = models.DateTimeField(auto_now=True)
     
-    def __str__(self) -> str:
-        return self.branch
+    def __str__(self):
+        return self.branch.name.capitalize()
     
     class Meta:
         db_table = "branch_addresses"
