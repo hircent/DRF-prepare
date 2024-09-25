@@ -51,6 +51,25 @@ class Branch(models.Model):
     def __str__(self):
         return self.name.capitalize()
     
+class BranchAddress(models.Model):
+    branch = models.OneToOneField(Branch,on_delete=models.CASCADE,related_name='branch_address')
+    address_line_1 = models.CharField(max_length=120,null=True,blank=True)
+    address_line_2 = models.CharField(max_length=120,null=True,blank=True)
+    address_line_3 = models.CharField(max_length=120,null=True,blank=True)
+    postcode = models.CharField(max_length=10,null=True,blank=True)
+    city = models.CharField(max_length=50,null=True,blank=True)
+    state = models.CharField(max_length=50,null=True,blank=True)
+
+    created_at      = models.DateTimeField(auto_now_add=True)
+    updated_at      = models.DateTimeField(auto_now=True)
+    
+    def __str__(self) -> str:
+        return self.branch
+    
+    class Meta:
+        db_table = "branch_addresses"
+        verbose_name = "Branch Address"
+        verbose_name_plural = "Branch Addresses"
 
 class UserBranchRole(models.Model):
     user        = models.ForeignKey(User, on_delete=models.CASCADE,related_name='users')
