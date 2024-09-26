@@ -5,7 +5,7 @@ class BranchAddressSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = BranchAddress
-        fields = '__all__'
+        fields = ["address_line_1","address_line_2","address_line_3","postcode","city","state","created_at","updated_at"]
         
 class BranchListSerializer(serializers.ModelSerializer):
 
@@ -17,45 +17,54 @@ class BranchListSerializer(serializers.ModelSerializer):
         ]
 
 class BranchCreateUpdateSerializer(serializers.ModelSerializer):
-    address = BranchAddressSerializer(source="branch_address",required=False)
+    address = BranchAddressSerializer(source="branch_address", required=False)
     
     class Meta:
         model = Branch
         fields = [
-            'id','branch_grade','name','display_name','business_name','business_reg_no',
-            'description','operation_date','is_headquaters','created_at','created_at',
-            'updated_at','terminated_at','address'
+            'id', 'branch_grade', 'name', 'display_name', 'business_name', 'business_reg_no',
+            'description', 'operation_date', 'is_headquaters', 'created_at', 'updated_at', 'terminated_at', 'address'
         ]
 
-    def validate_branch_grade(self,value):
+    def validate_branch_grade(self, value):
         if value and not BranchGrade.objects.filter(id=value.id).exists():
             raise serializers.ValidationError("Invalid Branch Grade.")
         return value
-        
+
     def create(self, validated_data):
+        # Pop the address data from the validated data
+        address_data = validated_data.pop("branch_address", None)
         
-        address = validated_data.pop("address",[])
-        
+        # Create the branch instance
         branch = Branch.objects.create(**validated_data)
-        
-        for data in address:
-            BranchAddress.objects.create(branch=branch,**data)
-            
+
+        # If address data is provided, create the BranchAddress
+        if address_data:
+            BranchAddress.objects.create(branch=branch, **address_data)
+
         return branch
-    
+
     def update(self, instance, validated_data):
-        address = validated_data.pop("address",[])
+        # Pop the address data from the validated data
+        address_data = validated_data.pop("branch_address", None)
         
-        instance = super().update(instance,validated_data)
-        
-        if address:
-            branch_add, _ = BranchAddress.objects.get_or_create(branch=instance)
-            
-            for key,value in branch_add.items():
-                setattr(branch_add,key,value)
-            branch_add.save()
-        
+        # Update the branch instance with the non-address fields
+        instance = super().update(instance, validated_data)
+
+        # If address data is provided, update or create the BranchAddress
+        if address_data:
+            # Get or create the BranchAddress associated with this branch
+            branch_address, created = BranchAddress.objects.get_or_create(branch=instance)
+
+            # Update the BranchAddress with the new address data
+            for key, value in address_data.items():
+                setattr(branch_address, key, value)
+
+            # Save the updated BranchAddress
+            branch_address.save()
+
         return instance
+
         
 class BranchDetailsSerializer(serializers.ModelSerializer):
     address = BranchAddressSerializer(source='branch_address',read_only=True)

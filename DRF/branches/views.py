@@ -40,6 +40,30 @@ class BranchUpdateView(BaseCustomBranchView,generics.UpdateAPIView):
     queryset = Branch.objects.all()
     serializer_class = BranchCreateUpdateSerializer
     permission_classes = [IsPrincipalOrHigher]
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+    
+        self.perform_update(serializer)
+        
+        updated_instance = self.get_object()
+        updated_serializer = self.get_serializer(updated_instance)
+        
+        return Response({
+            "success": True,
+            "data": updated_serializer.data
+        })
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
+
     
 class BranchDeleteView(BaseCustomBranchView,generics.DestroyAPIView):
     queryset = Branch.objects.all()
