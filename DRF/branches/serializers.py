@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Branch,UserBranchRole,BranchAddress
+from .models import Branch,UserBranchRole,BranchAddress,BranchGrade
 
 class BranchAddressSerializer(serializers.ModelSerializer):
     
@@ -17,7 +17,7 @@ class BranchListSerializer(serializers.ModelSerializer):
         ]
 
 class BranchCreateUpdateSerializer(serializers.ModelSerializer):
-    address = BranchAddressSerializer(required=False)
+    address = BranchAddressSerializer(source="branch_address",required=False)
     
     class Meta:
         model = Branch
@@ -26,6 +26,11 @@ class BranchCreateUpdateSerializer(serializers.ModelSerializer):
             'description','operation_date','is_headquaters','created_at','created_at',
             'updated_at','terminated_at','address'
         ]
+
+    def validate_branch_grade(self,value):
+        if value and not BranchGrade.objects.filter(id=value.id).exists():
+            raise serializers.ValidationError("Invalid Branch Grade.")
+        return value
         
     def create(self, validated_data):
         

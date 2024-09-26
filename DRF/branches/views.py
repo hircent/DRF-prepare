@@ -4,22 +4,20 @@ from .serializers import BranchCreateUpdateSerializer,BranchDetailsSerializer,Br
 from .models import Branch
 from rest_framework.exceptions import PermissionDenied
 from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher
+from api.global_customViews import BaseCustomListAPIView , BaseCustomBranchView
 # Create your views here.
 
 
-class BranchListView(generics.ListAPIView):
+class BranchListView(BaseCustomListAPIView,generics.ListAPIView):
     queryset = Branch.objects.all()
     serializer_class = BranchListSerializer
     permission_classes = [IsSuperAdmin]
 
-class BranchRetrieveView(generics.RetrieveAPIView):
+class BranchRetrieveView(BaseCustomBranchView,generics.RetrieveAPIView):
     queryset = Branch.objects.all()
     serializer_class = BranchDetailsSerializer
     permission_classes = [IsPrincipalOrHigher]
     
-    def get_object(self,*args, **kwargs):
-        pk = self.kwargs.get("pk")
-        pass
     
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -30,16 +28,31 @@ class BranchCreateView(generics.CreateAPIView):
     queryset = Branch.objects.all()
     serializer_class = BranchCreateUpdateSerializer
     permission_classes = [IsSuperAdmin]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response({"success": True, "data": serializer.data}, status=status.HTTP_201_CREATED, headers=headers)
     
-class BranchUpdateView(generics.UpdateAPIView):
+class BranchUpdateView(BaseCustomBranchView,generics.UpdateAPIView):
     queryset = Branch.objects.all()
     serializer_class = BranchCreateUpdateSerializer
     permission_classes = [IsPrincipalOrHigher]
     
-class BranchDeleteView(generics.DestroyAPIView):
+class BranchDeleteView(BaseCustomBranchView,generics.DestroyAPIView):
     queryset = Branch.objects.all()
     serializer_class = BranchCreateUpdateSerializer
+    lookup_field = 'id'
+    lookup_url_kwarg = 'branch_id'
     permission_classes = [IsSuperAdmin]
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        id = instance.id
+        self.perform_destroy(instance)
+        return Response({"success": True, "message": f"Branch {id} deleted successfully"})
     
 
     

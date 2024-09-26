@@ -22,10 +22,10 @@ urlpatterns = [
     
     #Branch DONE
     path("branch/list",BranchListView.as_view(),name="branch-list"),
-    path("branch/details/<int:pk>",BranchRetrieveView.as_view(),name="branch-details"),
+    path("branch/details/<int:branch_id>",BranchRetrieveView.as_view(),name="branch-details"),
     path("branch/create",BranchCreateView.as_view(),name="branch-create"),
-    path("branch/update/<int:pk>",BranchUpdateView.as_view(),name="branch-udpate"),
-    path("branch/delete/<int:pk>",BranchDeleteView.as_view(),name="branch-delete"),
+    path("branch/update/<int:branch_id>",BranchUpdateView.as_view(),name="branch-udpate"),
+    path("branch/delete/<int:branch_id>",BranchDeleteView.as_view(),name="branch-delete"),
 
     #Token
     path('login', CustomTokenObtainPairView.as_view(), name='login_token_obtain_pair'),
