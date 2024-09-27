@@ -3,7 +3,7 @@ from django.urls import path
 
 from accounts.views import RoleBasesUserListView,RoleBasedUserCreateView,RoleBasedUserDeleteView,RoleBasedUserUpdateView,RoleBasedUserDetailsView
 from branches.views import BranchListView ,BranchCreateView,BranchRetrieveView,BranchUpdateView,BranchDeleteView
-from students.views import StudentListView
+from students.views import StudentListView ,StudentDetailsView
 from .views import CustomTokenObtainPairView
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -23,9 +23,16 @@ urlpatterns = [
     #Branch DONE
     path("branch/list",BranchListView.as_view(),name="branch-list"),
     path("branch/details/<int:branch_id>",BranchRetrieveView.as_view(),name="branch-details"),
-    path("branch/create",BranchCreateView.as_view(),name="branch-create"),
-    path("branch/update/<int:branch_id>",BranchUpdateView.as_view(),name="branch-udpate"),
-    path("branch/delete/<int:branch_id>",BranchDeleteView.as_view(),name="branch-delete"),
+    path("branch/create",BranchCreateView.as_view(),name="create-branch"),
+    path("branch/update/<int:branch_id>",BranchUpdateView.as_view(),name="update-branch"),
+    path("branch/delete/<int:branch_id>",BranchDeleteView.as_view(),name="delete-branch"),
+
+    #Students
+    path("student/list/branch/<int:branch_id>",StudentListView.as_view(),name="student-list"),
+    path("student/details/<int:student_id>/branch/<int:branch_id>",StudentDetailsView.as_view(),name="student-details"),
+    path("student/create/branch/<int:branch_id>",BranchUpdateView.as_view(),name="create-student"),
+    path("student/update/<int:student_id>/branch/<int:branch_id>",BranchUpdateView.as_view(),name="update-student"),
+    path("student/delete/<int:student_id>/branch/<int:branch_id>",BranchUpdateView.as_view(),name="delete-student"),
 
     #Token
     path('login', CustomTokenObtainPairView.as_view(), name='login_token_obtain_pair'),

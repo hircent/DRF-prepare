@@ -71,3 +71,25 @@ class Students(models.Model):
                 raise ValidationError(f'The user {self.parent.email} does not have the parent role for this branch.')
     
         super().save(*args, **kwargs)
+
+# class Enrolments(models.Model):
+#     STATUS = [('in_progress','IN_PROGRESS'),('dropped_out','DROPPED_OUT'),('graduated','GRADUATED')]
+
+#     student                 = models.ForeignKey(Students,on_delete=models.SET_NULL,null=True)
+#     grade_id                = models.IntegerField()
+#     commencement_date       = models.DateField()
+#     created_at              = models.DateTimeField(auto_now_add=True)
+#     updated_at              = models.DateTimeField(auto_now=True)
+#     end_date                = models.DateField()
+#     # voucher
+#     last_payment_date       = models.DateField()
+#     status                  = models.CharField(choices=STATUS,max_length=12,default='in_progress')
+
+#     class Meta:
+#         db_table = 'enrolments'
+#         managed = True #True by default, false if have legacy table in db , django wont create table during migrations
+#         verbose_name = 'Enrolment'
+#         verbose_name_plural = 'Enrolments'
+
+#     def __str__(self):
+#         return self
