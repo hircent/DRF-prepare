@@ -1,6 +1,6 @@
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from branches.models import UserBranchRole
 from django.db.models import F
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod

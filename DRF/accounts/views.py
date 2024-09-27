@@ -1,7 +1,6 @@
 
 from api.global_customViews import BaseCustomListAPIView,BaseRoleBasedUserView
-from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher,IsManagerOrHigher,IsTeacherOrHigher,IsParentOrHigher
-from branches.models import Branch ,UserBranchRole
+from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher,IsManagerOrHigher,IsTeacherOrHigher
 from django.shortcuts import get_object_or_404
 
 from rest_framework.exceptions import PermissionDenied
@@ -9,7 +8,7 @@ from rest_framework.generics import DestroyAPIView,UpdateAPIView,CreateAPIView,R
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import User ,Role
+from .models import User
 from .serializers import UserSerializer,UserDetailSerializer
 # Create your views here.
     
@@ -46,7 +45,7 @@ class RoleBasesUserListView(BaseCustomListAPIView):
             'principal': [IsPrincipalOrHigher],
             'manager': [IsManagerOrHigher],
             'teacher': [IsTeacherOrHigher],
-            'parent': [IsParentOrHigher]
+            'parent': [IsTeacherOrHigher]
         }
         return [permission() for permission in permission_classes.get(role, [])]
 
@@ -86,7 +85,7 @@ class RoleBasedUserCreateView(BaseRoleBasedUserView, CreateAPIView):
             'principal': [IsSuperAdmin],
             'manager': [IsPrincipalOrHigher],
             'teacher': [IsManagerOrHigher],
-            'parent': [IsTeacherOrHigher]
+            'parent': [IsManagerOrHigher]
         }
         return [permission() for permission in permission_classes.get(role, [])]
     
@@ -127,7 +126,7 @@ class RoleBasedUserUpdateView(BaseRoleBasedUserView,UpdateAPIView):
             'principal': [IsPrincipalOrHigher],
             'manager': [IsManagerOrHigher],
             'teacher': [IsTeacherOrHigher],
-            'parent': [IsParentOrHigher]
+            'parent': [IsManagerOrHigher]
         }
         return [permission() for permission in permission_classes.get(role, [])]
 
@@ -145,7 +144,7 @@ class RoleBasedUserDeleteView(BaseRoleBasedUserView,DestroyAPIView):
             'principal': [IsSuperAdmin],
             'manager': [IsPrincipalOrHigher],
             'teacher': [IsManagerOrHigher],
-            'parent': [IsTeacherOrHigher]
+            'parent': [IsManagerOrHigher]
         }
         return [permission() for permission in permission_classes.get(role, [])]
 

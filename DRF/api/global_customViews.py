@@ -1,12 +1,12 @@
+from accounts.models import User
+from accounts.serializers import UserSerializer
+from api.pagination import CustomPagination
+from branches.models import Branch, UserBranchRole
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
-from accounts.models import User
-from accounts.serializers import UserSerializer
-from api.pagination import CustomPagination
 
-from branches.models import Branch, UserBranchRole
 
 class GenericViewWithExtractJWTInfo(GenericAPIView):
     def extract_jwt_info(self,info):

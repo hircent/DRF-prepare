@@ -1,7 +1,8 @@
-from rest_framework import serializers
-from .models import User ,UserProfile,Role
 from branches.models import Branch,UserBranchRole
 from branches.serializers import UserBranchRoleSerializer
+from rest_framework import serializers
+
+from .models import User ,UserProfile,Role
 
 class UserProfileSerializer(serializers.ModelSerializer):
 

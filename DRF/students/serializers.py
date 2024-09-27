@@ -1,9 +1,10 @@
-from rest_framework import serializers
-from .models import Students
-
 from accounts.serializers import ParentDetailSerializer
 from accounts.models import User ,Role
 from branches.models import Branch ,UserBranchRole
+from .models import Students
+
+from rest_framework import serializers
+
 
 class StudentListSerializer(serializers.ModelSerializer):
     

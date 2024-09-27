@@ -1,6 +1,7 @@
-from django.db import models
-from branches.models import Branch ,UserBranchRole
 from accounts.models import User
+from branches.models import Branch ,UserBranchRole
+
+from django.db import models
 from django.core.exceptions import ValidationError
 '''
     - Student

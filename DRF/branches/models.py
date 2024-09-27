@@ -1,5 +1,5 @@
-from django.db import models
 from accounts.models import User ,Role
+from django.db import models
 # Create your models here.
 
 class BranchGrade(models.Model):

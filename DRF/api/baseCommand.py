@@ -1,8 +1,9 @@
 from django.core.management import BaseCommand
-from pathlib import Path
 from datetime import datetime
 from django.utils.timezone import make_aware
 from django.db import connection
+from pathlib import Path
+
 import logging
 
 
