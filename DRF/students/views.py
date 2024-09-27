@@ -1,4 +1,5 @@
 from api.global_customViews import GenericViewWithExtractJWTInfo
+from api.pagination import CustomPagination
 from accounts.permission import IsTeacherOrHigher ,IsManagerOrHigher
 from accounts.models import User
 from branches.models import Branch ,UserBranchRole
@@ -7,9 +8,11 @@ from rest_framework import generics,status
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 
+
 from .models import Students
 from .serializers import StudentListSerializer,StudentDetailsSerializer,StudentCreateUpdateSerializer
 # Create your views here.
+
 
 class BasedCustomStudentsView(GenericViewWithExtractJWTInfo):
 
@@ -67,15 +70,20 @@ class BasedCustomStudentsView(GenericViewWithExtractJWTInfo):
 class StudentListView(BasedCustomStudentsView,generics.ListAPIView):
     serializer_class = StudentListSerializer
     permission_classes = [IsTeacherOrHigher]
+    pagination_class = CustomPagination
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
         serializer = self.get_serializer(queryset, many=True)
-        response_data = {
-            "success":True,
+        return Response({
+            "success": True,
             "data": serializer.data
-        }
-        return Response(response_data)
+        })
         
 
 class StudentDetailsView(BasedCustomStudentsView,generics.RetrieveAPIView):

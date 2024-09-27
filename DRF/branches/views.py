@@ -1,10 +1,10 @@
 from rest_framework import generics,status
 from rest_framework.response import Response
+
+from api.global_customViews import BaseCustomListAPIView , BaseCustomBranchView
+from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher
 from .serializers import BranchCreateUpdateSerializer,BranchDetailsSerializer,BranchListSerializer
 from .models import Branch
-from rest_framework.exceptions import PermissionDenied
-from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher
-from api.global_customViews import BaseCustomListAPIView , BaseCustomBranchView
 # Create your views here.
 
 
