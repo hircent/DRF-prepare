@@ -61,8 +61,8 @@ class Students(models.Model):
         verbose_name = 'Student'
         verbose_name_plural = 'Students'
 
-    def __str__(self) -> str:
-        return self.fullname
+    def __str__(self):
+        return self.first_name
     
     def save(self,*args, **kwargs):
 

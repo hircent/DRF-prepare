@@ -89,7 +89,7 @@ class StudentDetailsView(BasedCustomStudentsView,generics.RetrieveAPIView):
         return Response({"success": True, "data": serializer.data}, status=status.HTTP_200_OK)
     
 class StudentCreateView(BasedCustomStudentsView,generics.CreateAPIView):
-    queryset = Students
+    queryset = Students.objects.all()
     serializer_class = StudentCreateUpdateSerializer
     permission_classes = [IsManagerOrHigher]
 
@@ -99,7 +99,12 @@ class StudentCreateView(BasedCustomStudentsView,generics.CreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response({"success": True, "data": serializer.data}, status=status.HTTP_201_CREATED, headers=headers)
-    
+
+class StudentUpdateView(BasedCustomStudentsView,generics.UpdateAPIView):
+    queryset = Students.objects.all()
+    serializer_class = StudentCreateUpdateSerializer
+    permission_classes = [IsManagerOrHigher]
+
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
@@ -122,3 +127,13 @@ class StudentCreateView(BasedCustomStudentsView,generics.CreateAPIView):
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
+    
+class StudentDeleteView(BasedCustomStudentsView,generics.DestroyAPIView):
+    queryset = Students.objects.all()
+    permission_classes = [IsManagerOrHigher]
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        id = instance.id
+        self.perform_destroy(instance)
+        return Response({"success": True, "message": f"Student {id} deleted successfully"})

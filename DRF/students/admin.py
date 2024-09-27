@@ -2,7 +2,9 @@ from django.contrib import admin
 from .models import Students, UserBranchRole
 
 class StudentsAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'branch', 'parent', 'status', 'enrolment_date')
+    list_display = ('first_name', 'fullname', 'branch', 'parent', 'status', 'enrolment_date')
+
+    search_fields =('fullname',)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'parent':

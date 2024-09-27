@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from .models import Students
 
-from accounts.serializers import UserDetailSerializer,UserProfileSerializer,UserSerializer,ParentDetailSerializer
-from branches.serializers import BranchAddressSerializer,BranchDetailsSerializer
+from accounts.serializers import ParentDetailSerializer
+from accounts.models import User ,Role
+from branches.models import Branch ,UserBranchRole
 
 class StudentListSerializer(serializers.ModelSerializer):
     
@@ -36,8 +37,34 @@ class StudentCreateUpdateSerializer(serializers.ModelSerializer):
             'branch','parent','created_at','updated_at'
         ]
 
-    def create(self, validated_data):
-        return super().create(validated_data)
+    def validate_branch(self,value):
+        if value and not Branch.objects.filter(id=value.id).exists():
+            raise serializers.ValidationError("Invalid Branch ID.")
+        return value
     
-    def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
+    def validate_parent(self, value):
+        if value:
+            
+            if not User.objects.filter(id=value.id).exists():
+                raise serializers.ValidationError("Invalid Parent ID.")
+            
+            parent_role = Role.objects.filter(name='parent')
+            
+            if not parent_role.exists():
+                raise serializers.ValidationError("Parent role is not found.Please create a parent role.")
+            
+            branch = Branch.objects.filter(id=self.initial_data.get("branch"))
+            
+            if not branch.exists():
+                raise serializers.ValidationError("Branch is not valid for creating a user")
+
+            has_parent_role = UserBranchRole.objects.filter(
+                user = value,
+                role = parent_role.first(),
+                branch = branch.first()
+            ).exists()
+
+            if not has_parent_role:
+                raise serializers.ValidationError("The selected user does have a parent role in the speficied branch.")
+            
+        return value
