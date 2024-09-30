@@ -11,7 +11,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['username'] = user.username
         token['email'] = user.email
         # Add more user data as needed
-        token['full_name'] = f"{user.first_name} {user.last_name}"
+        token['first_name'] = user.first_name
+        token['last_name'] = user.last_name
 
         # user_branch_roles = UserBranchRole.objects.filter(user=user)
         # token['branch_ids'] = list(user_branch_roles.values_list('branch__id', flat=True).distinct())

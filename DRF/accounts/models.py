@@ -98,10 +98,10 @@ class User(AbstractBaseUser):
     is_superadmin       = models.BooleanField(default=False)
     is_password_changed = models.BooleanField(default=False)
 
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'email'
 
     REQUIRED_FIELDS=[
-        'email'
+        'username'
     ]
 
     objects = MyAccountManager()

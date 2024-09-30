@@ -8,7 +8,7 @@ admin.site.unregister(Group)
 class UserAdmin(UserAdmin):
     model = User
     # Define which fields should be displayed on the admin site.
-    list_display = ("id",'first_name', 'last_name', 'email','is_superadmin','is_active')
+    list_display = ("id",'email', 'username', 'email','is_superadmin','is_active')
     
     # Define which fields should be editable in the admin list view.
     list_editable = ('is_active',)
@@ -18,8 +18,8 @@ class UserAdmin(UserAdmin):
     
     # Define which fields should be displayed on the detail view page.
     fieldsets = (
-        ('Login Credential', {'fields': ('username', 'password')}),
-        ('Personal info', {'fields': ('id','first_name', 'last_name', 'email')}),
+        ('Login Credential', {'fields': ('email', 'password')}),
+        ('Personal info', {'fields': ('id','first_name', 'last_name', 'username')}),
         ('Permissions', {'fields': ('is_active','is_superadmin')}),
         ('Important dates', {'fields': ('last_login', 'created_at','updated_at','is_password_changed')}),
     )
