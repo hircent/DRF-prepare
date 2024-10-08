@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from .models import Branch,UserBranchRole,BranchAddress,BranchGrade
 
+class BranchGradeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BranchGrade  # Assuming your model is named BranchGrade
+        fields = ['id', 'name']
+
 class BranchAddressSerializer(serializers.ModelSerializer):
     
     class Meta:
@@ -68,14 +73,30 @@ class BranchCreateUpdateSerializer(serializers.ModelSerializer):
         
 class BranchDetailsSerializer(serializers.ModelSerializer):
     address = BranchAddressSerializer(source='branch_address',read_only=True)
+    principal = serializers.SerializerMethodField()
+    branch_grade = BranchGradeSerializer(read_only=True)
     
     class Meta:
         model = Branch
         fields = [
-            'id','branch_grade','name','display_name','business_name','business_reg_no',
+            'principal','branch_grade','id','name','display_name','business_name','business_reg_no',
             'description','operation_date','is_headquaters','created_at','created_at',
             'updated_at','terminated_at','address'
         ]
+
+    def get_principal(self,obj):
+        try:
+            principal_role = UserBranchRole.objects.filter(branch=obj,role__name="principal").select_related('user').first()
+
+            if principal_role:
+                return {
+                    'id':principal_role.user.id,
+                    'username':principal_role.user.username
+                }
+        except UserBranchRole.DoesNotExist:
+            pass
+
+        return None
 
 class UserBranchRoleSerializer(serializers.ModelSerializer):
     role_name = serializers.CharField(source='role.name', read_only=True)

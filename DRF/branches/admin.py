@@ -1,10 +1,15 @@
 from django.contrib import admin
-from .models import Branch,BranchGrade,UserBranchRole
+from .models import Branch,BranchGrade,UserBranchRole,BranchAddress
 
 class BranchAdmin(admin.ModelAdmin):
     list_display = ("id","display_name","created_at","is_headquaters")
 
     search_fields =("display_name",)
+
+class BranchAddressAdmin(admin.ModelAdmin):
+    list_display = ("id","branch","address_line_1","city","state")
+
+    search_fields =("branch__name",)
 
 
 class BranchGradeAdmin(admin.ModelAdmin):
@@ -26,6 +31,9 @@ class UserBranchRoleAdmin(admin.ModelAdmin):
     # Add readonly fields to prevent editing of created_at and updated_at timestamps
     readonly_fields = ('created_at', 'updated_at')
 # Register your models here.
+
+
 admin.site.register(Branch,BranchAdmin)
+admin.site.register(BranchAddress,BranchAddressAdmin)
 admin.site.register(BranchGrade,BranchGradeAdmin)
 admin.site.register(UserBranchRole,UserBranchRoleAdmin)
