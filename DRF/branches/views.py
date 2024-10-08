@@ -1,13 +1,15 @@
 from api.global_customViews import BaseCustomListAPIView , BaseCustomBranchView
 from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher
+from accounts.models import User
 from django.db.models import Q
 
-from .serializers import BranchCreateUpdateSerializer,BranchDetailsSerializer,BranchListSerializer
-from .models import Branch,UserBranchRole
+from .serializers import BranchCreateUpdateSerializer,BranchDetailsSerializer,BranchListSerializer,PrincipalAndBranchGradeSerializer
+from .models import Branch,UserBranchRole,BranchGrade
 
 from rest_framework import generics,status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 # Create your views here.
 
 
@@ -108,6 +110,25 @@ class BranchDeleteView(BaseCustomBranchView,generics.DestroyAPIView):
         id = instance.id
         self.perform_destroy(instance)
         return Response({"success": True, "message": f"Branch {id} deleted successfully"})
-    
 
     
+class CombinedPrincipalsAndBranchGradesView(APIView):
+    permission_classes = [IsSuperAdmin]
+    def get(self, request):
+        # Get all principals
+        principals = User.objects.filter(
+            users__role__name='principal'
+        )
+        # Get all branch grades
+        branch_grades = BranchGrade.objects.all()
+
+        # Combine data
+        combined_data = {
+            'principals': principals,
+            'branch_grades': branch_grades
+        }
+
+        # Serialize the combined data
+        serializer = PrincipalAndBranchGradeSerializer(combined_data)
+        
+        return Response({"success": True, "data": serializer.data}, status=status.HTTP_200_OK)

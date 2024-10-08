@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Branch,UserBranchRole,BranchAddress,BranchGrade
+from accounts.models import User
 
 class BranchGradeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -106,3 +107,14 @@ class UserBranchRoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserBranchRole
         fields = ['role_name', 'branch_name', 'branch_id']
+
+
+class PrincipalSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ['id', 'username']
+
+class PrincipalAndBranchGradeSerializer(serializers.Serializer):
+    principals = PrincipalSerializer(many=True)
+    branch_grades = BranchGradeSerializer(many=True)

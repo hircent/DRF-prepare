@@ -128,3 +128,4 @@ class ParentDetailSerializer(serializers.ModelSerializer):
             "is_active",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
+

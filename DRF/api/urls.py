@@ -1,5 +1,5 @@
 from accounts.views import RoleBasesUserListView,RoleBasedUserCreateView,RoleBasedUserDeleteView,RoleBasedUserUpdateView,RoleBasedUserDetailsView
-from branches.views import BranchListView ,BranchCreateView,BranchRetrieveView,BranchUpdateView,BranchDeleteView
+from branches.views import BranchListView ,BranchCreateView,BranchRetrieveView,BranchUpdateView,BranchDeleteView,CombinedPrincipalsAndBranchGradesView
 from students.views import StudentListView ,StudentDetailsView ,StudentCreateView,StudentUpdateView,StudentDeleteView
 
 from django.urls import path
@@ -32,6 +32,9 @@ urlpatterns = [
     path("student/create/branch/<int:branch_id>",StudentCreateView.as_view(),name="create-student"),
     path("student/update/<int:student_id>/branch/<int:branch_id>",StudentUpdateView.as_view(),name="update-student"),
     path("student/delete/<int:student_id>/branch/<int:branch_id>",StudentDeleteView.as_view(),name="delete-student"),
+
+    #Others
+    path("branch/principals/branch_grade",CombinedPrincipalsAndBranchGradesView.as_view(),name="principal-branch_grade-for-branch"),
 
     #Token
     path('login', CustomTokenObtainPairView.as_view(), name='login_token_obtain_pair'),
