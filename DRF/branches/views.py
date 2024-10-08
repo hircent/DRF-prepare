@@ -119,6 +119,14 @@ class CombinedPrincipalsAndBranchGradesView(APIView):
         principals = User.objects.filter(
             users__role__name='principal'
         )
+        
+        '''
+        Should be list out who has no role instead of principal
+
+        principals = User.objects.filter(
+            users__role__isnull=True
+        )
+        '''
         # Get all branch grades
         branch_grades = BranchGrade.objects.all()
 
