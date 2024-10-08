@@ -1,18 +1,48 @@
 from api.global_customViews import BaseCustomListAPIView , BaseCustomBranchView
 from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher
+from django.db.models import Q
 
 from .serializers import BranchCreateUpdateSerializer,BranchDetailsSerializer,BranchListSerializer
-from .models import Branch
+from .models import Branch,UserBranchRole
 
 from rest_framework import generics,status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
 
 class BranchListView(BaseCustomListAPIView,generics.ListAPIView):
     queryset = Branch.objects.all()
     serializer_class = BranchListSerializer
-    permission_classes = [IsSuperAdmin]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Branch.objects.all()
+        q = self.request.query_params.get('q', None)
+        '''
+        Branch.objects.filter(Q(name__icontains='hq') | Q(business_name__icontains='hq'))
+        '''
+        if q:
+            queryset = queryset.filter(
+                Q(name__icontains=q)  # Case-insensitive search
+            )
+        # Check if user has any superadmin role
+        is_superadmin = UserBranchRole.objects.filter(
+            user=user,
+            role__name='superadmin'  # Adjust based on how you identify the superadmin role
+        ).exists()
+        
+        if not is_superadmin:
+            # Get all branch IDs where the user has any role
+            user_branch_ids = UserBranchRole.objects.filter(
+                user=user
+            ).values_list('branch_id', flat=True)
+            
+            # Filter queryset to only include these branches
+            queryset = queryset.filter(id__in=user_branch_ids)
+        
+        return queryset
 
 class BranchRetrieveView(BaseCustomBranchView,generics.RetrieveAPIView):
     queryset = Branch.objects.all()
