@@ -116,8 +116,12 @@ class CombinedPrincipalsAndBranchGradesView(APIView):
     permission_classes = [IsSuperAdmin]
     def get(self, request):
         # Get all principals
+        # principals = User.objects.filter(
+        #     users__role__name='principal'
+        # )
+
         principals = User.objects.filter(
-            users__role__name='principal'
+            users__role__isnull=True
         )
         
         '''
