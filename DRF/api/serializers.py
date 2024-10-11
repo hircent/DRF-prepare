@@ -20,11 +20,16 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         user_branch_roles = UserBranchRole.objects.filter(user=user).annotate(
             branchid=F('branch__id'),
-            role_name=F('role__name')
-        ).values('branch_id', 'role_name')
+            role_name=F('role__name'),
+            branch_name=F('branch__name')  # Add this line to get branch name
+        ).values('branch_id', 'role_name', 'branch_name')  # Include branch_name in values
         
-        # Format branch_role as requested
+        # Updated format to include branch_name
         token['branch_role'] = [
-            {"branch_id":item['branch_id'], "branch_role":item['role_name']} for item in user_branch_roles
+            {
+                "branch_id": item['branch_id'],
+                "branch_role": item['role_name'],
+                "branch_name": item['branch_name']  # Add branch name to the output
+            } for item in user_branch_roles
         ]
         return token
