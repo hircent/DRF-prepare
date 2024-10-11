@@ -16,7 +16,7 @@ class RoleBasesUserListView(BaseCustomListAPIView):
     serializer_class = UserSerializer
     def get_queryset(self):    
         role = self.kwargs.get('role')
-        branch_id = self.kwargs.get('branch_id')
+        branch_id = self.request.headers.get('BranchId')
         
         if not branch_id:
             raise PermissionDenied("Missing branch id.")
@@ -52,7 +52,7 @@ class RoleBasesUserListView(BaseCustomListAPIView):
 class RoleBasedUserCreateView(BaseRoleBasedUserView, CreateAPIView):
     def create(self, request, *args, **kwargs):
         role = self.kwargs.get('role')
-        branch_id = self.kwargs.get('branch_id')
+        branch_id = self.request.headers.get('BranchId')
 
         if not branch_id:
             raise PermissionDenied("Missing branch id.")
@@ -155,7 +155,7 @@ class RoleBasedUserDetailsView(BaseRoleBasedUserView,RetrieveAPIView):
     def get_object(self):
         # Get the user object by ID
         user_id = self.kwargs.get('pk')  # 'pk' corresponds to the user ID in the URL
-        branch_id = self.kwargs.get('branch_id')
+        branch_id = self.request.headers.get('BranchId')
         user = get_object_or_404(User, id=user_id)
         
         # You can add permission checks here based on user roles

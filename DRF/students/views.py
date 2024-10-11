@@ -17,7 +17,7 @@ from .serializers import StudentListSerializer,StudentDetailsSerializer,StudentC
 class BasedCustomStudentsView(GenericViewWithExtractJWTInfo):
 
     def get_queryset(self,*args, **kwargs):
-        branch_id = self.kwargs.get('branch_id')
+        branch_id = self.request.headers.get('BranchId')
 
         if not branch_id:
             raise PermissionDenied("Missing branch id.")

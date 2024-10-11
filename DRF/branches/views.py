@@ -14,13 +14,12 @@ from rest_framework.views import APIView
 
 
 class BranchListView(BaseCustomListAPIView,generics.ListAPIView):
-    queryset = Branch.objects.all()
     serializer_class = BranchListSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        queryset = Branch.objects.all()
+        queryset = Branch.objects.all().order_by("id")
         q = self.request.query_params.get('q', None)
         '''
         Branch.objects.filter(Q(name__icontains='hq') | Q(business_name__icontains='hq'))
