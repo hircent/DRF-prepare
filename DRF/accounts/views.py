@@ -2,6 +2,7 @@
 from api.global_customViews import BaseCustomListAPIView,BaseRoleBasedUserView
 from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher,IsManagerOrHigher,IsTeacherOrHigher
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import DestroyAPIView,UpdateAPIView,CreateAPIView,RetrieveAPIView
@@ -17,6 +18,7 @@ class RoleBasesUserListView(BaseCustomListAPIView):
     def get_queryset(self):    
         role = self.kwargs.get('role')
         branch_id = self.request.headers.get('BranchId')
+        q = self.request.query_params.get('q', None)
         
         if not branch_id:
             raise PermissionDenied("Missing branch id.")
@@ -27,6 +29,10 @@ class RoleBasesUserListView(BaseCustomListAPIView):
         
         query_set = User.objects.filter(users__role__name=role)
         
+        if q:
+            query_set = query_set.filter(
+                Q(username__icontains=q)  # Case-insensitive search
+            )
         if is_superadmin:
             if role == 'superadmin':
                 return query_set
