@@ -64,7 +64,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         branch_id = validated_data.pop('branch_id')
-        address_data = validated_data.pop('address')
+        address_data = validated_data.pop('address',None)
         role = validated_data.pop('role')
         details_data = validated_data.pop('details', None)
         user = User.objects.create_user(**validated_data)
