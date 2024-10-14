@@ -2,7 +2,20 @@ from branches.models import Branch,UserBranchRole
 from branches.serializers import UserBranchRoleSerializer
 from rest_framework import serializers
 
-from .models import User ,UserProfile,Role
+from .models import User ,UserProfile,Role,UserAddress
+
+class UserAddressSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserAddress
+        fields = [
+            'address_line_1',
+            'address_line_2',
+            'address_line_3',
+            'postcode',
+            'city',
+            'state'
+        ]
 
 class UserProfileSerializer(serializers.ModelSerializer):
 
@@ -24,6 +37,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         ]
 
 class UserSerializer(serializers.ModelSerializer):
+    address = UserAddressSerializer(required=False)
     details = UserProfileSerializer(required=False)
     role = serializers.CharField(write_only=True)
     branch_id =serializers.IntegerField(write_only=True)
@@ -41,6 +55,7 @@ class UserSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "details",
+            "address",
             'role',
             'branch_id',
             'user_branch_roles'
@@ -49,11 +64,13 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         branch_id = validated_data.pop('branch_id')
+        address_data = validated_data.pop('address')
         role = validated_data.pop('role')
         details_data = validated_data.pop('details', None)
         user = User.objects.create_user(**validated_data)
         
         userprofile,_ = UserProfile.objects.get_or_create(user=user)
+        useraddress,_ = UserAddress.objects.get_or_create(user=user)
 
         role_obj = Role.objects.get(name=role)
         branch_obj = Branch.objects.get(id=branch_id)
@@ -63,11 +80,17 @@ class UserSerializer(serializers.ModelSerializer):
             for key,value in details_data.items():
                 setattr(userprofile,key,value)
             userprofile.save()
+
+        if address_data:
+            for key,value in address_data.items():
+                setattr(useraddress,key,value)
+            useraddress.save()
             
         return user
     
     def update(self, instance, validated_data):
         details_data = validated_data.pop("details",[])
+        address_data = validated_data.pop("address",[])
 
         instance = super().update(instance,validated_data)
 
@@ -76,10 +99,17 @@ class UserSerializer(serializers.ModelSerializer):
             for attr, value in details_data.items():
                 setattr(detail_data, attr, value)
             detail_data.save()
+
+        if address_data:
+            addr_data,created =  UserProfile.objects.get_or_create(user=instance)
+            for attr, value in details_data.items():
+                setattr(addr_data, attr, value)
+            addr_data.save()
         
         return instance
 
 class UserDetailSerializer(serializers.ModelSerializer):
+    address = UserAddressSerializer(source='user_address', required=False)
     details = UserProfileSerializer(source='user_profile', required=False)
     user_branch_roles = serializers.SerializerMethodField(read_only=True)
 
@@ -95,6 +125,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "details",
+            "address",
             "user_branch_roles"
         ]
         read_only_fields = ["id", "created_at", "updated_at", "user_branch_roles"]
@@ -106,6 +137,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
         return UserBranchRoleSerializer(user_branch_roles, many=True).data
     
     def update(self, instance, validated_data):
+        address_data = validated_data.pop('user_address', {})
         profile_data = validated_data.pop('user_profile', {})
         instance = super().update(instance, validated_data)
 
@@ -114,6 +146,11 @@ class UserDetailSerializer(serializers.ModelSerializer):
         for attr, value in profile_data.items():
             setattr(profile, attr, value)
         profile.save()
+        
+        address, created = UserAddress.objects.get_or_create(user=instance)
+        for attr, value in address_data.items():
+            setattr(address, attr, value)
+        address.save()
 
         return instance
     

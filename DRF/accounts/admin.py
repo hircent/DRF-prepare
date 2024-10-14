@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Role ,UserProfile
+from .models import User, Role ,UserProfile,UserAddress
 from django.contrib.auth.models import Group
 
 admin.site.unregister(Group)
@@ -48,7 +48,15 @@ class RoleAdmin(admin.ModelAdmin):
     
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ("id","user","gender","personal_email")
+    search_fields = ('id','user__username',)
+
+class UserAddressAdmin(admin.ModelAdmin):
+    list_display = ("id","user__username","address_line_1","postcode","city",)
+    search_fields = ('id','user__username',)
+
+
 # Register your models with the admin site.
 admin.site.register(User, UserAdmin)
 admin.site.register(Role,RoleAdmin)
 admin.site.register(UserProfile,UserProfileAdmin)
+admin.site.register(UserAddress,UserAddressAdmin)

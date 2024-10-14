@@ -130,6 +130,26 @@ class User(AbstractBaseUser):
     def has_superadmin_role(self)->bool:
         return self.roles.filter(name='superadmin').exists()
     
+class UserAddress(models.Model):
+    user            = models.OneToOneField(User,on_delete=models.CASCADE,related_name='user_address')
+    address_line_1  = models.CharField(max_length=120,null=True,blank=True)
+    address_line_2  = models.CharField(max_length=120,null=True,blank=True)
+    address_line_3  = models.CharField(max_length=120,null=True,blank=True)
+    postcode        = models.CharField(max_length=20,null=True,blank=True)
+    city            = models.CharField(max_length=50,null=True,blank=True)
+    state           = models.CharField(max_length=50,null=True,blank=True)
+
+    created_at      = models.DateTimeField(auto_now_add=True)
+    updated_at      = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.user.username.capitalize()}'s address"
+    
+    class Meta:
+        db_table = "user_addresses"
+        verbose_name = "User Address"
+        verbose_name_plural = "User Addresses"
+    
 class UserProfile(models.Model):
     GENDER = [('male','Male'),('female','Female')]
     

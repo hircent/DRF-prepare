@@ -152,6 +152,20 @@ class RoleBasedUserDetailsView(BaseRoleBasedUserView,RetrieveAPIView):
     serializer_class = UserDetailSerializer  # Assuming this includes UserProfile data
     queryset = User.objects.all()
 
+    # def get_serializer_class(self):
+    #     user = self.get_object()
+    #     user_role = UserBranchRole.objects.filter(user=user).first()
+
+    #     if user_role:
+    #         if user_role.role.name == 'admin':
+    #             return AdminUserDetailSerializer
+    #         elif user_role.role.name == 'manager':
+    #             return ManagerUserDetailSerializer
+    #         elif user_role.role.name == 'employee':
+    #             return EmployeeUserDetailSerializer
+        
+    #     return UserDetailSerializer
+    
     def get_object(self):
         # Get the user object by ID
         user_id = self.kwargs.get('pk')  # 'pk' corresponds to the user ID in the URL
