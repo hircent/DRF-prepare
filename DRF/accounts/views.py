@@ -27,6 +27,7 @@ class RoleBasesUserListView(BaseCustomListAPIView):
         
         is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
         
+        # query_set = User.objects.filter(users__role__name=role).exclude(id=self.request.user.id)
         query_set = User.objects.filter(users__role__name=role)
         
         if q:
