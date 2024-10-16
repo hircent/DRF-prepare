@@ -24,7 +24,7 @@ class RoleBasesUserListView(BaseCustomListAPIView):
             raise PermissionDenied("Missing branch id.")
         
         user_branch_roles = self.extract_jwt_info("branch_role")
-        
+
         is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
         
         # query_set = User.objects.filter(users__role__name=role).exclude(id=self.request.user.id)
@@ -40,7 +40,9 @@ class RoleBasesUserListView(BaseCustomListAPIView):
             else:
                 return query_set.filter(users__branch_id=branch_id).distinct()
         else:
-            if not any(ubr['branch_id'] == branch_id for ubr in user_branch_roles):
+            
+            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+                
                 raise PermissionDenied("You don't have access to this branch or role.")
             else:
                 return query_set.filter(users__branch_id=branch_id)
