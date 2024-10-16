@@ -60,7 +60,7 @@ class BaseRoleBasedUserView(GenericViewWithExtractJWTInfo):
 
         queryset = User.objects.filter(id=user_id, users__role__name=role, users__branch_id=branch_id)
         
-        if not is_superadmin and not any(ubr['branch_id'] == branch_id for ubr in user_branch_roles):
+        if not is_superadmin and not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
             raise PermissionDenied("You don't have access to this branch or role.")
 
         return get_object_or_404(queryset)
