@@ -1,9 +1,9 @@
-from api.global_customViews import BaseCustomListAPIView , BaseCustomBranchView
+from api.global_customViews import BaseCustomListAPIView , BaseCustomBranchView,BaseCustomBranchSelectorListView
 from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher
 from accounts.models import User
 from django.db.models import Q
 
-from .serializers import BranchCreateUpdateSerializer,BranchDetailsSerializer,BranchListSerializer,PrincipalAndBranchGradeSerializer
+from .serializers import BranchCreateUpdateSerializer,BranchDetailsSerializer,BranchListSerializer,PrincipalAndBranchGradeSerializer,BranchListSelectorSerializer
 from .models import Branch,UserBranchRole,BranchGrade
 
 from rest_framework import generics,status
@@ -44,6 +44,11 @@ class BranchListView(BaseCustomListAPIView,generics.ListAPIView):
             queryset = queryset.filter(id__in=user_branch_ids)
         
         return queryset
+    
+class BranchSelectorListView(BaseCustomBranchSelectorListView,generics.ListAPIView):
+    queryset = Branch.objects.all().order_by("id")
+    serializer_class = BranchListSelectorSerializer
+    permission_classes = [IsSuperAdmin]
 
 class BranchRetrieveView(BaseCustomBranchView,generics.RetrieveAPIView):
     queryset = Branch.objects.all()

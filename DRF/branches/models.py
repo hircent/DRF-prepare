@@ -17,7 +17,7 @@ class BranchGrade(models.Model):
         return self.name
     
 class Branch(models.Model):
-    branch_grade    = models.ForeignKey(BranchGrade, on_delete=models.SET_NULL,null=True)
+    branch_grade    = models.ForeignKey(BranchGrade, on_delete=models.SET_NULL,null=True,default=1)
     name            = models.CharField(max_length=100,unique=True)
     display_name    = models.CharField(max_length=100,null=True,blank=True)
     business_name   = models.CharField(max_length=100,null=True,blank=True)
