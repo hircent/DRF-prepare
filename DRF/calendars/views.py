@@ -22,7 +22,7 @@ class CalendarListView(ListAPIView):
         if month:
             queryset = queryset.filter(month=month)
 
-        return queryset.order_by('year', 'month', 'start_date')
+        return queryset.order_by('year', 'month', 'start_datetime')
 
 class CalendarRetrieveView(RetrieveAPIView):
     serializer_class = CalendarSerializer

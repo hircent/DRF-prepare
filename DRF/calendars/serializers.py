@@ -11,7 +11,7 @@ class CalendarSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Calendar
-        fields = ['id', 'title', 'description', 'start_date', 'end_date', 'year', 'month',
+        fields = ['id', 'title', 'description', 'start_datetime', 'end_datetime', 'year', 'month',
                   'entry_type', 'branch_id', 
                   'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
