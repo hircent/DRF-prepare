@@ -3,7 +3,7 @@ from .models import Calendar
 from branches.models import Branch
 
 
-class CalendarSerializer(serializers.ModelSerializer):
+class CalendarListSerializer(serializers.ModelSerializer):
     branch_id = serializers.PrimaryKeyRelatedField(
         queryset=Branch.objects.all(),
         source='branch'
