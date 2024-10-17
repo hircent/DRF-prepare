@@ -6,18 +6,19 @@ from branches.models import Branch
 
 class Calendar(models.Model):
     ENTRY_TYPES = [
-        ('holiday', 'Holiday'),
+        ('centre holiday', 'Centre Holiday'),
+        ('public holiday', 'Public Holiday'),
         ('event', 'Event'),
         ('other', 'Other'),
     ]
 
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    start_datetime = models.DateTimeField()
+    end_datetime = models.DateTimeField()
     year = models.PositiveIntegerField(blank=True,null=True)
     month = models.PositiveIntegerField(choices=[(i, i) for i in range(1, 13)],blank=True,null=True)
-    entry_type = models.CharField(max_length=10, choices=ENTRY_TYPES)
+    entry_type = models.CharField(max_length=20, choices=ENTRY_TYPES)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='branch_calendars')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -27,13 +28,13 @@ class Calendar(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.year:
-            self.year = self.start_date.year
+            self.year = self.start_datetime.year
         if not self.month:
-            self.month = self.start_date.month
+            self.month = self.start_datetime.month
         super().save(*args, **kwargs)
 
     class Meta:
-        ordering = ['year', 'month', 'start_date']
+        ordering = ['year', 'month', 'start_datetime']
         db_table = "calendars"
         verbose_name = "Calendar"
         verbose_name_plural = "Calendars"
