@@ -1,6 +1,6 @@
 from accounts.views import RoleBasesUserListView,RoleBasedUserCreateView,RoleBasedUserDeleteView,RoleBasedUserUpdateView,RoleBasedUserDetailsView
 from branches.views import BranchListView ,BranchCreateView,BranchRetrieveView,BranchUpdateView,BranchDeleteView,CombinedPrincipalsAndBranchGradesView,BranchSelectorListView
-from calendars.views import CalendarListView,CalendarRetrieveView
+from calendars.views import CalendarListView,CalendarRetrieveView,CalendarDestroyView,CalendarCreateView,CalendarUpdateView
 from students.views import StudentListView ,StudentDetailsView ,StudentCreateView,StudentUpdateView,StudentDeleteView
 
 from django.urls import path
@@ -36,7 +36,10 @@ urlpatterns = [
 
     #Calendars
     path('calendars/list', CalendarListView.as_view(), name='calendar-list'),
-    path('calendars/<int:calendar_id>/', CalendarRetrieveView.as_view(), name='calendar-detail'),
+    path('calendars/details/<int:calendar_id>', CalendarRetrieveView.as_view(), name='calendar-details'),
+    path('calendars/delete/<int:calendar_id>', CalendarDestroyView.as_view(), name='delete-calendar'),
+    path('calendars/update/<int:calendar_id>', CalendarUpdateView.as_view(), name='update-calendar'),
+    path('calendars/create', CalendarCreateView.as_view(), name='create-calendar'),
 
     #Others
     path("branch/principals/branch_grade",CombinedPrincipalsAndBranchGradesView.as_view(),name="principal-branch_grade-for-branch"),

@@ -184,8 +184,7 @@ class RoleBasedUserDetailsView(BaseRoleBasedUserView,RetrieveAPIView):
         # You can add permission checks here based on user roles
         user_branch_roles = self.extract_jwt_info("branch_role")
         is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
-        print(type(branch_id))
-        print(type(user_branch_roles[0]['branch_id']))
+
         if not is_superadmin and not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
             raise PermissionDenied("You don't have access to this branch or role.")
 

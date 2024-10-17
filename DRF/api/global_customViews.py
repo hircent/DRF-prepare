@@ -2,6 +2,7 @@ from accounts.models import User
 from accounts.serializers import UserSerializer
 from api.pagination import CustomPagination
 from branches.models import Branch, UserBranchRole
+from calendars.models import Calendar
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework.response import Response
@@ -103,4 +104,35 @@ class BaseCustomBranchView(GenericViewWithExtractJWTInfo):
                 raise PermissionDenied("The requested user does not belong to the specified branch.")
 
             return get_object_or_404(Branch,id=branch_id)
+        
+class BaseCustomCalendarView(GenericViewWithExtractJWTInfo):
+
+    def get_object(self):
+
+        branch_id = self.request.headers.get("BranchId")
+        calendar_id = self.kwargs.get("calendar_id")
+
+        if not branch_id:
+            raise PermissionDenied("Missing branch id.")
+        
+        user_branch_roles = self.extract_jwt_info("branch_role")
+        userId = self.extract_jwt_info("user_id")
+
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+
+        calendar = get_object_or_404(Calendar,id=calendar_id)
+        if is_superadmin:
+            
+            return calendar
+        else:
+            # For non-superadmins, check if they have access to the specified branch
+            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+                raise PermissionDenied("You don't have access to this branch.")
+
+            # Check if the requested user belongs to the specified branch
+            user_branch_role = UserBranchRole.objects.filter(user=User.objects.get(id=userId), branch_id=branch_id).first()
+            if not user_branch_role:
+                raise PermissionDenied("The requested user does not belong to the specified branch.")
+
+            return calendar
 

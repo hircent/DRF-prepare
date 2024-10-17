@@ -20,3 +20,14 @@ class CalendarListSerializer(serializers.ModelSerializer):
         branch = validated_data.pop('branch')
         calendar = Calendar.objects.create(branch=branch, **validated_data)
         return calendar
+    
+    def update(self, instance, validated_data):
+        validated_data = self._set_year_and_month(validated_data)
+        return super().update(instance, validated_data)
+    
+    def _set_year_and_month(self, validated_data):
+        start_datetime = validated_data.get('start_datetime')
+        if start_datetime:
+            validated_data['year'] = start_datetime.year
+            validated_data['month'] = start_datetime.month
+        return validated_data
