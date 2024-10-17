@@ -6,10 +6,10 @@ class StudentsAdmin(admin.ModelAdmin):
 
     search_fields =('fullname',)
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'parent':
-            # Filter only users who have the 'parent' role
-            kwargs['queryset'] = UserBranchRole.objects.filter(role__name='parent').values_list('user__username', flat=True)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    # def formfield_for_foreignkey(self, db_field, request, **kwargs):
+    #     if db_field.name == 'parent':
+    #         # Filter only users who have the 'parent' role
+    #         kwargs['queryset'] = UserBranchRole.objects.filter(role__name='parent').values_list('user__username', flat=True)
+    #     return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 admin.site.register(Students, StudentsAdmin)
