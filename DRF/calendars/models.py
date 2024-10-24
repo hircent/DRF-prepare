@@ -34,7 +34,7 @@ class Calendar(models.Model):
         super().save(*args, **kwargs)
 
     class Meta:
-        ordering = ['year', 'month', 'start_datetime']
+        ordering = ['-start_datetime']
         db_table = "calendars"
         verbose_name = "Calendar"
         verbose_name_plural = "Calendars"
