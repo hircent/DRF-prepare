@@ -8,6 +8,8 @@ class CalendarListSerializer(serializers.ModelSerializer):
         queryset=Branch.objects.all(),
         source='branch'
     )
+    
+    year = serializers.SerializerMethodField()
 
     class Meta:
         model = Calendar
@@ -24,6 +26,10 @@ class CalendarListSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         validated_data = self._set_year_and_month(validated_data)
         return super().update(instance, validated_data)
+    
+    def get_year(self, obj):
+        # Convert the year to a string
+        return str(obj.year)
     
     def _set_year_and_month(self, validated_data):
         start_datetime = validated_data.get('start_datetime')
