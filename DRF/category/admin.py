@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Theme, Grade
+from .models import Category, Theme, Grade, ThemeLesson
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'year', 'is_active')
@@ -22,9 +22,15 @@ class GradeAdmin(admin.ModelAdmin):
     search_fields = ('grade',)
     ordering = ('grade_level',)
 
+class ThemeLessonAdmin(admin.ModelAdmin):
+    list_display = ('title',)
+    list_filter = ('title',)
+    search_fields = ('title',)
+    ordering = ('title',)
 
 # Register your models here.
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Theme, ThemeAdmin)
 admin.site.register(Grade, GradeAdmin)
+admin.site.register(ThemeLesson, ThemeLessonAdmin)

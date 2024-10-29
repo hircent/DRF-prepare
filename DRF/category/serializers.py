@@ -1,5 +1,15 @@
 from rest_framework import serializers
-from .models import Category, Theme, Grade
+from .models import Category, Theme, Grade, ThemeLesson
+
+class ThemeLessonListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ThemeLesson
+        fields = ['id', 'title']
+
+class ThemeLessonDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ThemeLesson
+        fields = ['id', 'title', 'lesson_one', 'lesson_two', 'lesson_three', 'lesson_four']
 
 class ThemeListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,19 +18,19 @@ class ThemeListSerializer(serializers.ModelSerializer):
 
 class ThemeDetailsSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
-
+    lessons = ThemeLessonDetailsSerializer(source='theme_lessons', read_only=True)
     class Meta:
         model = Theme
-        fields = ['id', 'name', 'category']
+        fields = ['id', 'name', 'category', 'lessons']
 
     def get_category(self, obj):
         return obj.category.label
     
 class ThemeCreateUpdateSerializer(serializers.ModelSerializer):
-    
+    lessons = ThemeLessonDetailsSerializer(write_only=True)
     class Meta:
         model = Theme
-        fields = ['id', 'name', 'category']
+        fields = ['id', 'name', 'category', 'lessons']
 
     def validate_category(self, value):
         if value and not Category.objects.filter(id=value.id).exists():
@@ -36,17 +46,35 @@ class ThemeCreateUpdateSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         category = validated_data.pop('category')
+        lessons = validated_data.pop('lessons')
         category_instance = Category.objects.get(id=category.id)
         if not category_instance:
             raise serializers.ValidationError("Invalid Category.")
-        return Theme.objects.create(category=category_instance, **validated_data)
+        
+        if not lessons:
+            raise serializers.ValidationError("Lessons are required.")
+        
+        theme = Theme.objects.create(category=category_instance, **validated_data)
+        ThemeLesson.objects.create(theme=theme, **lessons)
+        return theme
     
     def update(self, instance, validated_data):
         category = validated_data.pop('category')
+        lessons = validated_data.pop('lessons')
         category_instance = Category.objects.get(id=category.id)
 
         if not category_instance:
             raise serializers.ValidationError("Invalid Category.")
+        
+        if not lessons:
+            raise serializers.ValidationError("Lessons are required.")
+        
+        themeLesson , _ = ThemeLesson.objects.get_or_create(theme=instance)
+
+        for key, value in lessons.items():
+            setattr(themeLesson, key, value)
+
+        themeLesson.save()
         
         instance = super().update(instance, validated_data)
         instance.category = category_instance

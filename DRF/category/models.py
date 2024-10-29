@@ -44,6 +44,23 @@ class Theme(models.Model):
             )
         ]
     
+    def __str__(self):
+        return self.name
+    
+class ThemeLesson(models.Model):
+    theme           = models.OneToOneField(Theme, related_name='theme_lessons', on_delete=models.CASCADE)
+    title           = models.CharField(max_length=100)
+    lesson_one      = models.CharField(max_length=100)
+    lesson_two      = models.CharField(max_length=100)
+    lesson_three    = models.CharField(max_length=100)
+    lesson_four     = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name = 'Theme Lesson'
+        verbose_name_plural = 'Theme Lessons'
+    
+    def __str__(self):
+        return self.title
 
 class Grade(models.Model):
     GRADE_CHOICES = [

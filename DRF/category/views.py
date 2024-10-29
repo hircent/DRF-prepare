@@ -19,7 +19,10 @@ class CategoryListView(BaseCustomListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        year = self.request.query_params.get('year', None)
         queryset = Category.objects.filter(is_active=True)
+        if year:
+            queryset = queryset.filter(year=year)
     
         return queryset
     
