@@ -3,6 +3,7 @@ from accounts.serializers import UserSerializer
 from api.pagination import CustomPagination
 from branches.models import Branch, UserBranchRole
 from calendars.models import Calendar
+from category.models import Category
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework.response import Response
@@ -135,4 +136,3 @@ class BaseCustomCalendarView(GenericViewWithExtractJWTInfo):
                 raise PermissionDenied("The requested user does not belong to the specified branch.")
 
             return calendar
-

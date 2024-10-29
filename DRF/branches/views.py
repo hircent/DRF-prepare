@@ -22,7 +22,20 @@ class BranchListView(BaseCustomListAPIView,generics.ListAPIView):
         queryset = Branch.objects.all().order_by("id")
         q = self.request.query_params.get('q', None)
         '''
-        Branch.objects.filter(Q(name__icontains='hq') | Q(business_name__icontains='hq'))
+        # OR condition
+        Branch.objects.filter(Q(name__icontains='hq') | Q(code__icontains='main'))
+
+        # AND condition with OR
+        Branch.objects.filter(Q(name__icontains='hq') | Q(code__icontains='main'), is_active=True)
+
+        # NOT condition
+        Branch.objects.filter(~Q(name__icontains='hq'))
+
+        # Complex combinations
+        Branch.objects.filter(
+            (Q(name__icontains='hq') | Q(code__icontains='main')) &
+            ~Q(status='closed')
+        )
         '''
         if q:
             queryset = queryset.filter(

@@ -22,7 +22,7 @@ class Class(models.Model):
     commencement_date   = models.DateField()
     time                = models.TimeField()
     days                = models.CharField(max_length=255, choices=DAY_CHOICES)
-    students            = models.ManyToManyField('Students', through='ClassEnrollment')
+    students            = models.ManyToManyField('Students', through='StudentEnrolment')
     total_enrolled      = models.IntegerField(
                                 default=0,
                                 validators=[MaxValueValidator(6, "Maximum 6 students can be enrolled")]
@@ -44,7 +44,7 @@ class Class(models.Model):
         if self.id and self.students.count() > 6:
             raise ValidationError("This class cannot have more than 6 students")
 
-class ClassEnrollment(models.Model):
+class StudentEnrolment(models.Model):
     student             = models.ForeignKey(Students, on_delete=models.CASCADE)
     class_instance      = models.ForeignKey(Class, on_delete=models.CASCADE)
     branch              = models.ForeignKey(Branch, on_delete=models.CASCADE)
@@ -69,7 +69,7 @@ class Attendance(models.Model):
         ('FREEZED', 'Freezed'),
     ]
     
-    enrollment  = models.ForeignKey(ClassEnrollment, on_delete=models.CASCADE)
+    enrollment  = models.ForeignKey(StudentEnrolment, on_delete=models.CASCADE)
     branch      = models.ForeignKey(Branch, on_delete=models.CASCADE)
     teacher     = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     date        = models.DateField()

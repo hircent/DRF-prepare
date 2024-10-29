@@ -1,8 +1,23 @@
-from accounts.views import RoleBasesUserListView,RoleBasedUserCreateView,RoleBasedUserDeleteView,RoleBasedUserUpdateView,RoleBasedUserDetailsView
-from branches.views import BranchListView ,BranchCreateView,BranchRetrieveView,BranchUpdateView,BranchDeleteView,CombinedPrincipalsAndBranchGradesView,BranchSelectorListView
-from calendars.views import CalendarListView,CalendarRetrieveView,CalendarDestroyView,CalendarCreateView,CalendarUpdateView
-from students.views import StudentListView ,StudentDetailsView ,StudentCreateView,StudentUpdateView,StudentDeleteView
-
+from accounts.views import (
+    RoleBasesUserListView,RoleBasedUserCreateView,RoleBasedUserDeleteView,
+    RoleBasedUserUpdateView,RoleBasedUserDetailsView
+)
+from branches.views import (
+    BranchListView ,BranchCreateView,BranchRetrieveView,BranchUpdateView,BranchDeleteView,
+    CombinedPrincipalsAndBranchGradesView,BranchSelectorListView
+)
+from calendars.views import (
+    CalendarListView,CalendarRetrieveView,CalendarDestroyView,CalendarCreateView,CalendarUpdateView
+)
+from students.views import (
+    StudentListView ,StudentDetailsView ,StudentCreateView,StudentUpdateView,StudentDeleteView
+)
+from category.views import (
+    CategoryListView, ThemeListView, GradeListView, CategoryRetrieveView,
+    CategoryCreateView, ThemeRetrieveView, GradeRetrieveView, CategoryDestroyView,
+    ThemeDestroyView, CategoryUpdateView, ThemeUpdateView, ThemeCreateView,
+    GradeCreateView, GradeUpdateView, GradeDestroyView
+)
 from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -20,7 +35,7 @@ urlpatterns = [
     path("users/update/<str:role>/<int:pk>",RoleBasedUserUpdateView.as_view(),name="update-user"), 
     path("users/delete/<str:role>/<int:pk>",RoleBasedUserDeleteView.as_view(),name="delete-user"), 
     
-    #Branch DONE
+    #Branch
     path("branch/list",BranchListView.as_view(),name="branch-list"),
     path("branch/details/<int:branch_id>",BranchRetrieveView.as_view(),name="branch-details"),
     path("branch/create",BranchCreateView.as_view(),name="create-branch"),
@@ -40,6 +55,25 @@ urlpatterns = [
     path('calendars/delete/<int:calendar_id>', CalendarDestroyView.as_view(), name='delete-calendar'),
     path('calendars/update/<int:calendar_id>', CalendarUpdateView.as_view(), name='update-calendar'),
     path('calendars/create', CalendarCreateView.as_view(), name='create-calendar'),
+
+    #Category
+    path('category/list', CategoryListView.as_view(), name='category-list'),
+    path('category/details/<int:category_id>', CategoryRetrieveView.as_view(), name='category-details'),
+    path('category/create', CategoryCreateView.as_view(), name='create-category'),
+    path('category/update/<int:category_id>', CategoryUpdateView.as_view(), name='update-category'),
+    path('category/delete/<int:category_id>', CategoryDestroyView.as_view(), name='delete-category'),
+
+    path('theme/list', ThemeListView.as_view(), name='theme-list'),
+    path('theme/details/<int:theme_id>', ThemeRetrieveView.as_view(), name='theme-details'),
+    path('theme/create', ThemeCreateView.as_view(), name='create-theme'),
+    path('theme/delete/<int:theme_id>', ThemeDestroyView.as_view(), name='delete-theme'),
+    path('theme/update/<int:theme_id>', ThemeUpdateView.as_view(), name='update-theme'),
+
+    path('grade/list', GradeListView.as_view(), name='grade-list'),
+    path('grade/details/<int:grade_id>', GradeRetrieveView.as_view(), name='grade-details'),
+    path('grade/create', GradeCreateView.as_view(), name='create-grade'),
+    path('grade/update/<int:grade_id>', GradeUpdateView.as_view(), name='update-grade'),
+    path('grade/delete/<int:grade_id>', GradeDestroyView.as_view(), name='delete-grade'),
 
     #Others
     path("branch/principals/branch_grade",CombinedPrincipalsAndBranchGradesView.as_view(),name="principal-branch_grade-for-branch"),

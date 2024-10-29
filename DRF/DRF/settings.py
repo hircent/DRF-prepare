@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'branches',
     'students',
     'calendars',
+    'category',
     'rest_framework',
     'rest_framework_simplejwt'
 ]
