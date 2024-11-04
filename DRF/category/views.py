@@ -1,3 +1,4 @@
+import datetime
 from .models import Category, Theme, Grade
 from .serializers import (
     CategoryListSerializer, ThemeListSerializer, GradeListSerializer,
@@ -20,7 +21,7 @@ class CategoryListView(BaseCustomListAPIView):
 
     def get_queryset(self):
         year = self.request.query_params.get('year', None)
-        queryset = Category.objects.filter(is_active=True)
+        queryset = Category.objects.all()
         if year:
             queryset = queryset.filter(year=year)
     
