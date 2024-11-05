@@ -8,7 +8,7 @@ from .serializers import (
 )
 
 from accounts.permission import IsSuperAdmin
-from api.global_customViews import BaseCustomListAPIView
+from api.global_customViews import BaseCustomListAPIView, BaseCustomThemeListAPIView
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics,status
@@ -79,7 +79,7 @@ class CategoryDestroyView(generics.DestroyAPIView):
         self.perform_destroy(instance)
         return Response({"success": True, "message": "Category deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
-class ThemeListView(BaseCustomListAPIView):
+class ThemeListView(BaseCustomThemeListAPIView):
     serializer_class = ThemeListSerializer
     permission_classes = [IsAuthenticated]
 
@@ -90,6 +90,7 @@ class ThemeListView(BaseCustomListAPIView):
             queryset = queryset.filter(category__id=q)
     
         return queryset
+    
 
 class ThemeRetrieveView(generics.RetrieveAPIView):
     queryset = Theme.objects.all()
@@ -145,7 +146,7 @@ class GradeListView(BaseCustomListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        queryset = Grade.objects.all()
+        queryset = Grade.objects.all().order_by("grade_level")
     
         return queryset
     

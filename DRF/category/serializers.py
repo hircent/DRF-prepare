@@ -12,9 +12,17 @@ class ThemeLessonDetailsSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'lesson_one', 'lesson_two', 'lesson_three', 'lesson_four']
 
 class ThemeListSerializer(serializers.ModelSerializer):
+    category = serializers.SerializerMethodField()
+    year = serializers.SerializerMethodField()
     class Meta:
         model = Theme
-        fields = ['id', 'name', 'category']
+        fields = ['id', 'name', 'category','year']
+    
+    def get_category(self,obj):
+        return obj.category.name
+    
+    def get_year(self,obj):
+        return obj.category.year
 
 class ThemeDetailsSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
