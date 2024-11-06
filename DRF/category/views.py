@@ -8,7 +8,7 @@ from .serializers import (
 )
 
 from accounts.permission import IsSuperAdmin
-from api.global_customViews import BaseCustomListAPIView, BaseCustomThemeListAPIView
+from api.global_customViews import BaseCustomListAPIView, BaseCustomThemeListAPIView, GenericViewWithExtractJWTInfo
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics,status
@@ -26,6 +26,24 @@ class CategoryListView(BaseCustomListAPIView):
             queryset = queryset.filter(year=year)
     
         return queryset
+
+class CategorySelectionListView(GenericViewWithExtractJWTInfo,generics.ListAPIView):
+    serializer_class = CategoryListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = Category.objects.filter(is_active=True)
+    
+        return queryset
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            "success": True,
+            "data": serializer.data
+        })
     
 
 class CategoryRetrieveView(generics.RetrieveAPIView):

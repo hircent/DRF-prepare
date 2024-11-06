@@ -19,20 +19,16 @@ class ThemeListSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'category','year']
     
     def get_category(self,obj):
-        return obj.category.name
+        return obj.category.label
     
     def get_year(self,obj):
         return obj.category.year
 
 class ThemeDetailsSerializer(serializers.ModelSerializer):
-    category = serializers.SerializerMethodField()
     lessons = ThemeLessonDetailsSerializer(source='theme_lessons', read_only=True)
     class Meta:
         model = Theme
         fields = ['id', 'name', 'category', 'lessons']
-
-    def get_category(self, obj):
-        return obj.category.label
     
 class ThemeCreateUpdateSerializer(serializers.ModelSerializer):
     lessons = ThemeLessonDetailsSerializer(write_only=True)

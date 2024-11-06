@@ -16,7 +16,7 @@ from category.views import (
     CategoryListView, ThemeListView, GradeListView, CategoryRetrieveView,
     CategoryCreateView, ThemeRetrieveView, GradeRetrieveView, CategoryDestroyView,
     ThemeDestroyView, CategoryUpdateView, ThemeUpdateView, ThemeCreateView,
-    GradeCreateView, GradeUpdateView, GradeDestroyView
+    GradeCreateView, GradeUpdateView, GradeDestroyView, CategorySelectionListView
 )
 from django.urls import path
 from rest_framework_simplejwt.views import (
@@ -58,6 +58,7 @@ urlpatterns = [
 
     #Category
     path('category/list', CategoryListView.as_view(), name='category-list'),
+    path('category/selection-list', CategorySelectionListView.as_view(), name='category-selection-list'),
     path('category/details/<int:category_id>', CategoryRetrieveView.as_view(), name='category-details'),
     path('category/create', CategoryCreateView.as_view(), name='create-category'),
     path('category/update/<int:category_id>', CategoryUpdateView.as_view(), name='update-category'),
