@@ -2,6 +2,11 @@ from accounts.views import (
     RoleBasesUserListView,RoleBasedUserCreateView,RoleBasedUserDeleteView,
     RoleBasedUserUpdateView,RoleBasedUserDetailsView
 )
+
+from api.views import (
+    ChangePasswordView
+)
+
 from branches.views import (
     BranchListView ,BranchCreateView,BranchRetrieveView,BranchUpdateView,BranchDeleteView,
     CombinedPrincipalsAndBranchGradesView,BranchSelectorListView
@@ -84,6 +89,7 @@ urlpatterns = [
     path('login', CustomTokenObtainPairView.as_view(), name='login_token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('change-password', ChangePasswordView.as_view(), name='change-password'),
 
     
 ]

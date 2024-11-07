@@ -88,6 +88,10 @@ REST_FRAMEWORK = {
     ),
     'EXCEPTION_HANDLER': 'DRF.utils.exception_handler.custom_exception_handler',
     
+    'DEFAULT_THROTTLE_RATES': {
+        'changepassword': '5/hour',
+    }
+    
 }
 
 from datetime import timedelta

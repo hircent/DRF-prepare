@@ -1,6 +1,10 @@
 from branches.models import UserBranchRole
 from django.db.models import F
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework import serializers
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+import re
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -33,3 +37,56 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             } for item in user_branch_roles
         ]
         return token
+
+class PasswordStrengthValidator:
+    def __init__(self, min_length=8, min_uppercase=1, min_lowercase=1, min_numbers=1, min_special=1):
+        self.min_length = min_length
+        self.min_uppercase = min_uppercase
+        self.min_lowercase = min_lowercase
+        self.min_numbers = min_numbers
+        self.min_special = min_special
+
+    def validate(self, password):
+        errors = []
+        if len(password) < self.min_length:
+            errors.append(f'Password must be at least {self.min_length} characters long.')
+        if len(re.findall(r'[A-Z]', password)) < self.min_uppercase:
+            errors.append('Password must contain at least one uppercase letter.')
+        if len(re.findall(r'[a-z]', password)) < self.min_lowercase:
+            errors.append('Password must contain at least one lowercase letter.')
+        if len(re.findall(r'[0-9]', password)) < self.min_numbers:
+            errors.append('Password must contain at least one number.')
+        if len(re.findall(r'[!@#$%^&*(),.?":{}|<>]', password)) < self.min_special:
+            errors.append('Password must contain at least one special character.')
+        if errors:
+            raise ValidationError(errors)
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    confirm_password = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['confirm_password']:
+            raise serializers.ValidationError({
+                "password": "Password fields didn't match."
+            })
+
+        # Custom password strength validation
+        password_validator = PasswordStrengthValidator()
+        try:
+            password_validator.validate(attrs['new_password'])
+        except ValidationError as e:
+            raise serializers.ValidationError({
+                "password": list(e.messages)
+            })
+
+        # Django's built-in password validation
+        try:
+            validate_password(attrs['new_password'])
+        except ValidationError as e:
+            raise serializers.ValidationError({
+                "password": list(e.messages)
+            })
+
+        return attrs
