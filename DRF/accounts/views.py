@@ -1,5 +1,5 @@
 
-from api.global_customViews import BaseCustomListAPIView,BaseRoleBasedUserView
+from api.global_customViews import BaseCustomListAPIView,BaseRoleBasedUserView,BaseRoleBasedUserDetailsView
 from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher,IsManagerOrHigher,IsTeacherOrHigher
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
@@ -157,7 +157,7 @@ class RoleBasedUserDeleteView(BaseRoleBasedUserView,DestroyAPIView):
         }
         return [permission() for permission in permission_classes.get(role, [])]
 
-class RoleBasedUserDetailsView(BaseRoleBasedUserView,RetrieveAPIView):
+class RoleBasedUserDetailsView(BaseRoleBasedUserDetailsView,RetrieveAPIView):
     serializer_class = UserDetailSerializer  # Assuming this includes UserProfile data
     queryset = User.objects.all()
 

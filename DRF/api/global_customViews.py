@@ -88,6 +88,26 @@ class BaseRoleBasedUserView(GenericViewWithExtractJWTInfo):
 
         return get_object_or_404(queryset)
     
+class BaseRoleBasedUserDetailsView(GenericViewWithExtractJWTInfo):
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        user_id = self.kwargs.get('pk')
+        branch_id = self.request.headers.get('BranchId')
+
+        if not branch_id:
+            raise PermissionDenied("Missing branch id.")
+
+        user_branch_roles = self.extract_jwt_info("branch_role")
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+
+        queryset = User.objects.filter(id=user_id, users__branch_id=branch_id)
+        
+        if not is_superadmin and not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+            raise PermissionDenied("You don't have access to this branch or role.")
+
+        return get_object_or_404(queryset)
+    
 class BaseCustomBranchView(GenericViewWithExtractJWTInfo):
 
     def get_object(self):

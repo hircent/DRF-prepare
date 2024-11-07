@@ -30,7 +30,7 @@ from .views import CustomTokenObtainPairView
 urlpatterns = [
     # Users for Superadmin, Principals, Managers, Teachers, Parents
     path("users/<str:role>/list",RoleBasesUserListView.as_view(),name="user-role-based-list"), 
-    path("users/<str:role>/details/<int:pk>",RoleBasedUserDetailsView.as_view(),name="user-details"), 
+    path("users/details/<int:pk>",RoleBasedUserDetailsView.as_view(),name="user-details"), 
     path("users/create/<str:role>",RoleBasedUserCreateView.as_view(),name="create-user"), 
     path("users/update/<str:role>/<int:pk>",RoleBasedUserUpdateView.as_view(),name="update-user"), 
     path("users/delete/<str:role>/<int:pk>",RoleBasedUserDeleteView.as_view(),name="delete-user"), 
