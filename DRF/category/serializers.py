@@ -30,7 +30,7 @@ class ThemeDetailsSerializer(serializers.ModelSerializer):
         model = Theme
         fields = ['id', 'name', 'category', 'lessons']
     
-class ThemeCreateUpdateSerializer(serializers.ModelSerializer):
+class ThemeCreateSerializer(serializers.ModelSerializer):
     lessons = ThemeLessonDetailsSerializer(write_only=True)
     class Meta:
         model = Theme
@@ -61,6 +61,35 @@ class ThemeCreateUpdateSerializer(serializers.ModelSerializer):
         theme = Theme.objects.create(category=category_instance, **validated_data)
         ThemeLesson.objects.create(theme=theme, **lessons)
         return theme
+    
+    def update(self, instance, validated_data):
+        category = validated_data.pop('category')
+        lessons = validated_data.pop('lessons')
+        category_instance = Category.objects.get(id=category.id)
+
+        if not category_instance:
+            raise serializers.ValidationError("Invalid Category.")
+        
+        if not lessons:
+            raise serializers.ValidationError("Lessons are required.")
+        
+        themeLesson , _ = ThemeLesson.objects.get_or_create(theme=instance)
+
+        for key, value in lessons.items():
+            setattr(themeLesson, key, value)
+
+        themeLesson.save()
+        
+        instance = super().update(instance, validated_data)
+        instance.category = category_instance
+        instance.save()
+        return instance 
+
+class ThemeUpdateSerializer(serializers.ModelSerializer):
+    lessons = ThemeLessonDetailsSerializer(write_only=True)
+    class Meta:
+        model = Theme
+        fields = ['id', 'name', 'category', 'lessons']
     
     def update(self, instance, validated_data):
         category = validated_data.pop('category')

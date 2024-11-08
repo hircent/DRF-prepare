@@ -4,7 +4,7 @@ from .serializers import (
     CategoryListSerializer, ThemeListSerializer, GradeListSerializer,
     CategoryDetailsSerializer, CategoryCreateUpdateSerializer, 
     ThemeDetailsSerializer, GradeDetailsSerializer, GradeCreateUpdateSerializer,
-    ThemeCreateUpdateSerializer
+    ThemeUpdateSerializer ,ThemeCreateSerializer
 )
 
 from accounts.permission import IsSuperAdmin
@@ -123,7 +123,7 @@ class ThemeRetrieveView(generics.RetrieveAPIView):
         return Response({"success": True, "data": serializer.data}, status=status.HTTP_200_OK)
     
 class ThemeCreateView(generics.CreateAPIView):
-    serializer_class = ThemeCreateUpdateSerializer
+    serializer_class = ThemeCreateSerializer
     permission_classes = [IsSuperAdmin]
 
     def create(self, request, *args, **kwargs):
@@ -135,7 +135,7 @@ class ThemeCreateView(generics.CreateAPIView):
     
 class ThemeUpdateView(generics.UpdateAPIView):
     queryset = Theme.objects.all()
-    serializer_class = ThemeCreateUpdateSerializer
+    serializer_class = ThemeUpdateSerializer
     permission_classes = [IsSuperAdmin]
     lookup_field = 'id'
     lookup_url_kwarg = 'theme_id'
