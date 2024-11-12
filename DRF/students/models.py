@@ -43,11 +43,11 @@ class Students(models.Model):
     parent                  = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,related_name='children')
     first_name              = models.CharField(max_length=50,null=True,blank=True)
     last_name               = models.CharField(max_length=50,null=True,blank=True)
-    fullname                = models.CharField(max_length=50,null=True,blank=True)
+    fullname                = models.CharField(max_length=50)
     gender                  = models.CharField(choices=GENDER,max_length=6)
     dob                     = models.DateField()
     school                  = models.CharField(max_length=100)
-    deemcee_starting_grade  = models.IntegerField()
+    deemcee_starting_grade  = models.IntegerField(null=True,blank=True)
     # referral_channel_id     = models.IntegerField()
     # referral                = models.IntegerField()
     status                  = models.CharField(choices=STATUS,max_length=12,default='in_progress')
@@ -63,7 +63,7 @@ class Students(models.Model):
         verbose_name_plural = 'Students'
 
     def __str__(self):
-        return self.first_name
+        return self.fullname
     
     def save(self,*args, **kwargs):
 

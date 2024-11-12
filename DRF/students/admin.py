@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Students, UserBranchRole
 
 class StudentsAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'fullname', 'branch', 'parent', 'status', 'enrolment_date')
+    list_display = ('id', 'fullname', 'first_name', 'branch', 'parent', 'status', 'enrolment_date')
 
     search_fields =('fullname',)
 

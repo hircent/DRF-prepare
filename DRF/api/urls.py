@@ -14,15 +14,23 @@ from branches.views import (
 from calendars.views import (
     CalendarListView,CalendarRetrieveView,CalendarDestroyView,CalendarCreateView,CalendarUpdateView
 )
+
 from students.views import (
     StudentListView ,StudentDetailsView ,StudentCreateView,StudentUpdateView,StudentDeleteView
 )
+
 from category.views import (
     CategoryListView, ThemeListView, GradeListView, CategoryRetrieveView,
     CategoryCreateView, ThemeRetrieveView, GradeRetrieveView, CategoryDestroyView,
     ThemeDestroyView, CategoryUpdateView, ThemeUpdateView, ThemeCreateView,
     GradeCreateView, GradeUpdateView, GradeDestroyView, CategorySelectionListView
 )
+
+from classes.views import (
+    ClassListView, StudentEnrolmentListView, ClassCreateView, ClassUpdateView,
+    ClassDetailsView, ClassDestroyView
+)
+
 from django.urls import path
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -80,6 +88,14 @@ urlpatterns = [
     path('grade/create', GradeCreateView.as_view(), name='create-grade'),
     path('grade/update/<int:grade_id>', GradeUpdateView.as_view(), name='update-grade'),
     path('grade/delete/<int:grade_id>', GradeDestroyView.as_view(), name='delete-grade'),
+
+    #Classes
+    path('class/list', ClassListView.as_view(), name='class-list'),
+    path('class/create', ClassCreateView.as_view(), name='create-class'),
+    path('class/details/<int:class_id>', ClassDetailsView.as_view(), name='class-details'),
+    path('class/update/<int:class_id>', ClassUpdateView.as_view(), name='update-class'),
+    path('class/delete/<int:class_id>', ClassDestroyView.as_view(), name='delete-class'),
+    path('student/enrolment/list', StudentEnrolmentListView.as_view(), name='student-enrolment-list'),
 
     #Others
     path("branch/principals/branch_grade",CombinedPrincipalsAndBranchGradesView.as_view(),name="principal-branch_grade-for-branch"),

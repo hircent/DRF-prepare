@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'students',
     'calendars',
     'category',
+    'classes',
     'rest_framework',
     'rest_framework_simplejwt'
 ]
