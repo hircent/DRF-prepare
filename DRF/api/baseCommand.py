@@ -48,6 +48,10 @@ class CustomBaseCommand(BaseCommand):
     @staticmethod
     def parse_datetime(value):
         return make_aware(datetime.strptime(value, "%Y-%m-%d %H:%M:%S"))
+    
+    @staticmethod
+    def parse_time(value):
+        return make_aware(datetime.strptime(value, "%H:%M:%S"))
 
     def reset_id(self,table):
         try:
