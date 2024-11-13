@@ -6,14 +6,41 @@ from rest_framework.response import Response
 from rest_framework import status
 from api.global_customViews import BaseCustomListAPIView ,GenericViewWithExtractJWTInfo, BaseCustomClassView
 from accounts.permission import IsManagerOrHigher
+from django.db.models import Q
 
 from .models import Class,StudentEnrolment
 from .serializers import ClassListSerializer,StudentEnrolmentListSerializer,ClassCreateUpdateSerializer
 
 class ClassListView(BaseCustomListAPIView):
-    queryset = Class.objects.all()
     serializer_class = ClassListSerializer
     permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        branch_id = self.request.headers.get('BranchId')
+        q = self.request.query_params.get('q', None)
+        
+        if not branch_id:
+            raise PermissionDenied("Missing branch id.")
+        
+        user_branch_roles = self.extract_jwt_info("branch_role")
+
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+        
+        # query_set = User.objects.filter(users__role__name=role).exclude(id=self.request.user.id)
+        query_set = Class.objects.filter(branch=int(branch_id))
+        
+        if q:
+            query_set = query_set.filter(
+                Q(name=q)  # Case-insensitive search
+            )
+        if is_superadmin:
+            return query_set
+        else:
+            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+                
+                raise PermissionDenied("You don't have access to this branch or role.")
+            else:
+                return query_set
 
 class ClassDetailsView(BaseCustomClassView,RetrieveAPIView):
     queryset = Class.objects.all()
