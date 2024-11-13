@@ -46,8 +46,16 @@ class CustomBaseCommand(BaseCommand):
         return self.BASE_DIR / 'csv' / filename
     
     @staticmethod
+    def parse_bool(value):
+        return value.lower() in ('true', '1', 'yes')
+    
+    @staticmethod
     def parse_datetime(value):
         return make_aware(datetime.strptime(value, "%Y-%m-%d %H:%M:%S"))
+    
+    @staticmethod
+    def parse_date(value):
+        return make_aware(datetime.strptime(value, "%Y-%m-%d"))
     
     @staticmethod
     def parse_time(value):

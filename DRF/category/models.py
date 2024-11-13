@@ -16,6 +16,7 @@ class Category(models.Model):
     is_active   = models.BooleanField(default=True)
     
     class Meta:
+        db_table = 'categories'
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
 
@@ -35,6 +36,7 @@ class Theme(models.Model):
     category    = models.ForeignKey(Category, related_name='themes', on_delete=models.CASCADE)
     
     class Meta:
+        db_table = 'themes'
         verbose_name = 'Theme'
         verbose_name_plural = 'Themes'
         constraints = [
@@ -56,6 +58,7 @@ class ThemeLesson(models.Model):
     lesson_four     = models.CharField(max_length=100)
 
     class Meta:
+        db_table = 'theme_lessons'
         verbose_name = 'Theme Lesson'
         verbose_name_plural = 'Theme Lessons'
     
@@ -83,6 +86,10 @@ class Grade(models.Model):
     price           = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     
     class Meta:
+        db_table = 'grades'
         verbose_name = 'Grade'
         verbose_name_plural = 'Grades'
+        
+    def __str__(self):
+        return str(self.grade_level)
     

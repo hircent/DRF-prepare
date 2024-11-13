@@ -2,7 +2,7 @@ from django.db import models
 
 from accounts.models import User
 from branches.models import Branch
-from category.models import Category
+from category.models import Category,Grade
 from students.models import Students
 # Create your models here.
 class Class(models.Model):
@@ -40,11 +40,15 @@ class StudentEnrolment(models.Model):
     student             = models.ForeignKey(Students, on_delete=models.CASCADE, related_name='enrolments')
     class_instance      = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True)
     branch              = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    grade               = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True)
     enrollment_date     = models.DateTimeField(auto_now_add=True)
     is_active           = models.BooleanField(default=True)
     remaining_lessons   = models.IntegerField(default=24)
+    created_at          = models.DateTimeField(auto_now_add=True)
+    updated_at          = models.DateTimeField(auto_now=True)
 
     class Meta:
+        db_table = 'student_enrolments'
         unique_together = ['student', 'class_instance']
         verbose_name = 'Student Enrollment'
         verbose_name_plural = 'Student Enrollments'

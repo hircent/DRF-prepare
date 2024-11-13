@@ -8,7 +8,7 @@ class CategoryAdmin(admin.ModelAdmin):
     ordering = ('name',)
 
 class ThemeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category_label')
+    list_display = ('id', 'name', 'category_label')
     list_filter = ('category',)
     search_fields = ('name',)
     ordering = ('name',)
@@ -17,7 +17,7 @@ class ThemeAdmin(admin.ModelAdmin):
         return obj.category.label
 
 class GradeAdmin(admin.ModelAdmin):
-    list_display = ('grade_level', 'category', 'price')
+    list_display = ('id', 'grade_level', 'category', 'price')
     list_filter = ('category',)
     search_fields = ('grade',)
     ordering = ('grade_level',)
