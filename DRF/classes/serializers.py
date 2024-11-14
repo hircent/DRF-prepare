@@ -3,16 +3,27 @@ from .models import Class,StudentEnrolment
 from accounts.models import User
 from branches.models import Branch
 from category.models import Category
-
-class ClassListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Class
-        fields = '__all__'
-        
+       
 class StudentEnrolmentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentEnrolment
         fields = '__all__'
+        
+class StudentEnrolmentListForClassSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentEnrolment
+        fields = ['student','enrollment_date','is_active','remaining_lessons']
+        
+class ClassListSerializer(serializers.ModelSerializer):
+    students = serializers.SerializerMethodField()
+    class Meta:
+        model = Class
+        fields = ['id','branch','category','name','label','description','start_time','end_time','day','students']
+        
+    def get_students(self, obj):
+        # Get all StudentEnrolment instances for this class
+        enrolments = StudentEnrolment.objects.filter(class_instance=obj).order_by('student__last_name')
+        return StudentEnrolmentListForClassSerializer(enrolments, many=True).data
 
 class ClassCreateUpdateSerializer(serializers.ModelSerializer):
     branch = serializers.PrimaryKeyRelatedField(
