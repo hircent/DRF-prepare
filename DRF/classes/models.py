@@ -4,6 +4,9 @@ from accounts.models import User
 from branches.models import Branch
 from category.models import Category,Grade
 from students.models import Students
+from category.models import Theme,ThemeLesson
+from django.utils import timezone
+from datetime import timedelta
 # Create your models here.
 class Class(models.Model):
     DAY_CHOICES = [
@@ -20,10 +23,10 @@ class Class(models.Model):
     name                = models.CharField(max_length=255)
     label               = models.CharField(max_length=255)
     description         = models.TextField(blank=True, null=True)
+    start_date          = models.DateField()
     start_time          = models.TimeField()
     end_time            = models.TimeField()
     day                 = models.CharField(max_length=255, choices=DAY_CHOICES)
-    students            = models.ManyToManyField(Students, through='StudentEnrolment')
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
     
@@ -35,10 +38,48 @@ class Class(models.Model):
         
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        is_new = not self.pk
+        super().save(*args, **kwargs)
+        
+        if is_new:
+            # Generate initial class schedule when class is created
+            self.generate_class_schedule()
+    
+    def generate_class_schedule(self):
+        themes = Theme.objects.filter(
+            category=self.category
+        ).order_by('id')[:12]  # Limit to 12 themes
+        print("====================================================================")
+        print(self.start_date)
+        print("====================================================================")
+        current_date = self.start_date
+        
+        for theme_index, theme in enumerate(themes):
+            theme_lesson = ThemeLesson.objects.get(theme=theme)
+            
+            lessons = [
+                theme_lesson.lesson_one,
+                theme_lesson.lesson_two,
+                theme_lesson.lesson_three,
+                theme_lesson.lesson_four
+            ]
+            
+            for lesson_index, lesson_content in enumerate(lessons):
+                ClassLesson.objects.create(
+                    class_instance=self,
+                    theme=theme,
+                    lesson_number=lesson_index + 1,
+                    lesson_content=lesson_content,
+                    lesson_date=current_date,
+                    theme_order=theme_index + 1
+                )
+                current_date += timedelta(days=7)  # Next week
+    
 
 class StudentEnrolment(models.Model):
     student             = models.ForeignKey(Students, on_delete=models.CASCADE, related_name='enrolments')
-    class_instance      = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True)
     branch              = models.ForeignKey(Branch, on_delete=models.CASCADE)
     grade               = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True)
     enrollment_date     = models.DateTimeField(auto_now_add=True)
@@ -49,14 +90,38 @@ class StudentEnrolment(models.Model):
 
     class Meta:
         db_table = 'student_enrolments'
-        unique_together = ['student', 'class_instance']
         verbose_name = 'Student Enrollment'
         verbose_name_plural = 'Student Enrollments'
+
+    def __str__(self):
+        return self.student.fullname
 
     def save(self, *args, **kwargs):
         if self.remaining_lessons <= 0:
             self.is_active = False
         super().save(*args, **kwargs)
+
+class ClassLesson(models.Model):
+    class_instance      = models.ForeignKey(Class, on_delete=models.CASCADE,related_name='lessons')
+    students            = models.ManyToManyField(StudentEnrolment)
+    theme               = models.ForeignKey(Theme, on_delete=models.CASCADE)
+    lesson_number       = models.PositiveIntegerField()  # 1-4 for each theme
+    lesson_content      = models.CharField(max_length=100)
+    lesson_date         = models.DateField()
+    theme_order         = models.PositiveIntegerField()  # 1-12 for tracking theme sequence
+    is_completed        = models.BooleanField(default=False)
+    created_at          = models.DateTimeField(auto_now_add=True)
+    updated_at          = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'class_lessons'
+        ordering = ['-lesson_date']
+        verbose_name = 'Class Lesson'
+        verbose_name_plural = 'Class Lessons'
+        unique_together = ['class_instance', 'lesson_date']
+
+    def __str__(self):
+        return self.lesson_content
 
 # class Attendance(models.Model):
 #     ATTENDANCE_CHOICES = [

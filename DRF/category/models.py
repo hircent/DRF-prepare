@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
 class Category(models.Model):
     CATEGORY_CHOICES = [
@@ -14,6 +15,8 @@ class Category(models.Model):
     label       = models.CharField(max_length=100,blank=True, null=True)
     year        = models.PositiveIntegerField(default=timezone.now().year)
     is_active   = models.BooleanField(default=True)
+    created_at  = models.DateTimeField(auto_now_add=True)
+    updated_at  = models.DateTimeField(auto_now=True)
     
     class Meta:
         db_table = 'categories'
@@ -33,8 +36,11 @@ class Category(models.Model):
 
 class Theme(models.Model):
     name        = models.CharField(max_length=100)
+    order       = models.PositiveIntegerField(default=1,validators=[MinValueValidator(1), MaxValueValidator(12)])
     category    = models.ForeignKey(Category, related_name='themes', on_delete=models.CASCADE)
-    
+    created_at  = models.DateTimeField(auto_now_add=True)
+    updated_at  = models.DateTimeField(auto_now=True)
+
     class Meta:
         db_table = 'themes'
         verbose_name = 'Theme'
@@ -50,12 +56,12 @@ class Theme(models.Model):
         return self.name
     
 class ThemeLesson(models.Model):
-    theme           = models.OneToOneField(Theme, related_name='theme_lessons', on_delete=models.CASCADE)
-    title           = models.CharField(max_length=100)
-    lesson_one      = models.CharField(max_length=100)
-    lesson_two      = models.CharField(max_length=100)
-    lesson_three    = models.CharField(max_length=100)
-    lesson_four     = models.CharField(max_length=100)
+    theme           = models.ForeignKey(Theme, related_name='theme_lessons', on_delete=models.CASCADE)
+    name            = models.CharField(max_length=100)
+    display_name    = models.CharField(max_length=100)
+    order           = models.PositiveIntegerField(default=1,validators=[MinValueValidator(1), MaxValueValidator(4)])
+    created_at      = models.DateTimeField(auto_now_add=True)
+    updated_at      = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'theme_lessons'
@@ -63,7 +69,7 @@ class ThemeLesson(models.Model):
         verbose_name_plural = 'Theme Lessons'
     
     def __str__(self):
-        return self.title
+        return self.display_name
 
 class Grade(models.Model):
     GRADE_CHOICES = [
@@ -84,6 +90,8 @@ class Grade(models.Model):
     grade_level     = models.IntegerField(choices=GRADE_CHOICES, unique=True)
     category        = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     price           = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    created_at      = models.DateTimeField(auto_now_add=True)
+    updated_at      = models.DateTimeField(auto_now=True)
     
     class Meta:
         db_table = 'grades'

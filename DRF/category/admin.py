@@ -23,10 +23,10 @@ class GradeAdmin(admin.ModelAdmin):
     ordering = ('grade_level',)
 
 class ThemeLessonAdmin(admin.ModelAdmin):
-    list_display = ('title',)
-    list_filter = ('title',)
-    search_fields = ('title',)
-    ordering = ('title',)
+    list_display = ('name',)
+    list_filter = ('name',)
+    search_fields = ('name',)
+    ordering = ('name',)
 
 # Register your models here.
 
