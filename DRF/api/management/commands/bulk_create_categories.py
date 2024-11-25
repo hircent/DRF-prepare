@@ -54,13 +54,13 @@ class Command(CustomBaseCommand):
                 
                 self.reset_id("categories")
                 end_time = datetime.now()
-                time_taken = start_time - end_time
+                time_taken = end_time - start_time
                 self.logger.info(f"Sucessfully imported {total_imported} categoriess in total.")
                 self.logger.info(f"Time taken : {time_taken}")
                 
         except Exception as e:
             end_time = datetime.now()
-            time_taken = start_time - end_time
+            time_taken = end_time - start_time
             self.logger.error(f"Error during categories import: {str(e)}")
             self.logger.error(f"Time taken : {time_taken}")
             
