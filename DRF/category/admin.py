@@ -8,7 +8,7 @@ class CategoryAdmin(admin.ModelAdmin):
     ordering = ('name',)
 
 class ThemeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'category_label')
+    list_display = ('id', 'name', 'order', 'category_label')
     list_filter = ('category',)
     search_fields = ('name',)
     ordering = ('name',)

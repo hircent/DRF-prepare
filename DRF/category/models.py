@@ -35,11 +35,12 @@ class Category(models.Model):
     
 
 class Theme(models.Model):
-    name        = models.CharField(max_length=100)
-    order       = models.PositiveIntegerField(default=1,validators=[MinValueValidator(1), MaxValueValidator(12)])
-    category    = models.ForeignKey(Category, related_name='themes', on_delete=models.CASCADE)
-    created_at  = models.DateTimeField(auto_now_add=True)
-    updated_at  = models.DateTimeField(auto_now=True)
+    name            = models.CharField(max_length=100)
+    display_name    = models.CharField(max_length=100)
+    order           = models.PositiveIntegerField(default=1,validators=[MinValueValidator(1), MaxValueValidator(12)])
+    category        = models.ForeignKey(Category, related_name='themes', on_delete=models.CASCADE)
+    created_at      = models.DateTimeField(auto_now_add=True)
+    updated_at      = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'themes'
