@@ -5,7 +5,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
 class Category(models.Model):
     CATEGORY_CHOICES = [
-        ('KIDDOS', 'Kiddos'),
+        ('KIDDO', 'Kiddo'),
         ('KIDS', 'Kids'),
         ('SUPERKIDS', 'Superkids'),
     ]
@@ -26,7 +26,7 @@ class Category(models.Model):
         unique_together = ('name', 'year')
         
     def __str__(self):
-        return self.label
+        return self.name
     
     def save(self, *args, **kwargs):
         if not self.label:

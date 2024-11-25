@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Category, Theme, Grade, ThemeLesson
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'year', 'is_active')
+    list_display = ('id', 'name', 'label', 'year', 'is_active')
     list_filter = ('name', 'year', 'is_active')
     search_fields = ('name',)
     ordering = ('name',)

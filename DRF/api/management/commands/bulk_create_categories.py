@@ -32,6 +32,7 @@ class Command(CustomBaseCommand):
                         cat = Category(
                             id = row['id'],
                             name = row['name'],
+                            label = row['name'] + ' ' + str(datetime.now().year),
                             year = datetime.now().year,
                             created_at = self.parse_datetime(row['created_at']),
                             updated_at = self.parse_datetime(row['updated_at'])
