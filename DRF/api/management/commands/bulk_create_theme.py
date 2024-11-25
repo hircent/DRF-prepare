@@ -36,8 +36,7 @@ class Command(CustomBaseCommand):
 
                         cat = Theme(
                             id = row['id'],
-                            name = row['name'],
-                            display_name = row['display_name'],
+                            name = row['display_name'],
                             category = category,
                             order = order,
                             created_at = self.parse_datetime(row['created_at']),

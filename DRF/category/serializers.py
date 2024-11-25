@@ -9,14 +9,32 @@ class ThemeLessonListSerializer(serializers.ModelSerializer):
 class ThemeLessonDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ThemeLesson
-        fields = ['id', 'title', 'lesson_one', 'lesson_two', 'lesson_three', 'lesson_four']
+        fields = ['id', 'name', 'order']
+
+class ThemeLessonCreateUpdateSerializer(serializers.Serializer):
+    lesson_one = serializers.CharField(required=True)
+    lesson_two = serializers.CharField(required=True)
+    lesson_three = serializers.CharField(required=True)
+    lesson_four = serializers.CharField(required=True)
+
+    def validate(self, data):
+        """
+        Validate that all lesson fields are present and not empty
+        """
+        for lesson_key in ['lesson_one', 'lesson_two', 'lesson_three', 'lesson_four']:
+            if not data.get(lesson_key):
+                raise serializers.ValidationError({
+                    lesson_key: "This field cannot be empty."
+                })
+        return data
+
 
 class ThemeListSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
     year = serializers.SerializerMethodField()
     class Meta:
         model = Theme
-        fields = ['id', 'name', 'category','year']
+        fields = ['id', 'name','order','category','year']
     
     def get_category(self,obj):
         return obj.category.label
@@ -25,13 +43,13 @@ class ThemeListSerializer(serializers.ModelSerializer):
         return obj.category.year
 
 class ThemeDetailsSerializer(serializers.ModelSerializer):
-    lessons = ThemeLessonDetailsSerializer(source='theme_lessons', read_only=True)
+    lessons = ThemeLessonDetailsSerializer(source='theme_lessons', read_only=True,many=True)
     class Meta:
         model = Theme
         fields = ['id', 'name', 'category', 'lessons']
     
 class ThemeCreateSerializer(serializers.ModelSerializer):
-    lessons = ThemeLessonDetailsSerializer(write_only=True)
+    lessons = ThemeLessonCreateUpdateSerializer(write_only=True)
     class Meta:
         model = Theme
         fields = ['id', 'name', 'category', 'lessons']
@@ -58,35 +76,33 @@ class ThemeCreateSerializer(serializers.ModelSerializer):
         if not lessons:
             raise serializers.ValidationError("Lessons are required.")
         
-        theme = Theme.objects.create(category=category_instance, **validated_data)
-        ThemeLesson.objects.create(theme=theme, **lessons)
+        count = Theme.objects.filter(category=category_instance).count()
+
+        theme = Theme.objects.create(category=category_instance, order=count+1, **validated_data)
+
+        lesson_mappings = {
+            'lesson_one': lessons['lesson_one'],
+            'lesson_two': lessons['lesson_two'],
+            'lesson_three': lessons['lesson_three'],
+            'lesson_four': lessons['lesson_four']
+        }
+        #here we are creating theme lessons
+        theme_lessons = [
+            ThemeLesson(
+                theme=theme,
+                name=lesson_value,
+                order=idx + 1
+            )
+            for idx, lesson_value in enumerate(lesson_mappings.values())
+        ]
+
+        ThemeLesson.objects.bulk_create(theme_lessons)
         return theme
     
-    def update(self, instance, validated_data):
-        category = validated_data.pop('category')
-        lessons = validated_data.pop('lessons')
-        category_instance = Category.objects.get(id=category.id)
-
-        if not category_instance:
-            raise serializers.ValidationError("Invalid Category.")
-        
-        if not lessons:
-            raise serializers.ValidationError("Lessons are required.")
-        
-        themeLesson , _ = ThemeLesson.objects.get_or_create(theme=instance)
-
-        for key, value in lessons.items():
-            setattr(themeLesson, key, value)
-
-        themeLesson.save()
-        
-        instance = super().update(instance, validated_data)
-        instance.category = category_instance
-        instance.save()
-        return instance 
+    
 
 class ThemeUpdateSerializer(serializers.ModelSerializer):
-    lessons = ThemeLessonDetailsSerializer(write_only=True)
+    lessons = ThemeLessonCreateUpdateSerializer(write_only=True)
     class Meta:
         model = Theme
         fields = ['id', 'name', 'category', 'lessons']
@@ -102,17 +118,39 @@ class ThemeUpdateSerializer(serializers.ModelSerializer):
         if not lessons:
             raise serializers.ValidationError("Lessons are required.")
         
-        themeLesson , _ = ThemeLesson.objects.get_or_create(theme=instance)
-
-        for key, value in lessons.items():
-            setattr(themeLesson, key, value)
-
-        themeLesson.save()
+        # Update theme lessons
+        lesson_mappings = {
+            'lesson_one': lessons['lesson_one'],
+            'lesson_two': lessons['lesson_two'],
+            'lesson_three': lessons['lesson_three'],
+            'lesson_four': lessons['lesson_four']
+        }
+        
+        # Get existing theme lessons
+        existing_lessons = ThemeLesson.objects.filter(theme=instance)
+        
+        if existing_lessons.exists():
+            # Update existing lessons
+            for idx, (_, lesson_value) in enumerate(lesson_mappings.items()):
+                lesson = existing_lessons[idx]
+                lesson.name = lesson_value
+                lesson.save()
+        else:
+            # Create new lessons if none exist
+            theme_lessons = [
+                ThemeLesson(
+                    theme=instance,
+                    name=lesson_value,
+                    order=idx + 1
+                )
+                for idx, lesson_value in enumerate(lesson_mappings.values())
+            ]
+            ThemeLesson.objects.bulk_create(theme_lessons)
         
         instance = super().update(instance, validated_data)
         instance.category = category_instance
         instance.save()
-        return instance 
+        return instance  
 
 class CategoryListSerializer(serializers.ModelSerializer):
     
@@ -127,7 +165,7 @@ class CategoryCreateUpdateSerializer(serializers.ModelSerializer):
 
 
 class CategoryDetailsSerializer(serializers.ModelSerializer):
-    themes = ThemeDetailsSerializer(many=True, read_only=True)
+    themes = ThemeListSerializer(many=True, read_only=True)
     
     class Meta:
         model = Category

@@ -9,7 +9,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 class ThemeAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'order', 'category_label')
-    list_filter = ('category',)
+    list_filter = ('category__label',)
     search_fields = ('name',)
     ordering = ('name',)
 
@@ -23,7 +23,7 @@ class GradeAdmin(admin.ModelAdmin):
     ordering = ('grade_level',)
 
 class ThemeLessonAdmin(admin.ModelAdmin):
-    list_display = ('id', 'theme__name', 'display_name', 'order')
+    list_display = ('id', 'theme__name', 'name', 'order')
     list_filter = ('name',)
     search_fields = ('name',)
     ordering = ('name',)

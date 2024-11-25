@@ -36,7 +36,6 @@ class Category(models.Model):
 
 class Theme(models.Model):
     name            = models.CharField(max_length=100)
-    display_name    = models.CharField(max_length=100)
     order           = models.PositiveIntegerField(default=1,validators=[MinValueValidator(1), MaxValueValidator(12)])
     category        = models.ForeignKey(Category, related_name='themes', on_delete=models.CASCADE)
     created_at      = models.DateTimeField(auto_now_add=True)
@@ -46,6 +45,7 @@ class Theme(models.Model):
         db_table = 'themes'
         verbose_name = 'Theme'
         verbose_name_plural = 'Themes'
+        ordering = ['order']
         constraints = [
             models.UniqueConstraint(
                 fields=['category', 'name'],
@@ -59,7 +59,6 @@ class Theme(models.Model):
 class ThemeLesson(models.Model):
     theme           = models.ForeignKey(Theme, related_name='theme_lessons', on_delete=models.CASCADE)
     name            = models.CharField(max_length=100)
-    display_name    = models.CharField(max_length=100)
     order           = models.PositiveIntegerField(default=1,validators=[MinValueValidator(1), MaxValueValidator(4)])
     created_at      = models.DateTimeField(auto_now_add=True)
     updated_at      = models.DateTimeField(auto_now=True)
@@ -68,9 +67,10 @@ class ThemeLesson(models.Model):
         db_table = 'theme_lessons'
         verbose_name = 'Theme Lesson'
         verbose_name_plural = 'Theme Lessons'
+        ordering = ['order']
     
     def __str__(self):
-        return self.display_name
+        return self.name
 
 class Grade(models.Model):
     GRADE_CHOICES = [

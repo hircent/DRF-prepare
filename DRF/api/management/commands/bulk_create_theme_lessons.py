@@ -36,8 +36,7 @@ class Command(CustomBaseCommand):
                         theme_lesson = ThemeLesson(
                             id = row['id'],
                             theme = Theme.objects.get(id=row['theme_id']),
-                            name = row['name'],
-                            display_name = row['display_name'],
+                            name = row['display_name'],
                             order = row['order'],
                             created_at = self.parse_datetime(row['created_at']),
                             updated_at = self.parse_datetime(row['updated_at'])
