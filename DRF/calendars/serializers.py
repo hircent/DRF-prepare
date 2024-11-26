@@ -50,4 +50,4 @@ class CalendarThemeLessonListSerializer(serializers.ModelSerializer):
         read_only_fields = ['created_at', 'updated_at']
     
     def get_theme(self,obj):
-        return obj.theme.name
+        return {"id":obj.theme.id, "name":obj.theme.name}
