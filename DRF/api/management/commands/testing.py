@@ -16,7 +16,7 @@ class Command(BaseCommand):
 
         all_themes = self.get_cat_themes(2024)
         for theme in all_themes:
-            self.generate_theme_lessons(theme,2024,1)
+            self.generate_theme_lessons(theme,2024,2)
 
         
 

@@ -63,7 +63,7 @@ class CalendarThemeLesson(models.Model):
         db_table = "calendar_theme_lessons"
         verbose_name = "Calendar Theme Lesson"
         verbose_name_plural = "Calendar Theme Lessons"
-        unique_together = ['theme_lesson', 'lesson_date']
+        unique_together = ['branch','theme_lesson', 'lesson_date']
 
     def __str__(self):
         return "Calendar theme lesson:" + self.theme_lesson.name
