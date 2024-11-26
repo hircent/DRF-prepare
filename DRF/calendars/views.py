@@ -128,7 +128,7 @@ class CalendarThemeLessonListView(BaseCustomCalendarThemeLessonListView):
         month = self.request.query_params.get('month')
         day = self.request.query_params.get('day')
         branch_id = self.request.headers.get('BranchId')
-        queryset = CalendarThemeLesson.objects.all()
+        queryset = CalendarThemeLesson.objects.all().order_by('lesson_date')
 
         if not branch_id:
             raise PermissionDenied("Missing branch id.")
