@@ -10,8 +10,8 @@ class CalendarAdmin(admin.ModelAdmin):
     list_per_page = 10  
 
 class CalendarThemeLessonAdmin(admin.ModelAdmin):
-    list_display = ('theme_lesson', 'theme', 'theme__category__label', 'branch', 'lesson_date', 'day')
-    list_filter = ('theme', 'branch','theme__category__label','day')
+    list_display = ('theme_lesson', 'theme', 'theme__category__label', 'branch', 'lesson_date', 'day','year')
+    list_filter = ('theme', 'branch','theme__category__label','day','year')
     search_fields = ('theme_lesson', 'theme', 'branch')
     ordering = ('lesson_date',)
     list_per_page = 50

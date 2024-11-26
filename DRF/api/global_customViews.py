@@ -56,6 +56,17 @@ class BaseCustomCalendarListView(GenericViewWithExtractJWTInfo,ListAPIView):
             "success": True,
             "data": serializer.data
         })
+
+class BaseCustomCalendarThemeLessonListView(GenericViewWithExtractJWTInfo,ListAPIView):
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            "success": True,
+            "data": serializer.data
+        })
+    
     
 class BaseCustomBranchSelectorListView(GenericViewWithExtractJWTInfo,ListAPIView):
 

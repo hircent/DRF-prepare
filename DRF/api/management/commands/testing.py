@@ -51,7 +51,8 @@ class Command(BaseCommand):
                                 branch=branch,
                                 lesson_date=lesson_date_2024.strftime("%Y-%m-%d"),
                                 day=lesson_date_2024.strftime("%A"),
-                                month=lesson_date_2024.month
+                                month=lesson_date_2024.month,
+                                year=lesson_date_2024.year,
                             )
 
                             calendar_theme_lessons.append(ctl)

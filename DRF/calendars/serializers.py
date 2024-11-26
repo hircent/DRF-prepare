@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from .models import Calendar
+from .models import Calendar ,CalendarThemeLesson
 from branches.models import Branch
+from category.models import ThemeLesson,Theme
+from category.serializers import ThemeLessonDetailsSerializer,ThemeDetailsSerializer
 
 
 class CalendarListSerializer(serializers.ModelSerializer):
@@ -37,3 +39,15 @@ class CalendarListSerializer(serializers.ModelSerializer):
             validated_data['year'] = start_datetime.year
             validated_data['month'] = start_datetime.month
         return validated_data
+
+class CalendarThemeLessonListSerializer(serializers.ModelSerializer):
+    theme_lesson = ThemeLessonDetailsSerializer(read_only=True)
+    # theme = ThemeDetailsSerializer(read_only=True)
+    theme = serializers.SerializerMethodField()
+    class Meta:
+        model = CalendarThemeLesson
+        fields = ['id', 'theme_lesson', 'theme', 'branch', 'lesson_date', 'day', 'month','year']
+        read_only_fields = ['created_at', 'updated_at']
+    
+    def get_theme(self,obj):
+        return obj.theme.name

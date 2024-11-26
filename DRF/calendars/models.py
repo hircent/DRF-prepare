@@ -12,16 +12,16 @@ class Calendar(models.Model):
         ('other', 'Other'),
     ]
 
-    title = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    start_datetime = models.DateTimeField()
-    end_datetime = models.DateTimeField()
-    year = models.PositiveIntegerField(blank=True,null=True)
-    month = models.PositiveIntegerField(choices=[(i, i) for i in range(1, 13)],blank=True,null=True)
-    entry_type = models.CharField(max_length=20, choices=ENTRY_TYPES)
-    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='branch_calendars')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    title           = models.CharField(max_length=200)
+    description     = models.TextField(blank=True)
+    start_datetime  = models.DateTimeField()
+    end_datetime    = models.DateTimeField()
+    year            = models.PositiveIntegerField(blank=True,null=True)
+    month           = models.PositiveIntegerField(choices=[(i, i) for i in range(1, 13)],blank=True,null=True)
+    entry_type      = models.CharField(max_length=20, choices=ENTRY_TYPES)
+    branch          = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='branch_calendars')
+    created_at      = models.DateTimeField(auto_now_add=True)
+    updated_at      = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.title} - {self.branch.name} ({self.year}-{self.month:02d})"
@@ -50,14 +50,15 @@ class CalendarThemeLesson(models.Model):
         ('Sunday', 'Sunday'),
     ]
 
-    theme_lesson = models.ForeignKey(ThemeLesson, on_delete=models.CASCADE)
-    theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
-    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
-    lesson_date = models.DateField()
-    day = models.CharField(max_length=10, choices=DAY_CHOICES)
-    month = models.PositiveIntegerField(choices=[(i, i) for i in range(1, 13)],default=1)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    theme_lesson    = models.ForeignKey(ThemeLesson, on_delete=models.CASCADE)
+    theme           = models.ForeignKey(Theme, on_delete=models.CASCADE)
+    branch          = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    lesson_date     = models.DateField()
+    day             = models.CharField(max_length=10, choices=DAY_CHOICES)
+    month           = models.PositiveIntegerField()
+    year            = models.PositiveIntegerField()
+    created_at      = models.DateTimeField(auto_now_add=True)
+    updated_at      = models.DateTimeField(auto_now=True)
     
     class Meta:
         db_table = "calendar_theme_lessons"

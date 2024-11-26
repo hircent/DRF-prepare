@@ -12,7 +12,8 @@ from branches.views import (
     CombinedPrincipalsAndBranchGradesView,BranchSelectorListView
 )
 from calendars.views import (
-    CalendarListView,CalendarRetrieveView,CalendarDestroyView,CalendarCreateView,CalendarUpdateView
+    CalendarListView,CalendarRetrieveView,CalendarDestroyView,CalendarCreateView,CalendarUpdateView,
+    CalendarThemeLessonListView
 )
 
 from students.views import (
@@ -68,6 +69,9 @@ urlpatterns = [
     path('calendars/delete/<int:calendar_id>', CalendarDestroyView.as_view(), name='delete-calendar'),
     path('calendars/update/<int:calendar_id>', CalendarUpdateView.as_view(), name='update-calendar'),
     path('calendars/create', CalendarCreateView.as_view(), name='create-calendar'),
+
+    #Calendar Theme Lesson
+    path('calendars/theme-lesson/list', CalendarThemeLessonListView.as_view(), name='calendar-theme-lesson-list'),
 
     #Category
     path('category/list', CategoryListView.as_view(), name='category-list'),
