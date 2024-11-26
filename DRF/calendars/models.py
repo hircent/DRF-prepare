@@ -1,7 +1,7 @@
 from django.db import models
 
 from branches.models import Branch
-
+from category.models import Theme,ThemeLesson
 # Create your models here.
 
 class Calendar(models.Model):
@@ -38,3 +38,32 @@ class Calendar(models.Model):
         db_table = "calendars"
         verbose_name = "Calendar"
         verbose_name_plural = "Calendars"
+
+class CalendarThemeLesson(models.Model):
+    DAY_CHOICES = [
+        ('Monday', 'Monday'),
+        ('Tuesday', 'Tuesday'),
+        ('Wednesday', 'Wednesday'),
+        ('Thursday', 'Thursday'),
+        ('Friday', 'Friday'),
+        ('Saturday', 'Saturday'),
+        ('Sunday', 'Sunday'),
+    ]
+
+    theme_lesson = models.ForeignKey(ThemeLesson, on_delete=models.CASCADE)
+    theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    lesson_date = models.DateField()
+    day = models.CharField(max_length=10, choices=DAY_CHOICES)
+    month = models.PositiveIntegerField(choices=[(i, i) for i in range(1, 13)],default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = "calendar_theme_lessons"
+        verbose_name = "Calendar Theme Lesson"
+        verbose_name_plural = "Calendar Theme Lessons"
+        unique_together = ['theme_lesson', 'lesson_date']
+
+    def __str__(self):
+        return "Calendar theme lesson:" + self.theme_lesson.name
