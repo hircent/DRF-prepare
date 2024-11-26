@@ -3,12 +3,18 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.views import APIView
 
-from accounts.permission import IsManagerOrHigher
+from accounts.permission import IsManagerOrHigher, IsPrincipalOrHigher
 from api.global_customViews import (
     BaseCustomCalendarListView,BaseCustomCalendarView, GenericViewWithExtractJWTInfo,
     BaseCustomCalendarThemeLessonListView
 )
+from branches.models import Branch
+from category.models import Category
+from datetime import datetime, timedelta
+from django.core.exceptions import ValidationError
+
 from .models import Calendar , CalendarThemeLesson
 from .serializers import CalendarListSerializer,CalendarThemeLessonListSerializer
 
@@ -153,3 +159,157 @@ class CalendarThemeLessonListView(BaseCustomCalendarThemeLessonListView):
                 raise PermissionDenied("You don't have access to this branch or role.")
             else:
                 return queryset.filter(branch_id=branch_id)
+            
+class GenerateCalendarThemeLessonView(APIView):
+    """
+    API endpoint to generate theme lessons for a specific year and branch
+    """
+    permission_classes = [IsPrincipalOrHigher]  # Optional: Add authentication if needed
+
+    def post(self, request,year):
+        
+        # Get branch ID from request headers
+        branch_id = request.headers.get('BranchID')
+
+        # Validate inputs
+        if not branch_id:
+            return Response({
+                'error': 'BranchID is required in headers'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            year = int(year)
+            branch_id = int(branch_id)
+        except ValueError:
+            return Response({
+                'error': 'Invalid year or branch ID'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            categories = Category.objects.filter(year=year)
+            
+            if not categories.exists():
+                return Response({
+                    'message': f'No categories found for year {year}'
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            if categories.count() != 3:
+                return Response({
+                    'message': f'Expected 3 categories for year {year}, found {categories.count()}. Kindly contact admin!'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            # Get categories and themes
+            all_themes = self.get_cat_themes(categories)
+
+            total_created = 0
+            for themes in all_themes:
+                # Generate theme lessons
+                total_created += self.generate_theme_lessons(
+                    themes=themes, 
+                    year=year, 
+                    branch_id=branch_id
+                )
+
+            return Response({
+                "success": True,
+                'data': f'Successfully generated {total_created} theme lessons'
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def get_blocked_dates(self, year, branch_id):
+        """
+        Get blocked dates for a specific year and branch
+        """
+        all_events = Calendar.objects.filter(branch_id=branch_id, year=year)
+
+        blocked_dates = []
+
+        for event in all_events:
+            start_date = event.start_datetime.date()
+            end_date = event.end_datetime.date()
+
+            if start_date == end_date:
+                blocked_dates.append(start_date)
+            else:
+                while start_date <= end_date:
+                    blocked_dates.append(start_date)
+                    start_date += timedelta(days=1)
+        
+        return blocked_dates
+
+    def get_cat_themes(self, categories):
+        return [
+            categories[0].themes.all(),
+            categories[1].themes.all(),
+            categories[2].themes.all()
+        ]
+
+    def generate_theme_lessons(self, themes, year, branch_id):
+        """
+        Generate theme lessons for a specific year and branch
+        Ensures lessons are generated only for the specified year
+        """
+        branch = Branch.objects.get(id=branch_id)
+        blocked_dates = self.get_blocked_dates(year, branch_id)
+        
+        calendar_theme_lessons = []
+        total_created = 0
+        lesson_date = datetime(year, 1, 1).date()
+        end_date = datetime(year, 12, 31).date()
+
+        while lesson_date <= end_date:
+
+            for theme in themes:
+                for lesson in theme.theme_lessons.all():
+                    # Each lesson for 7 consecutive days
+                    for _ in range(7):
+                        # Critical fix: Ensure we don't generate beyond the specified year
+                        if lesson_date.year > year:
+                            break
+
+                        if lesson_date <= end_date and lesson_date not in blocked_dates:
+                            ctl = CalendarThemeLesson(
+                                theme_lesson=lesson,
+                                theme=theme,
+                                branch=branch,
+                                lesson_date=lesson_date.strftime("%Y-%m-%d"),
+                                day=lesson_date.strftime("%A"),
+                                month=lesson_date.month,
+                                year=lesson_date.year,
+                            )
+
+                            calendar_theme_lessons.append(ctl)
+
+                            # Batch create to prevent memory issues
+                            if len(calendar_theme_lessons) >= 500:
+                                CalendarThemeLesson.objects.bulk_create(calendar_theme_lessons)
+                                total_created += 500
+                                calendar_theme_lessons = []
+
+                        lesson_date += timedelta(days=1)
+
+                        # Additional break condition to prevent generating into next year
+                        if lesson_date.year > year:
+                            break
+
+                    # Break out of lesson loop if we've gone into next year
+                    if lesson_date.year > year:
+                        break
+
+                # Break out of theme lessons loop if we've gone into next year
+                if lesson_date.year > year:
+                    break
+
+            # Break out of theme loop if we've gone into next year
+            if lesson_date.year > year:
+                break
+
+        # Create any remaining lessons
+        if calendar_theme_lessons:
+            CalendarThemeLesson.objects.bulk_create(calendar_theme_lessons)
+            total_created += len(calendar_theme_lessons)
+
+        return total_created

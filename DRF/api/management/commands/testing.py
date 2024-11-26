@@ -16,7 +16,7 @@ class Command(BaseCommand):
 
         all_themes = self.get_cat_themes(2024)
         for theme in all_themes:
-            self.generate_theme_lessons(theme,2024,2)
+            self.generate_theme_lessons(theme,2024,4)
 
         
 
@@ -24,55 +24,76 @@ class Command(BaseCommand):
         CalendarThemeLesson.objects.all().delete()
         print("Calendar theme lessons deleted")
 
-    def generate_theme_lessons(self,themes,year,branch_id):
-        blockedDate = self.get_blocked_dates(year)
-        cat_2024 = Category.objects.filter(year=year)
+    def generate_theme_lessons(self, themes, year, branch_id):
+        """
+        Generate theme lessons for a specific year and branch
+        Ensures lessons are generated only for the specified year
+        """
         branch = Branch.objects.get(id=branch_id)
-        if cat_2024.exists() and cat_2024.count() == 3:
-            print("Category exists")
-
         
         calendar_theme_lessons = []
         total_created = 0
-        lesson_date_2024 = datetime(2024,1,1).date()
+        lesson_date = datetime(year, 1, 1).date()
+        end_date = datetime(year, 12, 31).date()
 
-        while lesson_date_2024 <= datetime(2024,12,31).date():
+        while lesson_date <= end_date:
+            blocked_dates = self.get_blocked_dates(year, branch_id)
             
+     
             for theme in themes:
-
                 for lesson in theme.theme_lessons.all():
+                    # Each lesson for 7 consecutive days
+                    for _ in range(7):
+                        # Critical fix: Ensure we don't generate beyond the specified year
+                        if lesson_date.year > year:
+                            break
 
-                    #Each lesson has to 7 days consecutively
-                    for i in range(0,7):
-                        if lesson_date_2024 not in blockedDate:
+                        if lesson_date <= end_date and lesson_date not in blocked_dates:
                             ctl = CalendarThemeLesson(
                                 theme_lesson=lesson,
                                 theme=theme,
                                 branch=branch,
-                                lesson_date=lesson_date_2024.strftime("%Y-%m-%d"),
-                                day=lesson_date_2024.strftime("%A"),
-                                month=lesson_date_2024.month,
-                                year=lesson_date_2024.year,
+                                lesson_date=lesson_date.strftime("%Y-%m-%d"),
+                                day=lesson_date.strftime("%A"),
+                                month=lesson_date.month,
+                                year=lesson_date.year,
                             )
 
                             calendar_theme_lessons.append(ctl)
-                            lesson_date_2024 += timedelta(days=1)
-                        else:
-                            lesson_date_2024 += timedelta(days=1)
 
-                        if len(calendar_theme_lessons) >= 500:
-                            CalendarThemeLesson.objects.bulk_create(calendar_theme_lessons)
-                            total_created += 500
-                            print(f"{total_created} Calendar theme lessons created")
-                            calendar_theme_lessons = []
+                            # Batch create to prevent memory issues
+                            if len(calendar_theme_lessons) >= 500:
+                                CalendarThemeLesson.objects.bulk_create(calendar_theme_lessons)
+                                total_created += 500
+                                calendar_theme_lessons = []
 
+                        lesson_date += timedelta(days=1)
+
+                        # Additional break condition to prevent generating into next year
+                        if lesson_date.year > year:
+                            break
+
+                    # Break out of lesson loop if we've gone into next year
+                    if lesson_date.year > year:
+                        break
+
+                # Break out of theme lessons loop if we've gone into next year
+                if lesson_date.year > year:
+                    break
+
+            # Break out of theme loop if we've gone into next year
+            if lesson_date.year > year:
+                break
+
+    # Create any remaining lessons
         if calendar_theme_lessons:
             CalendarThemeLesson.objects.bulk_create(calendar_theme_lessons)
             total_created += len(calendar_theme_lessons)
-            print(f"{total_created} Calendar theme lessons created")
 
-    def get_blocked_dates(self,year):
-        all_events = Calendar.objects.filter(branch_id=1,year=year)
+        return total_created
+
+    def get_blocked_dates(self,year,branch_id):
+        all_events = Calendar.objects.filter(branch_id=branch_id,year=year)
 
         blockedDate = []
 

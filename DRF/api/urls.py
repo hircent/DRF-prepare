@@ -13,7 +13,7 @@ from branches.views import (
 )
 from calendars.views import (
     CalendarListView,CalendarRetrieveView,CalendarDestroyView,CalendarCreateView,CalendarUpdateView,
-    CalendarThemeLessonListView
+    CalendarThemeLessonListView,GenerateCalendarThemeLessonView
 )
 
 from students.views import (
@@ -72,6 +72,7 @@ urlpatterns = [
 
     #Calendar Theme Lesson
     path('calendars/theme-lesson/list', CalendarThemeLessonListView.as_view(), name='calendar-theme-lesson-list'),
+    path('generate_theme_lesson/<int:year>', GenerateCalendarThemeLessonView.as_view(), name='generate_theme_lesson'),
 
     #Category
     path('category/list', CategoryListView.as_view(), name='category-list'),
