@@ -251,6 +251,7 @@ class GenerateCalendarThemeLessonView(APIView):
         """
         Generate theme lessons for a specific year and branch
         Ensures lessons are generated only for the specified year
+        and completes 7 consecutive non-blocked days for each lesson
         """
         branch = Branch.objects.get(id=branch_id)
         blocked_dates = self.get_blocked_dates(year, branch_id)
@@ -261,27 +262,27 @@ class GenerateCalendarThemeLessonView(APIView):
         end_date = datetime(year, 12, 31).date()
 
         while lesson_date <= end_date:
-
             for theme in themes:
                 for lesson in theme.theme_lessons.all():
-                    # Each lesson for 7 consecutive days
-                    for _ in range(7):
-                        # Critical fix: Ensure we don't generate beyond the specified year
-                        if lesson_date.year > year:
-                            break
+                    # Track consecutive non-blocked days for this lesson
+                    lesson_days_created = 0
+                    current_lesson_date = lesson_date
 
-                        if lesson_date <= end_date and lesson_date not in blocked_dates:
+                    while lesson_days_created < 7 and current_lesson_date <= end_date:
+                        # Skip blocked dates
+                        if current_lesson_date not in blocked_dates:
                             ctl = CalendarThemeLesson(
                                 theme_lesson=lesson,
                                 theme=theme,
                                 branch=branch,
-                                lesson_date=lesson_date.strftime("%Y-%m-%d"),
-                                day=lesson_date.strftime("%A"),
-                                month=lesson_date.month,
-                                year=lesson_date.year,
+                                lesson_date=current_lesson_date.strftime("%Y-%m-%d"),
+                                day=current_lesson_date.strftime("%A"),
+                                month=current_lesson_date.month,
+                                year=current_lesson_date.year,
                             )
 
                             calendar_theme_lessons.append(ctl)
+                            lesson_days_created += 1
 
                             # Batch create to prevent memory issues
                             if len(calendar_theme_lessons) >= 500:
@@ -289,21 +290,25 @@ class GenerateCalendarThemeLessonView(APIView):
                                 total_created += 500
                                 calendar_theme_lessons = []
 
-                        lesson_date += timedelta(days=1)
+                        # Move to next date regardless of whether a lesson was created
+                        current_lesson_date += timedelta(days=1)
 
-                        # Additional break condition to prevent generating into next year
-                        if lesson_date.year > year:
+                        # Break if we've gone beyond the specified year
+                        if current_lesson_date.year > year:
                             break
 
-                    # Break out of lesson loop if we've gone into next year
+                    # Move lesson_date forward
+                    lesson_date = current_lesson_date
+
+                    # Break out of loops if we've gone into next year
                     if lesson_date.year > year:
                         break
 
-                # Break out of theme lessons loop if we've gone into next year
+                # Break out of theme loop if we've gone into next year
                 if lesson_date.year > year:
                     break
 
-            # Break out of theme loop if we've gone into next year
+            # Break out of main loop if we've gone into next year
             if lesson_date.year > year:
                 break
 
