@@ -41,13 +41,17 @@ class CalendarListSerializer(serializers.ModelSerializer):
         return validated_data
 
 class CalendarThemeLessonListSerializer(serializers.ModelSerializer):
-    theme_lesson = ThemeLessonDetailsSerializer(read_only=True)
+    theme_lesson    = ThemeLessonDetailsSerializer(read_only=True)
     # theme = ThemeDetailsSerializer(read_only=True)
-    theme = serializers.SerializerMethodField()
+    theme           = serializers.SerializerMethodField()
+    category  = serializers.SerializerMethodField()
     class Meta:
         model = CalendarThemeLesson
-        fields = ['id', 'theme_lesson', 'theme', 'branch', 'lesson_date', 'day', 'month','year']
+        fields = ['id', 'theme_lesson', 'theme', 'category', 'branch', 'lesson_date', 'day', 'month','year']
         read_only_fields = ['created_at', 'updated_at']
     
     def get_theme(self,obj):
         return {"id":obj.theme.id, "name":obj.theme.name}
+    
+    def get_category(self,obj):
+        return obj.theme.category.name
