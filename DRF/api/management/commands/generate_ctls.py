@@ -1,4 +1,4 @@
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandParser
 from django.utils import timezone
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -6,23 +6,31 @@ from pathlib import Path
 from calendars.models import Calendar , CalendarThemeLesson
 from category.models import Category
 from branches.models import Branch
+from django.db import transaction
+from django.core.management.base import CommandError
 
 class Command(BaseCommand):
-    help = 'testing function'
+    help = 'Generate Calendar Theme Lessons for branch'
 
+    def add_arguments(self, parser: CommandParser) -> None:
+        #python manage.py generate_ctls --branchId=1 --year=2024
+        parser.add_argument('--branchId', type=int, help='Branch ID')
+        parser.add_argument('--year', type=int, help='Year')
+
+    @transaction.atomic
     def handle(self, *args, **kwargs):
-        # self.delete()
+        branch_id = kwargs['branchId']
+        year = kwargs['year']
 
-
-        all_themes = self.get_cat_themes(2024)
-        for theme in all_themes:
-            self.generate_theme_lessons(theme,2024,1)
-
+        if not branch_id or not year:
+            raise CommandError("Branch ID and Year are required")
         
+        all_themes = self.get_cat_themes(year)
+        
+        for theme in all_themes:
+            self.generate_theme_lessons(theme,year,branch_id)
 
-    def delete(self):
-        CalendarThemeLesson.objects.all().delete()
-        print("Calendar theme lessons deleted")
+        print(f"Theme lessons generated for branch {branch_id} and year {year}")
 
     def generate_theme_lessons(self, themes, year, branch_id):
         """
@@ -117,8 +125,13 @@ class Command(BaseCommand):
         return blockedDate
     
     def get_cat_themes(self,year):
-        kiddo_themes = Category.objects.filter(year=year)[0].themes.all()
-        kids_themes = Category.objects.filter(year=year)[1].themes.all()
-        superkids_themes = Category.objects.filter(year=year)[2].themes.all()
+        cat = Category.objects.filter(year=year)
+
+        if cat.count() != 3:
+            raise CommandError(f"Expected 3 categories for year {year}, found {cat.count()}. Kindly contact admin!")
+
+        kiddo_themes = cat[0].themes.all()
+        kids_themes = cat[1].themes.all()
+        superkids_themes = cat[2].themes.all()
 
         return [kiddo_themes,kids_themes,superkids_themes]
