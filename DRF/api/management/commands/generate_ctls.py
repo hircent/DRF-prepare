@@ -46,8 +46,12 @@ class Command(BaseCommand):
         lesson_date = datetime(year, 1, 1).date()
         end_date = datetime(year, 12, 31).date()
 
-        while lesson_date <= end_date:
+        processed_themes_count = 0
+
+        while lesson_date <= end_date and processed_themes_count < 12:
             for theme in themes:
+                if processed_themes_count >= 12:
+                    break
                 for lesson in theme.theme_lessons.all():
                     # Track consecutive non-blocked days for this lesson
                     lesson_days_created = 0
@@ -92,6 +96,8 @@ class Command(BaseCommand):
                 # Break out of theme loop if we've gone into next year
                 if lesson_date.year > year:
                     break
+
+                processed_themes_count += 1
 
             # Break out of main loop if we've gone into next year
             if lesson_date.year > year:
