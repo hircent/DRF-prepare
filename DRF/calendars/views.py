@@ -65,11 +65,76 @@ class CalendarDestroyView(BaseCustomCalendarView,DestroyAPIView):
     serializer_class = CalendarListSerializer
     permission_classes = [IsManagerOrHigher]
 
+    @transaction.atomic
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         id = instance.id
-        self.perform_destroy(instance)
+        start_date  = instance.start_datetime.date()
+        end_date    = instance.end_datetime.date()
+        branch_id   = instance.branch_id
+        
+        try:
+            self.perform_destroy(instance)
+            self._update_calendar_theme_lesson_after_destroy(start_date,end_date,branch_id)
+        except ValueError as e:
+            return Response({"success": False, "msg": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
         return Response({"success": True, "message": f"Calendar {id} deleted successfully"})
+    
+    def _update_calendar_theme_lesson_after_destroy(self,start_date,end_date,branch_id):
+        shift_days = (end_date - start_date) + timedelta(days=1)
+
+        day_after_end_date = end_date + timedelta(days=1)
+
+        affected_lessons = CalendarThemeLesson.objects.filter(
+            branch_id=branch_id,
+            lesson_date__gte=day_after_end_date,
+            year=start_date.year,
+        )
+
+        updated_lessons = []
+        blocked_dates = self.get_blocked_dates(start_date.year, branch_id)
+
+        for lesson in affected_lessons:
+            existing_lesson_date = datetime.strptime(str(lesson.lesson_date),"%Y-%m-%d").date()
+            new_lesson_date = existing_lesson_date - shift_days
+            
+            while new_lesson_date in blocked_dates:
+                new_lesson_date += timedelta(days=1)
+            # Check if the new lesson date is beyond the year
+            if new_lesson_date.year > lesson.year:
+                raise ValueError(f"New lesson date {new_lesson_date} is beyond the year {lesson.year}")
+
+            lesson.lesson_date = new_lesson_date.strftime("%Y-%m-%d")
+            lesson.day = new_lesson_date.strftime("%A")
+            lesson.month = new_lesson_date.month
+            lesson.year = new_lesson_date.year
+            
+            updated_lessons.append(lesson)
+
+        if updated_lessons:
+            CalendarThemeLesson.objects.bulk_update(
+                updated_lessons,
+                ['lesson_date','day','month','year']
+            )
+    
+    def get_blocked_dates(self, year, branch_id):
+        """
+        Get blocked dates for a specific year and branch
+        """
+        all_events = Calendar.objects.filter(branch_id=branch_id, year=year)
+        blocked_dates = []
+        for event in all_events:
+            start_date = event.start_datetime.date()
+            end_date = event.end_datetime.date()
+            if start_date == end_date:
+                blocked_dates.append(start_date)
+            else:
+                while start_date <= end_date:
+                    blocked_dates.append(start_date)
+                    start_date += timedelta(days=1)
+        return blocked_dates
+
 
 class CalendarCreateView(GenericViewWithExtractJWTInfo,CreateAPIView):
     serializer_class = CalendarListSerializer
