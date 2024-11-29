@@ -321,6 +321,12 @@ class GenerateCalendarThemeLessonView(APIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         try:
+            ctls = CalendarThemeLesson.objects.filter(year=year)
+            if ctls.exists():
+                return Response({
+                    'message': f'Theme lessons already exist for year {year}'
+                }, status=status.HTTP_400_BAD_REQUEST)
+
             categories = Category.objects.filter(year=year)
             
             if not categories.exists():
