@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.generics import RetrieveAPIView,DestroyAPIView,CreateAPIView,UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
@@ -321,7 +322,8 @@ class GenerateCalendarThemeLessonView(APIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            ctls = CalendarThemeLesson.objects.filter(year=year)
+            branch = get_object_or_404(Branch, id=branch_id)
+            ctls = CalendarThemeLesson.objects.filter(year=year,branch=branch)
             if ctls.exists():
                 return Response({
                     'message': f'Theme lessons already exist for year {year}'
