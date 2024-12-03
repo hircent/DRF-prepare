@@ -11,8 +11,8 @@ class StudentEnrolmentAdmin(admin.ModelAdmin):
     search_fields = ('student__name', )
 
 class ClassLessonAdmin(admin.ModelAdmin):
-    list_display = ('id', 'class_instance', 'theme', 'lesson_number', 'lesson_content', 'lesson_date', 'theme_order', 'is_completed')
-    search_fields = ('class_instance__name', 'class_instance__label', 'theme__name', 'lesson_content')
+    list_display = ('id', 'class_instance__name', 'lesson_date')
+    search_fields = ('class_instance__name', 'class_instance__label')
 
 admin.site.register(Class, ClassAdmin)    
 admin.site.register(StudentEnrolment, StudentEnrolmentAdmin)
