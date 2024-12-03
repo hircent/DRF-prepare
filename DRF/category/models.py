@@ -83,7 +83,7 @@ class Grade(models.Model):
     ]
 
     CATEGORY_CHOICES = [
-        ('KIDDOS', 'Kiddos'),
+        ('KIDDO', 'Kiddo'),
         ('KIDS', 'Kids'),
         ('SUPERKIDS', 'Superkids'),
     ]
