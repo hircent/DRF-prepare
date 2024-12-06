@@ -70,13 +70,9 @@ class StudentEnrolment(models.Model):
 
 class ClassLesson(models.Model):
     class_instance      = models.ForeignKey(Class, on_delete=models.CASCADE,related_name='lessons')
+    branch              = models.ForeignKey(Branch,on_delete=models.CASCADE,related_name='class_lessons')
     students            = models.ManyToManyField(StudentEnrolment)
-    # theme               = models.ForeignKey(Theme, on_delete=models.CASCADE)
-    # lesson_number       = models.PositiveIntegerField()  # 1-4 for each theme
-    # lesson_name         = models.CharField(max_length=100)
     lesson_date         = models.DateField()
-    # theme_order         = models.PositiveIntegerField()  # 1-12 for tracking theme sequence
-    # is_completed        = models.BooleanField(default=False)
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
 
@@ -85,7 +81,6 @@ class ClassLesson(models.Model):
         ordering = ['-lesson_date']
         verbose_name = 'Class Lesson'
         verbose_name_plural = 'Class Lessons'
-        unique_together = ['class_instance', 'lesson_date']
 
     def __str__(self):
         return self.lesson_content
