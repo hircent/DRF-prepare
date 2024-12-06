@@ -60,9 +60,15 @@ class Command(BaseCommand):
                     total_imported = 0
 
                     for row in reader:
+                        try:
+                            branch = Branch.objects.get(id=row['branch_id'])
+                        except:
+                            self.logger.error(f"Branch id {row['branch_id']} not found")
+                            continue
+                        
                         student = Students(
                             id = row['id'],
-                            branch = Branch.objects.get(id=row['branch_id']),
+                            branch = branch,
                             parent = User.objects.get(id=row['parent_id']),
                             first_name = row['first_name'],
                             fullname = row['first_name'],

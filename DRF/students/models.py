@@ -36,8 +36,8 @@ from django.core.exceptions import ValidationError
 '''
 # Create your models here.
 class Students(models.Model):
-    GENDER = [('male','Male'),('female','Female')]
-    STATUS = [('in_progress','IN_PROGRESS'),('dropped_out','DROPPED_OUT'),('graduated','GRADUATED')]
+    GENDER = [('Male','Male'),('Female','Female')]
+    STATUS = [('IN_PROGRESS','IN_PROGRESS'),('DROPPED_OUT','DROPPED_OUT'),('GRADUATED','GRADUATED')]
 
     branch                  = models.ForeignKey(Branch,on_delete=models.CASCADE,related_name='students')
     parent                  = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,related_name='children')
@@ -45,12 +45,12 @@ class Students(models.Model):
     last_name               = models.CharField(max_length=50,null=True,blank=True)
     fullname                = models.CharField(max_length=50)
     gender                  = models.CharField(choices=GENDER,max_length=6)
-    dob                     = models.DateField()
+    dob                     = models.DateField(null=True,blank=True)
     school                  = models.CharField(max_length=100)
     deemcee_starting_grade  = models.IntegerField(null=True,blank=True)
     # referral_channel_id     = models.IntegerField()
     # referral                = models.IntegerField()
-    status                  = models.CharField(choices=STATUS,max_length=12,default='in_progress')
+    status                  = models.CharField(choices=STATUS,max_length=12,default='IN_PROGRESS')
 
     enrolment_date          = models.DateField()
     created_at              = models.DateTimeField(auto_now_add=True)

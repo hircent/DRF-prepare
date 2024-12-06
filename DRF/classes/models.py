@@ -45,9 +45,10 @@ class Class(models.Model):
         return self.name
 
 class StudentEnrolment(models.Model):
-    student             = models.ForeignKey(Students, on_delete=models.CASCADE, related_name='enrolments')
     branch              = models.ForeignKey(Branch, on_delete=models.CASCADE)
     grade               = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True)
+    student             = models.ForeignKey(Students, on_delete=models.CASCADE, related_name='enrolments')
+    classroom           = models.ForeignKey(Class, on_delete=models.CASCADE,related_name='enrolments')
     enrollment_date     = models.DateTimeField(auto_now_add=True)
     is_active           = models.BooleanField(default=True)
     remaining_lessons   = models.IntegerField(default=24)

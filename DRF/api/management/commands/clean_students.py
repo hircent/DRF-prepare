@@ -12,7 +12,7 @@ class Command(BaseCommand):
         try:
             df = pd.read_csv(self.BASE_DIR/'csv/students.csv')
 
-            df['status'] = df['status'].str.lower()
+            # df['status'] = df['status'].str.lower()
 
             df.to_csv(self.SAVE_TO,index=False)
         

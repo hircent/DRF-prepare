@@ -5,6 +5,8 @@ class StudentsAdmin(admin.ModelAdmin):
     list_display = ('id', 'fullname', 'first_name', 'branch', 'parent', 'status', 'enrolment_date')
 
     search_fields =('fullname',)
+    
+    list_filter = ('branch',)
 
     # def formfield_for_foreignkey(self, db_field, request, **kwargs):
     #     if db_field.name == 'parent':
