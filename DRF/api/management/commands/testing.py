@@ -9,4 +9,4 @@ class Command(BaseCommand):
     help = 'testing function'
 
     def handle(self, *args, **kwargs):
-        StudentEnrolment.objects.all().delete()
+        Students.objects.all().delete()

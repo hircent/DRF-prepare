@@ -35,10 +35,10 @@ class Command(CustomBaseCommand):
                     for row in reader:
                         
                         try:
-                            branch = Branch.objects.get(id=row['branch'])
-                            student = Students.objects.get(id=row['student'])
-                            classroom = Class.objects.get(id=row['class'])
-                            grade = Grade.objects.get(id=row['grade'])
+                            branch = Branch.objects.get(id=row['branch_id'])
+                            student = Students.objects.get(id=row['student_id'])
+                            classroom = Class.objects.get(id=row['class_id'])
+                            grade = Grade.objects.get(id=row['grade_id'])
                         
                             enrolment = StudentEnrolment(
                                 id = row['id'],
@@ -63,17 +63,17 @@ class Command(CustomBaseCommand):
                         except (Branch.DoesNotExist, Students.DoesNotExist, Class.DoesNotExist, Grade.DoesNotExist) as e:
                             # Log the specific error and re-raise the exception
                             if isinstance(e, Branch.DoesNotExist):
-                                self.logger.error(f"Branch with id {row['branch']} does not exist in the database.")
-                                raise ValueError(f"Branch with id {row['branch']} does not exist.")
+                                self.logger.error(f"Branch with id {row['branch_id']} does not exist in the database.")
+                                raise ValueError(f"Branch with id {row['branch_id']} does not exist.")
                             elif isinstance(e, Students.DoesNotExist):
-                                self.logger.error(f"Student with id {row['student']} does not exist in the database.")
-                                raise ValueError(f"Student with id {row['student']} does not exist.")
+                                self.logger.error(f"Student with id {row['student_id']} does not exist in the database.")
+                                raise ValueError(f"Student with id {row['student_id']} does not exist.")
                             elif isinstance(e, Class.DoesNotExist):
-                                self.logger.error(f"Class with id {row['class']} does not exist in the database.")
-                                raise ValueError(f"Class with id {row['class']} does not exist.")
+                                self.logger.error(f"Class with id {row['class_id']} does not exist in the database.")
+                                continue
                             elif isinstance(e, Grade.DoesNotExist):
-                                self.logger.error(f"Grade with id {row['grade']} does not exist in the database.")
-                                raise ValueError(f"Grade with id {row['grade']} does not exist.")
+                                self.logger.error(f"Grade with id {row['grade_id']} does not exist in the database.")
+                                raise ValueError(f"Grade with id {row['grade_id']} does not exist.")
                             
                     if enrolments:
                         StudentEnrolment.objects.bulk_create(enrolments)
