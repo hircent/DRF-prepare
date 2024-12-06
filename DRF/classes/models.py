@@ -49,7 +49,7 @@ class StudentEnrolment(models.Model):
     grade               = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True)
     student             = models.ForeignKey(Students, on_delete=models.CASCADE, related_name='enrolments')
     classroom           = models.ForeignKey(Class, on_delete=models.CASCADE,related_name='enrolments')
-    enrollment_date     = models.DateTimeField(auto_now_add=True)
+    start_date          = models.DateField()
     is_active           = models.BooleanField(default=True)
     remaining_lessons   = models.IntegerField(default=24)
     freeze_lessons      = models.IntegerField(default=4)

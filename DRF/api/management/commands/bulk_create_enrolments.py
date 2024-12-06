@@ -36,58 +36,50 @@ class Command(CustomBaseCommand):
                         
                         try:
                             branch = Branch.objects.get(id=row['branch'])
-                        except Branch.DoesNotExist:
-                            # If the user doesn't exist, log the error and skip to the next row
-                            self.logger.warning(f"Branch with id {row['branch']} does not exist. Skipping this row.")
-                            continue
-
-                        try:
                             student = Students.objects.get(id=row['student'])
-                        except Students.DoesNotExist:
-                            # If the user doesn't exist, log the error and skip to the next row
-                            self.logger.warning(f"Student with id {row['student']} does not exist. Skipping this row.")
-                            continue
-                        
-                        try:
-                            class_instance = Class.objects.get(id=row['class'])
-                        except Class.DoesNotExist:
-                            # If the user doesn't exist, log the error and skip to the next row
-                            self.logger.warning(f"Class with id {row['class']} does not exist. Skipping this row.")
-                            continue
-                        
-                        try:
+                            classroom = Class.objects.get(id=row['class'])
                             grade = Grade.objects.get(id=row['grade'])
-                        except Grade.DoesNotExist:
-                            # If the user doesn't exist, log the error and skip to the next row
-                            self.logger.warning(f"Grade with id {row['grade']} does not exist. Skipping this row.")
-                            continue
                         
-                        enrolment = StudentEnrolment(
-                            id = row['id'],
-                            student = student,
-                            class_instance = class_instance,
-                            branch = branch,
-                            grade = grade,
-                            enrollment_date = self.parse_date(row['start_date']),
-                            is_active = self.parse_bool(row['is_active']),
-                            remaining_lessons = row['remaining_lessons'],
-                            created_at = self.parse_datetime(row['created_at']),
-                            updated_at = self.parse_datetime(row['updated_at']),
-                        )
+                            enrolment = StudentEnrolment(
+                                id = row['id'],
+                                student = student,
+                                classroom = classroom,
+                                branch = branch,
+                                grade = grade,
+                                start_date = self.parse_date(row['start_date']),
+                                is_active = self.parse_bool(row['is_active']),
+                                created_at = self.parse_datetime(row['created_at']),
+                                updated_at = self.parse_datetime(row['updated_at']),
+                            )
 
-                        enrolments.append(enrolment)
-                        self.stdout.write(self.style.SUCCESS(f"Enrolment with student id:{row['student']} has appended at time {datetime.now()}"))
+                            enrolments.append(enrolment)
+                            self.stdout.write(self.style.SUCCESS(f"Enrolment with id:{row['id']} has appended at time {datetime.now()}"))
 
-                        if len(enrolments)>= batch_size:
-                            StudentEnrolment.objects.bulk_create(enrolments)
-                            total_imported += len(enrolments)
-                            self.logger.info(f"Imported {len(enrolments)} enrolments. Total: {total_imported}")
-                            enrolments = []
+                            if len(enrolments)>= batch_size:
+                                StudentEnrolment.objects.bulk_create(enrolments)
+                                total_imported += len(enrolments)
+                                self.logger.info(f"Imported {len(enrolments)} enrolments. Total: {total_imported}")
+                                enrolments = []
+                        except (Branch.DoesNotExist, Students.DoesNotExist, Class.DoesNotExist, Grade.DoesNotExist) as e:
+                            # Log the specific error and re-raise the exception
+                            if isinstance(e, Branch.DoesNotExist):
+                                self.logger.error(f"Branch with id {row['branch']} does not exist in the database.")
+                                raise ValueError(f"Branch with id {row['branch']} does not exist.")
+                            elif isinstance(e, Students.DoesNotExist):
+                                self.logger.error(f"Student with id {row['student']} does not exist in the database.")
+                                raise ValueError(f"Student with id {row['student']} does not exist.")
+                            elif isinstance(e, Class.DoesNotExist):
+                                self.logger.error(f"Class with id {row['class']} does not exist in the database.")
+                                raise ValueError(f"Class with id {row['class']} does not exist.")
+                            elif isinstance(e, Grade.DoesNotExist):
+                                self.logger.error(f"Grade with id {row['grade']} does not exist in the database.")
+                                raise ValueError(f"Grade with id {row['grade']} does not exist.")
                             
                     if enrolments:
                         StudentEnrolment.objects.bulk_create(enrolments)
                         total_imported += len(enrolments)
                         self.logger.info(f"Imported final batch of {len(enrolments)} enrolments. Total: {total_imported}")
+                    
                 
                 self.reset_id("student_enrolments")
                 end_time = datetime.now()
