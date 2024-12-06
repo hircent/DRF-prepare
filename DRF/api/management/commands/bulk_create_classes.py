@@ -38,29 +38,22 @@ class Command(CustomBaseCommand):
                         except Branch.DoesNotExist:
                             # If the user doesn't exist, log the error and skip to the next row
                             self.logger.warning(f"Branch with id {row['branch']} does not exist. Skipping this row.")
-                            continue
-                        
-                        try:
-                            category = Category.objects.get(id=row['category'])
-                        except Category.DoesNotExist:
-                            # If the user doesn't exist, log the error and skip to the next row
-                            self.logger.warning(f"Category with id {row['category']} does not exist. Skipping this row.")
-                            continue
+    
                         cl = Class(
-                            id = row['id'],
-                            branch = branch,
-                            category = category,
-                            name = row['label'],
-                            label = row['label'],
-                            start_time = self.parse_time(row['start_time']),
-                            end_time = self.parse_time(row['end_time']),
-                            day = row['day'],
-                            created_at = self.parse_datetime(row['created_at']),
-                            updated_at = self.parse_datetime(row['updated_at']),
+                            id          = row['id'],
+                            branch      = branch,
+                            name        = self.get_category(index=int(row['category'])),
+                            label       = row['label'],
+                            start_date  = self.parse_date(row['commencement_date']),
+                            start_time  = self.parse_time(row['start_time']),
+                            end_time    = self.parse_time(row['end_time']),
+                            day         = row['day'],
+                            created_at  = self.parse_datetime(row['created_at']),
+                            updated_at  = self.parse_datetime(row['updated_at']),
                         ) 
                         
                         classes.append(cl)
-                        self.stdout.write(self.style.SUCCESS(f"Class with branch id:{row['branch']} has appended at time {datetime.now()}"))
+                        self.stdout.write(self.style.SUCCESS(f"Class with id:{row['id']} has appended at time {datetime.now()}"))
                         
                         if len(classes)>= batch_size:
                             Class.objects.bulk_create(classes)
@@ -86,3 +79,12 @@ class Command(CustomBaseCommand):
             self.logger.error(f"Time taken : {time_taken}")
             
             raise
+        
+    def get_category(self,index):
+        cate = {
+            1:"Kiddo",
+            2:"Kids",
+            3:"Superkids"
+        }
+        
+        return cate[index]

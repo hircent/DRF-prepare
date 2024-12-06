@@ -20,19 +20,18 @@ class Class(models.Model):
     ]
     
     CATEGORY_CHOICES = [
-        ('KIDDO', 'Kiddo'),
-        ('KIDS', 'Kids'),
-        ('SUPERKIDS', 'Superkids'),
+        ('Kiddo', 'Kiddo'),
+        ('Kids', 'Kids'),
+        ('Superkids', 'Superkids'),
     ]
     
     branch              = models.ForeignKey(Branch, on_delete=models.CASCADE)
     name                = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
-    label               = models.CharField(max_length=255)
-    description         = models.TextField(blank=True, null=True)
+    label               = models.CharField(max_length=100)
     start_date          = models.DateField()
     start_time          = models.TimeField()
     end_time            = models.TimeField()
-    day                 = models.CharField(max_length=255, choices=DAY_CHOICES)
+    day                 = models.CharField(max_length=50, choices=DAY_CHOICES)
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
     
