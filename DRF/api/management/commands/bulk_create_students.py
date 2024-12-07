@@ -64,7 +64,7 @@ class Command(BaseCommand):
                             branch = Branch.objects.get(id=row['branch_id'])
                         except:
                             self.logger.error(f"Branch id {row['branch_id']} not found")
-                            continue
+                            raise ValueError(f"Branch id {row['branch_id']} not found")
                         
                         student = Students(
                             id = row['id'],

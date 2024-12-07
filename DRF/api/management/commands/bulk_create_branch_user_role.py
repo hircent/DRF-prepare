@@ -60,9 +60,15 @@ class Command(BaseCommand):
                     total_imported = 0
 
                     for row in reader:
+                        
+                        try:
+                            branch = Branch.objects.get(id=row['branch_id'])
+                        except:
+                            self.logger.error(f"Branch id {row['branch_id']} not found")
+                            continue
                         ubr = UserBranchRole(
                             user = User.objects.get(id=row['user_id']),
-                            branch = Branch.objects.get(id=row['branch_id']),
+                            branch = branch,
                             role = Role.objects.get(id=row['role_id'])
                         )
 
