@@ -1,5 +1,5 @@
 from api.baseCommand import CustomBaseCommand
-from branches.models import BranchAddress
+from branches.models import BranchAddress,Branch
 from django.db import transaction
 from csv import DictReader
 from datetime import datetime
@@ -27,8 +27,13 @@ class Command(CustomBaseCommand):
                     total_imported = 0
                     
                     for row in reader:
+                        try:
+                            branch = Branch.objects.get(id=row['branch_id'])
+                        except Branch.DoesNotExist:
+                            self.logger.warning(f"Branch with id {row['branch_id']} does not exist. Skipping this row.")
+                            raise ValueError(f"Branch with id {row['branch_id']} does not exist.")
                         ba = BranchAddress(
-                            branch_id = row['branch_id'],
+                            branch = branch,
                             address_line_1 = row['address_line_1'],
                             address_line_2 = row['address_line_2'],
                             address_line_3 = row['address_line_3'],
