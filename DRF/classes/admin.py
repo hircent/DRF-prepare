@@ -7,8 +7,9 @@ class ClassAdmin(admin.ModelAdmin):
     list_filter = ('branch',)
     
 class StudentEnrolmentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'student',  'branch', 'start_date', 'is_active', 'remaining_lessons')
+    list_display = ('id', 'student',  'branch', 'start_date', 'status', 'remaining_lessons')
     search_fields = ('student__name', )
+    list_filter = ('status','branch',)
 
 class ClassLessonAdmin(admin.ModelAdmin):
     list_display = ('id', 'class_instance__name', 'lesson_date')

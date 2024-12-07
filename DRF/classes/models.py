@@ -45,12 +45,18 @@ class Class(models.Model):
         return self.name
 
 class StudentEnrolment(models.Model):
+    ENROLMENT_STATUS_CHOICES = [
+        ('IN_PROGRESS', 'In Progress'),
+        ('COMPLETED', 'Completed'),
+        ('DROPPED_OUT', 'Dropped Out'),
+    ]
     branch              = models.ForeignKey(Branch, on_delete=models.CASCADE)
     grade               = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True)
     student             = models.ForeignKey(Students, on_delete=models.CASCADE, related_name='enrolments')
     classroom           = models.ForeignKey(Class, on_delete=models.CASCADE,related_name='enrolments')
     start_date          = models.DateField()
     is_active           = models.BooleanField(default=True)
+    status              = models.CharField(max_length=20, choices=ENROLMENT_STATUS_CHOICES,default='IN_PROGRESS')
     remaining_lessons   = models.IntegerField(default=24)
     freeze_lessons      = models.IntegerField(default=4)
     created_at          = models.DateTimeField(auto_now_add=True)

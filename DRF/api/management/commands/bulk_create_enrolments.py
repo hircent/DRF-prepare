@@ -41,15 +41,16 @@ class Command(CustomBaseCommand):
                             grade = Grade.objects.get(id=row['grade_id'])
                         
                             enrolment = StudentEnrolment(
-                                id = row['id'],
-                                student = student,
-                                classroom = classroom,
-                                branch = branch,
-                                grade = grade,
-                                start_date = self.parse_date(row['start_date']),
-                                is_active = self.parse_bool(row['is_active']),
-                                created_at = self.parse_datetime(row['created_at']),
-                                updated_at = self.parse_datetime(row['updated_at']),
+                                id          = row['id'],
+                                student     = student,
+                                classroom   = classroom,
+                                branch      = branch,
+                                grade       = grade,
+                                status      = row['status'],
+                                start_date  = self.parse_date(row['start_date']),
+                                is_active   = self.parse_bool(row['is_active']),
+                                created_at  = self.parse_datetime(row['created_at']),
+                                updated_at  = self.parse_datetime(row['updated_at']),
                             )
 
                             enrolments.append(enrolment)
