@@ -3,6 +3,8 @@ from .models import Class,StudentEnrolment
 from accounts.models import User
 from branches.models import Branch
 from category.models import Category
+
+from django.db.models import F,Value
        
 class StudentEnrolmentListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,13 +14,40 @@ class StudentEnrolmentListSerializer(serializers.ModelSerializer):
 class StudentEnrolmentListForClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentEnrolment
-        fields = ['student','enrollment_date','is_active','remaining_lessons']
+        fields = ['student','is_active','remaining_lessons']
         
 class ClassListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Class
         fields = ['id','branch','name','label','start_date','start_time','end_time','day']
         
+class ClassEnrolmentListSerializer(serializers.ModelSerializer):
+    students = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Class
+        fields = ['id','branch','name','label','start_time','end_time','day','students']
+
+    def get_students(self, obj):
+        check_after_week = self.context.get('check_after_week')
+
+        enrolments = obj.enrolments.annotate(
+            future_remaining_lessons= F('remaining_lessons') - Value(check_after_week)
+        ).filter(
+            future_remaining_lessons__gt=13
+        )
+
+        # for enrolment in enrolments:
+        #     print("=======================================================")
+        #     print(enrolment.student.fullname)
+        #     print(enrolment.remaining_lessons)
+        #     print(enrolment.future_remaining_lessons)
+        #     print("=======================================================")
+
+        serializer = StudentEnrolmentListForClassSerializer(enrolments, many=True)
+
+
+        return serializer.data
 
 class ClassCreateUpdateSerializer(serializers.ModelSerializer):
     branch = serializers.PrimaryKeyRelatedField(

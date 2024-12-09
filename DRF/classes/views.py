@@ -1,3 +1,4 @@
+import datetime
 from rest_framework.generics import CreateAPIView, UpdateAPIView, RetrieveAPIView, DestroyAPIView
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
@@ -6,10 +7,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from api.global_customViews import BaseCustomListAPIView ,GenericViewWithExtractJWTInfo, BaseCustomClassView
 from accounts.permission import IsManagerOrHigher
+from calendars.models import Calendar
 from django.db.models import Q
 
 from .models import Class,StudentEnrolment
-from .serializers import ClassListSerializer,StudentEnrolmentListSerializer,ClassCreateUpdateSerializer
+from .serializers import (
+    ClassListSerializer,StudentEnrolmentListSerializer,ClassCreateUpdateSerializer,ClassEnrolmentListSerializer
+)
 
 class ClassListView(BaseCustomListAPIView):
     serializer_class = ClassListSerializer
@@ -120,3 +124,48 @@ class StudentEnrolmentListView(BaseCustomListAPIView):
     queryset = StudentEnrolment.objects.all()
     serializer_class = StudentEnrolmentListSerializer
     permission_classes = [IsAuthenticated]
+
+class ClassEnrolmentListByDateView(BaseCustomListAPIView):
+    serializer_class = ClassEnrolmentListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        branch_id = self.request.headers.get('BranchId')
+
+        if not branch_id:
+            raise PermissionDenied("Missing branch id.")
+
+        user_branch_roles = self.extract_jwt_info("branch_role")
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+
+        date = self.request.data.get('date')
+        if not date:
+            raise PermissionDenied("Missing date.")
+        
+        date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        
+        has_event = Calendar.objects.filter(start_datetime__date=date,branch__id=branch_id).exists()
+
+        all_classes = Class.objects.filter(day=date.strftime("%A")).order_by('start_time')
+        
+        return all_classes if not has_event else []
+        
+    
+    def get_serializer_context(self):
+        context =  super().get_serializer_context()
+        checkDate = self.request.data.get('date')
+
+        check_after_week = self._calculate_after_week(checkDate)
+
+        context['check_after_week'] = check_after_week
+        return context
+    
+    def _calculate_after_week(self,checkDate):
+        today = datetime.date.today()
+        date = datetime.datetime.strptime(checkDate, '%Y-%m-%d').date()
+
+        days = (date - today).days
+
+        check_after_week = days // 7
+
+        return check_after_week
