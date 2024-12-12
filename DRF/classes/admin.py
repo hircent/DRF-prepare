@@ -12,8 +12,9 @@ class StudentEnrolmentAdmin(admin.ModelAdmin):
     list_filter = ('status','branch','student__fullname',)
 
 class ClassLessonAdmin(admin.ModelAdmin):
-    list_display = ('id', 'class_instance__name', 'lesson_date')
-    search_fields = ('class_instance__name', 'class_instance__label')
+    list_display = ('id', 'class_instance__name','theme_lesson','status', 'date')
+    search_fields = ('class_instance__name', 'class_instance__label','status')
+    list_filter = ('status','branch',)
 
 admin.site.register(Class, ClassAdmin)    
 admin.site.register(StudentEnrolment, StudentEnrolmentAdmin)

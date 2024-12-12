@@ -76,21 +76,31 @@ class StudentEnrolment(models.Model):
         super().save(*args, **kwargs)
 
 class ClassLesson(models.Model):
-    class_instance      = models.ForeignKey(Class, on_delete=models.CASCADE,related_name='lessons')
+    LESSON_STATUS_CHOICES = [
+        ('PENDING', 'Pending'),
+        ('COMPLETED', 'Completed')
+    ]
+
     branch              = models.ForeignKey(Branch,on_delete=models.CASCADE,related_name='class_lessons')
-    students            = models.ManyToManyField(StudentEnrolment)
-    lesson_date         = models.DateField()
+    class_instance      = models.ForeignKey(Class, on_delete=models.CASCADE,related_name='lessons')
+    teacher             = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,related_name='teacher_class_lessons')
+    co_teacher          = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,related_name='co_teacher_class_lessons')
+    theme_lesson        = models.ForeignKey(ThemeLesson,on_delete=models.SET_NULL, null=True,related_name='class_theme_lessons')
+    date                = models.DateField()
+    start_datetime      = models.DateTimeField(null=True)
+    end_datetime        = models.DateTimeField(null=True)
+    status              = models.CharField(max_length=10, choices=LESSON_STATUS_CHOICES,default='PENDING')
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'class_lessons'
-        ordering = ['-lesson_date']
+        ordering = ['-date']
         verbose_name = 'Class Lesson'
         verbose_name_plural = 'Class Lessons'
 
     def __str__(self):
-        return self.lesson_content
+        return self.class_instance.name + "-" + self.date.strftime("%d-%m-%Y")
 
 # class Attendance(models.Model):
 #     ATTENDANCE_CHOICES = [
