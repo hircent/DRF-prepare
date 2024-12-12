@@ -2,10 +2,27 @@
 ### Step by Step when migrations
 '''
 
-1.python manage.py create_role
-2.python manage.py create_branch_grade
-3.python manage.py clean_users_role12345
-4.python manage.py import_branch
-5.python manage.py import_users
+python manage.py create_role
+python manage.py create_branch_grade
+python manage.py import_branch
+python manage.py bulk_import_branch_addresses
+python manage.py bulk_create_calendar
+
+python manage.py bulk_create_grade
+python manage.py bulk_create_categories
+python manage.py bulk_create_theme
+python manage.py bulk_create_theme_lessons
+
+python manage.py bulk_create_users
+python manage.py bulk_create_user_address
+python manage.py bulk_create_userprofile
+
+python manage.py bulk_create_branch_user_role
+
+python manage.py bulk_create_classes
+python manage.py bulk_create_students
+python manage.py bulk_create_enrolments
+
+python manage.py createsuperuser
 
 '''
