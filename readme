@@ -10,7 +10,9 @@ python manage.py bulk_create_calendar
 
 python manage.py bulk_create_grade
 python manage.py bulk_create_categories
+python manage.py bulk_create_categories_2023
 python manage.py bulk_create_theme
+python manage.py bulk_create_theme_2023
 python manage.py bulk_create_theme_lessons
 
 python manage.py bulk_create_users
