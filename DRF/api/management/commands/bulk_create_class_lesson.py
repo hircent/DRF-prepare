@@ -6,7 +6,7 @@ from datetime import datetime
 from csv import DictReader
 from classes.models import Class,ClassLesson
 from branches.models import Branch
-from category.models import Category
+from category.models import Category,ThemeLesson
 
 class Command(CustomBaseCommand):
     help = 'Import class_lessons'
@@ -37,9 +37,10 @@ class Command(CustomBaseCommand):
                         try:
                             branch = Branch.objects.get(id=row['branch_id'])
                             class_instance = Class.objects.get(id=row['class_id'])
+                            theme_lesson = ThemeLesson.objects.get(id=row['lesson_id'])
                             teacher = User.objects.get(id=row['teacher_id']) if row['teacher_id'] != '\\N' else None
                             co_teacher = User.objects.get(id=row['co_teacher_id']) if row['co_teacher_id'] != '\\N' else None
-                        except (Branch.DoesNotExist,Class.DoesNotExist,User.DoesNotExist) as e:
+                        except (Branch.DoesNotExist,Class.DoesNotExist,User.DoesNotExist,ThemeLesson.DoesNotExist) as e:
                             raise ImportError(f"Error while importing class_lessons: {str(e)} {row}")
     
                         cl = ClassLesson(
@@ -48,11 +49,11 @@ class Command(CustomBaseCommand):
                             class_instance      = class_instance,
                             teacher             = teacher,
                             co_teacher          = co_teacher,
-                            theme_lesson        = row['display_name'],
+                            theme_lesson        = theme_lesson,
                             date                = self.parse_date(row['date']),
                             start_datetime      = self.parse_datetime(row['actual_start_datetime']) if row['actual_start_datetime'] != '\\N' else None,
                             end_datetime        = self.parse_datetime(row['actual_end_datetime']) if row['actual_end_datetime'] != '\\N' else None,
-                            status              = row['status'],
+                            status              = 'COMPLETED',
                             created_at          = self.parse_datetime(row['created_at']),
                             updated_at          = self.parse_datetime(row['updated_at']),
                         )
