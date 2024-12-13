@@ -5,13 +5,14 @@ from calendars.models import CalendarThemeLesson
 from classes.models import Class,StudentEnrolment,ClassLesson
 from students.models import Students
 from accounts.models import User
+from category.models import Category,ThemeLesson
 import datetime
 from django.db import connection
 class Command(BaseCommand):
     help = 'testing function'
 
     def handle(self, *args, **kwargs):
-        ClassLesson.objects.all().delete()
+        ThemeLesson.objects.all().delete()
         checkdate = datetime.date(2024,12,23)
 
         today = datetime.date.today()
