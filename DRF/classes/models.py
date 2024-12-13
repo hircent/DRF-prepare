@@ -120,7 +120,7 @@ class StudentAttendance(models.Model):
         ('Sunday', 'Sunday'),
     ]
     
-    enrollment      = models.ForeignKey(StudentEnrolment, on_delete=models.CASCADE)
+    enrollment      = models.ForeignKey(StudentEnrolment, on_delete=models.CASCADE,related_name='attendances')
     branch          = models.ForeignKey(Branch, on_delete=models.SET_NULL,null=True)
     class_lesson    = models.ForeignKey(ClassLesson, on_delete=models.CASCADE,related_name='attendances')
     date            = models.DateField()

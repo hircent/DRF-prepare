@@ -12,8 +12,12 @@ class Command(BaseCommand):
     help = 'testing function'
 
     def handle(self, *args, **kwargs):
-        s = StudentAttendance.objects.all().delete()
-        print(s)
+        s = StudentAttendance.objects.get(id=223597)
+
+        enrolment = StudentEnrolment.objects.get(id=4310)
+
+        print(enrolment.attendances.all().count())
+
         # checkdate = datetime.date(2024,12,23)
 
         # today = datetime.date.today()
