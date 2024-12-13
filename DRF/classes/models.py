@@ -102,51 +102,46 @@ class ClassLesson(models.Model):
     def __str__(self):
         return self.theme_lesson.name + "-" + self.theme_lesson.theme.category.label
 
-# class Attendance(models.Model):
-#     ATTENDANCE_CHOICES = [
-#         ('ATTENDED', 'Attended'),
-#         ('ABSENT', 'Absent'),
-#         ('FREEZED', 'Freezed'),
-#     ]
+class StudentAttendance(models.Model):
+    ATTENDANCE_CHOICES = [
+        ('ATTENDED', 'Attended'),
+        ('ABSENT', 'Absent'),
+        ('FREEZED', 'Freezed'),
+        ('REPLACED', 'Replaced'),
+    ]
+
+    DAY_CHOICES = [
+        ('Monday', 'Monday'),
+        ('Tuesday', 'Tuesday'),
+        ('Wednesday', 'Wednesday'),
+        ('Thursday', 'Thursday'),
+        ('Friday', 'Friday'),
+        ('Saturday', 'Saturday'),
+        ('Sunday', 'Sunday'),
+    ]
     
-#     enrollment  = models.ForeignKey(StudentEnrolment, on_delete=models.CASCADE)
-#     branch      = models.ForeignKey(Branch, on_delete=models.CASCADE)
-#     teacher     = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-#     date        = models.DateField()
-#     status      = models.CharField(max_length=10, choices=ATTENDANCE_CHOICES)
-#     notes       = models.TextField(blank=True, null=True)
-#     created_at  = models.DateTimeField(auto_now_add=True)
+    enrollment      = models.ForeignKey(StudentEnrolment, on_delete=models.CASCADE)
+    branch          = models.ForeignKey(Branch, on_delete=models.SET_NULL,null=True)
+    class_lesson    = models.ForeignKey(ClassLesson, on_delete=models.CASCADE,related_name='attendances')
+    date            = models.DateField()
+    day             = models.CharField(max_length=50, choices=DAY_CHOICES)
+    start_time      = models.TimeField()
+    end_time        = models.TimeField()
+    has_attended    = models.BooleanField(default=False)
+    status          = models.CharField(max_length=10, choices=ATTENDANCE_CHOICES)
+    created_at      = models.DateTimeField(auto_now_add=True)
+    updated_at      = models.DateTimeField(auto_now=True)
 
-#     class Meta:
-#         unique_together = ['enrollment', 'date']
-#         verbose_name = 'Attendance'
-#         verbose_name_plural = 'Attendances'
+    class Meta:
+        db_table = 'student_attendances'
+        unique_together = ['enrollment', 'class_lesson' ,'date']
+        verbose_name = 'Student Attendance'
+        verbose_name_plural = 'Student Attendances'
 
-#     def save(self, *args, **kwargs):
-#         # Check if this is a new attendance record
-#         is_new = self.pk is None
-#         old_status = None
-        
-#         if not is_new:
-#             # Get the old status before saving
-#             old_status = Attendance.objects.get(pk=self.pk).status
-
-#         super().save(*args, **kwargs)
-
-#         if is_new:
-#             # New attendance record
-#             if self.status in ['PRESENT', 'ABSENT']:
-#                 self.enrollment.remaining_lessons -= 1
-#             elif self.status == 'EXCUSED':
-#                 self.enrollment.remaining_lessons += 1
-#         else:
-#             # Status change on existing record
-#             if old_status != self.status:
-#                 if old_status in ['PRESENT', 'ABSENT'] and self.status == 'EXCUSED':
-#                     # Changed from PRESENT/ABSENT to EXCUSED, add back two lessons
-#                     self.enrollment.remaining_lessons += 2
-#                 elif old_status == 'EXCUSED' and self.status in ['PRESENT', 'ABSENT']:
-#                     # Changed from EXCUSED to PRESENT/ABSENT, remove two lessons
-#                     self.enrollment.remaining_lessons -= 2
-
-#         self.enrollment.save()
+    def __str__(self) -> str:
+        return self.enrollment.student.fullname + "'s attendance"
+    
+    def save(self, *args, **kwargs):
+        if not self.day:
+            self.day = self.date.strftime("%A")
+        super().save(*args, **kwargs)

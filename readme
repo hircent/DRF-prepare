@@ -25,6 +25,9 @@ python manage.py bulk_create_classes
 python manage.py bulk_create_students
 python manage.py bulk_create_enrolments
 
+python manage.py bulk_create_class_lesson
+python manage.py bulk_create_student_lessons
+
 python manage.py createsuperuser
 
 '''

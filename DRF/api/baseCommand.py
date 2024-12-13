@@ -60,6 +60,14 @@ class CustomBaseCommand(BaseCommand):
     @staticmethod
     def parse_time(value):
         return make_aware(datetime.strptime(value, "%H:%M:%S"))
+    
+    @staticmethod
+    def parse_datetime_to_date(value):
+        return datetime.strptime(value, "%Y-%m-%d %H:%M:%S").date()
+    
+    @staticmethod
+    def parse_date_to_time(value):
+        return datetime.strptime(value, "%Y-%m-%d %H:%M:%S").time()
 
     def reset_id(self,table):
         try:
@@ -68,3 +76,4 @@ class CustomBaseCommand(BaseCommand):
                 self.logger.info(f"Pg_get_serial_sequence for {table} success")
         except Exception as e:
             self.logger.error("Pg_get_serial_sequence error")
+
