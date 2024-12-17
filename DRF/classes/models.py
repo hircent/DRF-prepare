@@ -50,7 +50,7 @@ class StudentEnrolment(models.Model):
         ('COMPLETED', 'Completed'),
         ('DROPPED_OUT', 'Dropped Out'),
     ]
-    branch              = models.ForeignKey(Branch, on_delete=models.CASCADE)
+    branch              = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='enrolments')
     grade               = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True)
     student             = models.ForeignKey(Students, on_delete=models.CASCADE, related_name='enrolments')
     classroom           = models.ForeignKey(Class, on_delete=models.CASCADE,related_name='enrolments')

@@ -12,11 +12,10 @@ class Command(BaseCommand):
     help = 'testing function'
 
     def handle(self, *args, **kwargs):
-        s = StudentAttendance.objects.get(id=223597)
+        enrolments = ClassLesson.objects.get(id=94550)
 
-        enrolment = StudentEnrolment.objects.get(id=4310)
-
-        print(enrolment.attendances.all().count())
+        # check if the enrolment is completed, bulk_update needed
+        print(enrolments.attendances.all())
 
         # checkdate = datetime.date(2024,12,23)
 

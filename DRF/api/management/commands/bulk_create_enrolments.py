@@ -46,7 +46,7 @@ class Command(CustomBaseCommand):
                                 classroom   = classroom,
                                 branch      = branch,
                                 grade       = grade,
-                                status      = row['status'],
+                                status      = self._get_and_update_student_status(row['status'],student),
                                 start_date  = self.parse_date(row['start_date']),
                                 is_active   = self.parse_bool(row['is_active']),
                                 created_at  = self.parse_datetime(row['created_at']),
@@ -95,3 +95,15 @@ class Command(CustomBaseCommand):
             self.logger.error(f"Time taken : {time_taken}")
             
             raise
+
+    def _get_and_update_student_status(self,status,student):
+        if status == 'GRADUATED':
+            student.status = 'GRADUATED'
+            student.save()
+            return 'COMPLETED'
+        elif status == 'DROPPED_OUT':
+            student.status = 'DROPPED_OUT'
+            student.save()
+            return 'IN_PROGRESS'
+        else:
+            return status
