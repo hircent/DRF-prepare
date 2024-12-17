@@ -97,6 +97,7 @@ class Command(CustomBaseCommand):
             raise
 
     def _get_and_update_student_status(self,status,student):
+
         if status == 'GRADUATED':
             student.status = 'GRADUATED'
             student.save()
@@ -105,5 +106,5 @@ class Command(CustomBaseCommand):
             student.status = 'DROPPED_OUT'
             student.save()
             return 'IN_PROGRESS'
-        else:
-            return status
+        
+        return status
