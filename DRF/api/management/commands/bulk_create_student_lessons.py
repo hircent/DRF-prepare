@@ -59,7 +59,7 @@ class Command(CustomBaseCommand):
                         ) 
                         
                         student_attendances_arr.append(student_att)
-                        self.stdout.write(self.style.SUCCESS(f"Student_attendance with id:{row['id']} has appended at time {datetime.now()}"))
+                        self.stdout.write(self.style.SUCCESS(f"Student_attendance with id:{row['id']} at branch: {row['branch_id']} has appended at time {datetime.now()}"))
                         
                         if len(student_attendances_arr)>= batch_size:
                             StudentAttendance.objects.bulk_create(student_attendances_arr)
