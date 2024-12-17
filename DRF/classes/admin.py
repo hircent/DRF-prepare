@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Class,StudentEnrolment,ClassLesson,StudentAttendance
+from .models import Class,StudentEnrolment,ClassLesson,StudentAttendance,EnrolmentExtension
 
 class ClassAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'label', 'start_time', 'end_time', 'day', 'branch')
@@ -21,8 +21,14 @@ class StudentAttendanceAdmin(admin.ModelAdmin):
     search_fields = ('enrollment__student__fullname', 'class_lesson__theme_lesson__theme__name')
     list_filter = ('status','branch','enrollment__student__fullname','class_lesson__theme_lesson__theme__name')
 
+class EnrolmentExtensionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'enrolment','enrolment__id', 'branch', 'start_date')
+    search_fields = ('enrolment__student__fullname',)
+    list_filter = ('branch','enrolment__student__fullname',)
+
 admin.site.register(Class, ClassAdmin)    
 admin.site.register(StudentEnrolment, StudentEnrolmentAdmin)
 admin.site.register(ClassLesson, ClassLessonAdmin)
 admin.site.register(StudentAttendance, StudentAttendanceAdmin)
+admin.site.register(EnrolmentExtension, EnrolmentExtensionAdmin)
 # Register your models here.

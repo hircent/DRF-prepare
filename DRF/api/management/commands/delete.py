@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.db.models import Q,F ,Value
 from branches.models import Branch
-from classes.models import Class,StudentEnrolment,ClassLesson,StudentAttendance
+from classes.models import Class,StudentEnrolment,ClassLesson,StudentAttendance,EnrolmentExtension
 from students.models import Students
 
 
@@ -9,8 +9,8 @@ class Command(BaseCommand):
     help = 'Update all branch enrolments'
 
     def handle(self, *args, **kwargs):
-        self.delete_enrolments()
-        self.delete_attendances()
+        # self.delete_enrolments()
+        self.delete_enrolment_extensions()
 
     def delete_enrolments(self):
         StudentEnrolment.objects.all().delete()
@@ -31,3 +31,7 @@ class Command(BaseCommand):
     def delete_branches(self):
         Branch.objects.all().delete()
         print('branches deleted')
+
+    def delete_enrolment_extensions(self):
+        EnrolmentExtension.objects.all().delete()
+        print('enrolment extensions deleted')

@@ -145,3 +145,19 @@ class StudentAttendance(models.Model):
         if not self.day:
             self.day = self.date.strftime("%A")
         super().save(*args, **kwargs)
+
+
+class EnrolmentExtension(models.Model):
+    enrolment   = models.ForeignKey(StudentEnrolment, on_delete=models.CASCADE,related_name='extensions')
+    branch      = models.ForeignKey(Branch, on_delete=models.SET_NULL,null=True,related_name='enrolment_extensions')
+    start_date  = models.DateField()
+    created_at  = models.DateTimeField(auto_now_add=True)
+    updated_at  = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'enrolment_extensions'
+        verbose_name = 'Enrolment Extension'
+        verbose_name_plural = 'Enrolment Extensions'
+
+    def __str__(self) -> str:
+        return self.enrolment.student.fullname + "'s enrolment extension"

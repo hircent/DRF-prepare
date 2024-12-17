@@ -28,6 +28,9 @@ python manage.py bulk_create_enrolments
 python manage.py bulk_create_class_lesson
 python manage.py bulk_create_student_lessons
 
-python manage.py createsuperuser
+python manage.py bulk_create_enrolment_extensions
+
+python manage.py createsuperuser 
+// Add role to new superuser
 
 '''
