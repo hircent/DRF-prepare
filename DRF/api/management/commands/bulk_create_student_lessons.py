@@ -91,5 +91,7 @@ class Command(CustomBaseCommand):
             return 'ABSENT'
         elif status == 'COMPLETED':
             return 'ATTENDED'
+        elif status == 'IN_PROGRESS':
+            return 'ATTENDED'
         return status
     

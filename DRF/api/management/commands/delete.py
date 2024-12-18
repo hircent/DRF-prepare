@@ -9,8 +9,9 @@ class Command(BaseCommand):
     help = 'Update all branch enrolments'
 
     def handle(self, *args, **kwargs):
-        # self.delete_enrolments()
+        self.delete_enrolments()
         self.delete_enrolment_extensions()
+        self.delete_attendances()
 
     def delete_enrolments(self):
         StudentEnrolment.objects.all().delete()
@@ -35,3 +36,7 @@ class Command(BaseCommand):
     def delete_enrolment_extensions(self):
         EnrolmentExtension.objects.all().delete()
         print('enrolment extensions deleted')
+
+    def delete_class_lessons(self):
+        ClassLesson.objects.all().delete()
+        print('class_lessons deleted')

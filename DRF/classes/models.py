@@ -134,7 +134,7 @@ class StudentAttendance(models.Model):
 
     class Meta:
         db_table = 'student_attendances'
-        unique_together = ['enrollment', 'class_lesson' ,'date']
+        # unique_together = ['enrollment', 'class_lesson' ,'date']
         verbose_name = 'Student Attendance'
         verbose_name_plural = 'Student Attendances'
 

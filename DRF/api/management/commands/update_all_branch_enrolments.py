@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.db.models import Q,F ,Value
 from branches.models import Branch
-from classes.models import Class,StudentEnrolment,ClassLesson,StudentAttendance
+from classes.models import Class,StudentEnrolment,ClassLesson,StudentAttendance,EnrolmentExtension
 from students.models import Students
 
 
@@ -52,8 +52,8 @@ class Command(BaseCommand):
             elif e.status == 'DROPPED_OUT':
                 e.is_active = False
 
-        try:
-            StudentEnrolment.objects.bulk_update(enrolments,['remaining_lessons','is_active','status'])
-            print('bulk update success')
-        except:
-            print('bulk update failed')
+        # try:
+        #     StudentEnrolment.objects.bulk_update(enrolments,['remaining_lessons','is_active','status'])
+        #     print(f"Successfully updated for branch: {enrolments[0].branch.id}")
+        # except:
+        #     print(f"Failed to update for branch: {enrolments[0].branch.id}")
