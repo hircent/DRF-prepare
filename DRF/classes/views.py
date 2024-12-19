@@ -154,9 +154,15 @@ class ClassLessonFutureListByDateView(BaseCustomListNoPaginationAPIView):
         has_event = Calendar.objects.filter(start_datetime__date=date,branch__id=branch_id).exists()
 
         all_classes = Class.objects.filter(branch__id=branch_id,day=date.strftime("%A")).order_by('start_time')
-        
-        return all_classes if not has_event else []
-        
+
+        if is_superadmin:
+            return all_classes if not has_event else []
+        else:
+            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+                
+                raise PermissionDenied("You don't have access to this branch or role.")
+            else:
+                return all_classes if not has_event else []
     
     def get_serializer_context(self):
         context =  super().get_serializer_context()
@@ -209,7 +215,15 @@ class ClassLessonPastListByDateView(BaseCustomListNoPaginationAPIView):
         
         all_classes = ClassLesson.objects.filter(branch__id=branch_id,date=date).order_by('start_datetime')
         
-        return all_classes
+        if is_superadmin:
+            return all_classes
+        else:
+            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+                
+                raise PermissionDenied("You don't have access to this branch or role.")
+            else:
+                return all_classes
+    
     
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
