@@ -17,7 +17,7 @@ class Command(BaseCommand):
 
     def _branch_enrolments(self,total_branch):
         
-        enrolments = StudentEnrolment.objects.filter(branch__id=9)
+        enrolments = StudentEnrolment.objects.filter(branch__id=2)
 
         self._update_enrolments(enrolments)
 
@@ -59,24 +59,24 @@ class Command(BaseCommand):
         print(f"Freezed_count: {freezed_count}")
         print(f"Attendances after freeze: {attendances_after_freeze}")
 
-        if enrolment.status == 'COMPLETED':
-            enrolment.remaining_lessons = 0
-            enrolment.is_active = False
+        # if enrolment.status == 'COMPLETED':
+        #     enrolment.remaining_lessons = 0
+        #     enrolment.is_active = False
         
-        elif enrolment.status == 'DROPPED_OUT':
-            enrolment.is_active = False
+        # elif enrolment.status == 'DROPPED_OUT':
+        #     enrolment.is_active = False
 
-        elif enrolment.status == 'IN_PROGRESS':
+        # elif enrolment.status == 'IN_PROGRESS':
             
-            if attendances > enrolment.remaining_lessons:
-                enrolment.remaining_lessons = 0
-                enrolment.is_active = False
-                enrolment.status = 'DROPPED_OUT'
-            else:
-                enrolment.remaining_lessons -= attendances
+        #     if attendances > enrolment.remaining_lessons:
+        #         enrolment.remaining_lessons = 0
+        #         enrolment.is_active = False
+        #         enrolment.status = 'DROPPED_OUT'
+        #     else:
+        #         enrolment.remaining_lessons -= attendances
 
-                if enrolment.remaining_lessons <= 0:
-                    enrolment.is_active = False
-                    enrolment.status = 'COMPLETED'
+        #         if enrolment.remaining_lessons <= 0:
+        #             enrolment.is_active = False
+        #             enrolment.status = 'COMPLETED'
 
-        print(f"Remaining lessons now: {enrolment.remaining_lessons}")
+        # print(f"Remaining lessons now: {enrolment.remaining_lessons}")

@@ -12,9 +12,15 @@ class StudentEnrolmentListSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class StudentEnrolmentListForClassSerializer(serializers.ModelSerializer):
+    student = serializers.SerializerMethodField()
+    future_remaining_lessons = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = StudentEnrolment
-        fields = ['student','is_active','remaining_lessons']
+        fields = ['id', 'student','is_active','future_remaining_lessons']
+
+    def get_student(self, obj):
+        return { "id": obj.student.id, "fullname": obj.student.fullname }
         
 class ClassListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,27 +28,21 @@ class ClassListSerializer(serializers.ModelSerializer):
         fields = ['id','branch','name','label','start_date','start_time','end_time','day']
         
 class ClassEnrolmentListSerializer(serializers.ModelSerializer):
-    students = serializers.SerializerMethodField()
+    student_enrolments = serializers.SerializerMethodField()
     
     class Meta:
         model = Class
-        fields = ['id','branch','name','label','start_time','end_time','day','students']
+        fields = ['id','branch','name','label','start_time','end_time','day','student_enrolments']
 
-    def get_students(self, obj):
+    def get_student_enrolments(self, obj):
         check_after_week = self.context.get('check_after_week')
 
         enrolments = obj.enrolments.annotate(
             future_remaining_lessons= F('remaining_lessons') - Value(check_after_week)
         ).filter(
-            future_remaining_lessons__gt=13
+            future_remaining_lessons__gt=0,
+            is_active=True
         )
-
-        # for enrolment in enrolments:
-        #     print("=======================================================")
-        #     print(enrolment.student.fullname)
-        #     print(enrolment.remaining_lessons)
-        #     print(enrolment.future_remaining_lessons)
-        #     print("=======================================================")
 
         serializer = StudentEnrolmentListForClassSerializer(enrolments, many=True)
 

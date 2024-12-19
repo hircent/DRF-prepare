@@ -146,7 +146,7 @@ class ClassEnrolmentListByDateView(BaseCustomListAPIView):
         
         has_event = Calendar.objects.filter(start_datetime__date=date,branch__id=branch_id).exists()
 
-        all_classes = Class.objects.filter(day=date.strftime("%A")).order_by('start_time')
+        all_classes = Class.objects.filter(branch__id=branch_id,day=date.strftime("%A")).order_by('start_time')
         
         return all_classes if not has_event else []
         
