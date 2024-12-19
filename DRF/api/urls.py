@@ -29,7 +29,7 @@ from category.views import (
 
 from classes.views import (
     ClassListView, StudentEnrolmentListView, ClassCreateView, ClassUpdateView,
-    ClassDetailsView, ClassDestroyView, ClassEnrolmentListByDateView,ClassLessonListByDateView
+    ClassDetailsView, ClassDestroyView, ClassLessonListByDateView
 )
 
 from django.urls import path
@@ -102,8 +102,7 @@ urlpatterns = [
     path('class/delete/<int:class_id>', ClassDestroyView.as_view(), name='delete-class'),
     path('student/enrolment/list', StudentEnrolmentListView.as_view(), name='student-enrolment-list'),
 
-    path('class/enrolment/list', ClassEnrolmentListByDateView.as_view(), name='class-enrolment-list-by-date'),
-    path('class/lesson/list', ClassLessonListByDateView.as_view(), name='class-lesson-list-by-date'),
+    path('class/attendance/list', ClassLessonListByDateView.as_view(), name='class-lesson-list-by-date'),
 
     #Others
     path("branch/principals/branch_grade",CombinedPrincipalsAndBranchGradesView.as_view(),name="principal-branch_grade-for-branch"),

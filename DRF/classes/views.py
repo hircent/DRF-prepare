@@ -1,14 +1,20 @@
 import datetime
+from typing import Any
+from django.http import HttpRequest
+from django.http.response import HttpResponse as HttpResponse
 from rest_framework.generics import CreateAPIView, UpdateAPIView, RetrieveAPIView, DestroyAPIView
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from api.global_customViews import BaseCustomListAPIView ,GenericViewWithExtractJWTInfo, BaseCustomClassView
+from api.global_customViews import BaseCustomListAPIView ,GenericViewWithExtractJWTInfo, BaseCustomClassView, BaseCustomListNoPaginationAPIView
 from accounts.permission import IsManagerOrHigher
 from calendars.models import Calendar
 from django.db.models import Q
+from rest_framework.views import APIView
+from django.http import JsonResponse
+from datetime import date, datetime
 
 from .models import Class,StudentEnrolment,ClassLesson
 from .serializers import (
@@ -126,7 +132,7 @@ class StudentEnrolmentListView(BaseCustomListAPIView):
     serializer_class = StudentEnrolmentListSerializer
     permission_classes = [IsAuthenticated]
 
-class ClassEnrolmentListByDateView(BaseCustomListAPIView):
+class ClassLessonFutureListByDateView(BaseCustomListNoPaginationAPIView):
     serializer_class = ClassEnrolmentListSerializer
     permission_classes = [IsAuthenticated]
 
@@ -139,11 +145,11 @@ class ClassEnrolmentListByDateView(BaseCustomListAPIView):
         user_branch_roles = self.extract_jwt_info("branch_role")
         is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
 
-        date = self.request.data.get('date')
+        date = self.request.query_params.get('date')
         if not date:
             raise PermissionDenied("Missing date.")
         
-        date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        date = datetime.strptime(date, '%Y-%m-%d').date()
         
         has_event = Calendar.objects.filter(start_datetime__date=date,branch__id=branch_id).exists()
 
@@ -154,7 +160,7 @@ class ClassEnrolmentListByDateView(BaseCustomListAPIView):
     
     def get_serializer_context(self):
         context =  super().get_serializer_context()
-        checkDate = self.request.data.get('date')
+        checkDate = self.request.query_params.get('date')
 
         check_after_week = self._calculate_after_week(checkDate)
 
@@ -162,17 +168,27 @@ class ClassEnrolmentListByDateView(BaseCustomListAPIView):
         return context
     
     def _calculate_after_week(self,checkDate):
-        today = datetime.date.today()
-        date = datetime.datetime.strptime(checkDate, '%Y-%m-%d').date()
+        today = date.today()
+        parsed_date = datetime.strptime(checkDate, '%Y-%m-%d').date()
 
-        days = (date - today).days
+        days = (parsed_date - today).days
 
         check_after_week = days // 7
 
-        return check_after_week
+        return abs(check_after_week)
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            "success": True,
+            "past_lessons": False,
+            "data": serializer.data
+        })
     
 
-class ClassLessonListByDateView(BaseCustomListAPIView):
+class ClassLessonPastListByDateView(BaseCustomListNoPaginationAPIView):
     serializer_class = ClassLessonListSerializer
     permission_classes = [IsAuthenticated]
 
@@ -185,12 +201,47 @@ class ClassLessonListByDateView(BaseCustomListAPIView):
         user_branch_roles = self.extract_jwt_info("branch_role")
         is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
 
-        date = self.request.data.get('date')
+        date = self.request.query_params.get('date')
         if not date:
             raise PermissionDenied("Missing date.")
         
-        date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        date = datetime.strptime(date, '%Y-%m-%d').date()
         
         all_classes = ClassLesson.objects.filter(branch__id=branch_id,date=date).order_by('start_datetime')
         
         return all_classes
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            "success": True,
+            "past_lessons": True,
+            "data": serializer.data
+        })
+    
+class ClassLessonListByDateView(APIView):
+    
+    def dispatch(self, request, *args, **kwargs):
+        # Extract the date from request (assuming it's passed as a query parameter)
+        date_str = request.GET.get('date')
+        
+        if not date_str:
+            return JsonResponse({"error": "Date parameter is required"}, status=400)
+
+        try:
+            given_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        except ValueError:
+            return JsonResponse({"error": "Invalid date format. Use YYYY-MM-DD."}, status=400)
+
+        # Check if any ClassLesson exists for the given date
+        if ClassLesson.objects.filter(date=given_date).exists():
+            # Use ClassLessonPastListByDateView if ClassLesson exists for the given date
+            view = ClassLessonPastListByDateView.as_view()
+        else:
+            # Use ClassEnrolmentListByDateView otherwise
+            view = ClassLessonFutureListByDateView.as_view()
+
+        # Call the selected view
+        return view(request, *args, **kwargs)

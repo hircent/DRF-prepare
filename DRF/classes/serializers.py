@@ -19,7 +19,7 @@ class StudentEnrolmentListForClassSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StudentEnrolment
-        fields = ['id', 'student','is_active','future_remaining_lessons']
+        fields = ['id', 'student','is_active','remaining_lessons','future_remaining_lessons']
 
     def get_student(self, obj):
         return { "id": obj.student.id, "fullname": obj.student.fullname }
@@ -123,7 +123,7 @@ Class Lesson Serializer (Check For Attended Lessons)
 class ClassLessonListSerializer(serializers.ModelSerializer):
     student_attendances = serializers.SerializerMethodField()
     class_instance = ClassDetailsSerializer(read_only=True)
-    
+
     class Meta:
         model = ClassLesson
         fields = ['id','branch','class_instance','teacher','co_teacher','theme_lesson','date','status','student_attendances']
