@@ -14,7 +14,7 @@ from calendars.models import Calendar
 from django.db.models import Q
 from rest_framework.views import APIView
 from django.http import JsonResponse
-from datetime import date, datetime
+from datetime import date, datetime ,timedelta
 
 from .models import Class,StudentEnrolment,ClassLesson
 from .serializers import (
@@ -151,7 +151,9 @@ class ClassLessonFutureListByDateView(BaseCustomListNoPaginationAPIView):
         
         date = datetime.strptime(date, '%Y-%m-%d').date()
         
-        has_event = Calendar.objects.filter(start_datetime__date=date,branch__id=branch_id).exists()
+        has_event = self._has_event(date,branch_id)
+
+        print(f"has_event: {has_event}")
 
         all_classes = Class.objects.filter(branch__id=branch_id,day=date.strftime("%A")).order_by('start_time')
 
@@ -163,6 +165,26 @@ class ClassLessonFutureListByDateView(BaseCustomListNoPaginationAPIView):
                 raise PermissionDenied("You don't have access to this branch or role.")
             else:
                 return all_classes if not has_event else []
+            
+    def _has_event(self,date,branch_id):
+        all_events = Calendar.objects.filter(branch_id=branch_id,year=date.year)
+
+        blockedDate = []
+
+        for event in all_events:
+            
+            start_date = event.start_datetime.date()
+            end_date = event.end_datetime.date()
+
+            if start_date == end_date:
+                blockedDate.append(start_date)
+            else:
+
+                while start_date <= end_date:
+                    blockedDate.append(start_date)
+                    start_date += timedelta(days=1)
+        
+        return date in blockedDate
     
     def get_serializer_context(self):
         context =  super().get_serializer_context()
