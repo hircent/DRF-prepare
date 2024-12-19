@@ -1,11 +1,13 @@
 from rest_framework import serializers
-from .models import Class,StudentEnrolment
-from accounts.models import User
+from .models import (
+    Class,StudentEnrolment,ClassLesson,StudentAttendance,EnrolmentExtension
+)
 from branches.models import Branch
-from category.models import Category
-
 from django.db.models import F,Value
        
+'''
+Student Enrolment Serializer
+'''
 class StudentEnrolmentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentEnrolment
@@ -21,12 +23,46 @@ class StudentEnrolmentListForClassSerializer(serializers.ModelSerializer):
 
     def get_student(self, obj):
         return { "id": obj.student.id, "fullname": obj.student.fullname }
-        
+
+
+'''
+Student Attendance Serializer
+'''
+class StudentAttendanceListSerializer(serializers.ModelSerializer):
+    enrollment = serializers.SerializerMethodField()
+
+    class Meta:
+        model = StudentAttendance
+        fields = ['id','enrollment','status']
+
+    def get_enrollment(self, obj):
+        return { 
+            "id": obj.enrollment.id, 
+            "student": {
+                "id": obj.enrollment.student.id,
+                "fullname": obj.enrollment.student.fullname
+            } 
+        }
+
+
+'''
+Class Serializer
+'''
 class ClassListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Class
         fields = ['id','branch','name','label','start_date','start_time','end_time','day']
-        
+
+class ClassDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Class
+        fields = ['id','name','label','start_time','end_time','day']
+
+
+
+'''
+Class Enrolment (Check For Future Lessons)
+'''
 class ClassEnrolmentListSerializer(serializers.ModelSerializer):
     student_enrolments = serializers.SerializerMethodField()
     
@@ -80,4 +116,19 @@ class ClassCreateUpdateSerializer(serializers.ModelSerializer):
 
         return class_instance
     
+'''
+Class Lesson Serializer (Check For Attended Lessons)
+'''
+
+class ClassLessonListSerializer(serializers.ModelSerializer):
+    student_attendances = serializers.SerializerMethodField()
+    class_instance = ClassDetailsSerializer(read_only=True)
     
+    class Meta:
+        model = ClassLesson
+        fields = ['id','branch','class_instance','teacher','co_teacher','theme_lesson','date','status','student_attendances']
+
+    def get_student_attendances(self, obj):
+        attendances = obj.attendances.all()
+        serializer = StudentAttendanceListSerializer(attendances, many=True)
+        return serializer.data

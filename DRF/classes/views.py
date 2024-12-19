@@ -10,9 +10,10 @@ from accounts.permission import IsManagerOrHigher
 from calendars.models import Calendar
 from django.db.models import Q
 
-from .models import Class,StudentEnrolment
+from .models import Class,StudentEnrolment,ClassLesson
 from .serializers import (
-    ClassListSerializer,StudentEnrolmentListSerializer,ClassCreateUpdateSerializer,ClassEnrolmentListSerializer
+    ClassListSerializer,StudentEnrolmentListSerializer,ClassCreateUpdateSerializer,ClassEnrolmentListSerializer,
+    ClassLessonListSerializer
 )
 
 class ClassListView(BaseCustomListAPIView):
@@ -169,3 +170,27 @@ class ClassEnrolmentListByDateView(BaseCustomListAPIView):
         check_after_week = days // 7
 
         return check_after_week
+    
+
+class ClassLessonListByDateView(BaseCustomListAPIView):
+    serializer_class = ClassLessonListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        branch_id = self.request.headers.get('BranchId')
+
+        if not branch_id:
+            raise PermissionDenied("Missing branch id.")
+
+        user_branch_roles = self.extract_jwt_info("branch_role")
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+
+        date = self.request.data.get('date')
+        if not date:
+            raise PermissionDenied("Missing date.")
+        
+        date = datetime.datetime.strptime(date, '%Y-%m-%d').date()
+        
+        all_classes = ClassLesson.objects.filter(branch__id=branch_id,date=date).order_by('start_datetime')
+        
+        return all_classes
