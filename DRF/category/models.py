@@ -46,12 +46,12 @@ class Theme(models.Model):
         verbose_name = 'Theme'
         verbose_name_plural = 'Themes'
         ordering = ['order']
-        constraints = [
-            models.UniqueConstraint(
-                fields=['category', 'name'],
-                name='unique_theme_per_category'
-            )
-        ]
+        # constraints = [
+        #     models.UniqueConstraint(
+        #         fields=['category', 'name'],
+        #         name='unique_theme_per_category'
+        #     )
+        # ]
     
     def __str__(self):
         return self.name

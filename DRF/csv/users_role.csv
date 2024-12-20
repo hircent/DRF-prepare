@@ -1,4 +1,4 @@
-"id","first_name","last_name","email","email_verified_at","password","created_at","updated_at","branch_id","roles"
+"user_id","first_name","last_name","email","email_verified_at","password","created_at","updated_at","branch_id","role_id"
 "1","Superadmin DeEmcee","","superadmin@deemcee.com","2020-10-19 17:08:49","$2y$10$xbswB.HlBKEVs3ZPk//PtOumvYstudq3uwZupt7H9BEJ4LMnMa7hm","2020-10-19 17:08:49","2024-01-05 16:50:56",\N,"1"
 "2","Admin DeEmcee","","admin@deemcee.com","2020-10-19 17:08:49","$2y$10$MX5LuWc9bOXNWEQ92Jzd3e4nqrLOVAaQqmTsJaku2CdzArMs0/KFC","2020-10-19 17:08:49","2020-12-02 17:09:38",\N,"2"
 "3","Principal DeEmcee","","principal@deemcee.com","2020-10-19 17:08:49","$2y$10$pu7ableWO81gt3EUkqrzwehvPYVCKYM8KATR4BbvqOD3HkA3UcPiy","2020-10-19 17:08:49","2020-12-02 17:09:58","1","3"

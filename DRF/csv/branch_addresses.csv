@@ -1,4 +1,4 @@
-"branch_id","addressable_id","address_line_1","address_line_2","address_line_3","city","state","postcode","created_at","udpated_at"
+"branch_id","addressable_id","address_line_1","address_line_2","address_line_3","city","state","postcode","created_at","updated_at"
 "1","1","B-2-16, Jalan PJU 1/43","Aman Suria","","Petaling Jaya","Selangor","47301","2021-01-31 18:17:11","2021-01-31 18:17:11"
 "2","2","No.27-1, Jalan Ara SD7/3A","Bandar Sri Damansara","","Kuala Lumpur","Selangor","52200","2020-10-20 06:17:22","2020-11-22 14:55:38"
 "3","3","No.24-1, Jalan 1/149D","Bandar Baru Sri Petaling","","Kuala Lumpur","Kuala Lumpur","57000","2020-10-20 06:19:12","2020-12-09 23:18:52"
