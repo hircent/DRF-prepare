@@ -16,19 +16,22 @@ class Command(BaseCommand):
         self._branch_enrolments(total_branch)
 
     def _branch_enrolments(self,total_branch):
-        enrolments = StudentEnrolment.objects.filter(branch__id=2)
-        self._update_lesson_by_freezed_count(enrolments)
+        # enrolments = StudentEnrolment.objects.filter(branch__id=26)
+        # self._update_lesson_by_freezed_count(enrolments)
 
-        # try:
-        #     with transaction.atomic():
-        #         for i in range(total_branch):
-        #             print("================================")
-        #             print(f"Branch: {i+1}")
-        #             enrolments = StudentEnrolment.objects.filter(branch__id=i+1)
-        #             self._update_lesson_by_freezed_count(enrolments)
+        try:
+            with transaction.atomic():
+                for i in range(total_branch):
+                    #Skip branch 26
+                    if i+1 == 26:
+                        continue
+                    print("================================")
+                    print(f"Branch: {i+1}")
+                    enrolments = StudentEnrolment.objects.filter(branch__id=i+1)
+                    self._update_lesson_by_freezed_count(enrolments)
 
-        # except Exception as e:
-        #     print(f"Error: {e}")
+        except Exception as e:
+            print(f"Error: {e}")
 
         
     def _update_lesson_by_freezed_count(self,enrolments):
