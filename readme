@@ -2,6 +2,13 @@
 ### Step by Step when migrations
 '''
 
+python manage.py clean_calendar.py
+python manage.py clean_classes.py
+python manage.py clean_students.py
+python manage.py clean_user_address.py
+python manage.py clean_user_profile.py
+python manage.py clean_users.py
+
 python manage.py create_role
 python manage.py create_branch_grade
 python manage.py import_branch

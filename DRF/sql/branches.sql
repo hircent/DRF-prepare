@@ -31,4 +31,5 @@ INSERT INTO branches(id,branch_grade_id,name , display_name, business_name, busi
 (29,1,'deemcee-bandar-kinrara-puchong','Deemcee Bandar Kinrara, Puchong','VOICE POWER CENTER','202403118773',NULL,'2024-08-02',FALSE,'2024-08-01 01:55:27','2024-08-01 01:55:27',NULL),
 (30,1,'deemcee-miri-sarawak','Deemcee Miri, Sarawak','WELLSUN PLT','202404001695 (LLP0039187-LGN)',NULL,'2024-08-27',FALSE,'2024-08-12 13:10:20','2024-08-13 01:45:46',NULL),
 (31,1,'deemcee-cyberjaya','Deemcee Cyberjaya','ALPHAGEN ACADEMY SDN BHD','202401018640 (1564489-U)',NULL,'2024-09-23',FALSE,'2024-09-07 05:10:03','2024-09-07 05:10:03',NULL),
-(32,1,'deemcee-horizon-hills','Deemcee Horizon Hills','Dreams Horizon Academy','202401018640 (1564489-U)',NULL,'2024-09-23',FALSE,'2024-09-07 05:10:03','2024-09-07 05:10:03',NULL);
+(32,1,'deemcee-horizon-hills','Deemcee Horizon Hills','Dreams Horizon Academy','202401018640 (1564489-U)',NULL,'2024-09-23',FALSE,'2024-09-07 05:10:03','2024-09-07 05:10:03',NULL),
+(33,1,'deemcee-bintulu-sarawak','Deemcee Bintulu, Sarawak','MY WONDERLAND ACADEMY','BTU/BNR/715/2024',NULL,'2024-11-25',FALSE,'2024-11-18 08:03:40','2024-11-18 08:03:40',NULL);

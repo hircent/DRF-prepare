@@ -28,6 +28,6 @@ class Command(BaseCommand):
 
             df.to_csv(self.SAVE_TO,index=False)
         
-            self.stdout.write(self.style.SUCCESS("Clean students successful!"))
+            self.stdout.write(self.style.SUCCESS("Clean calendar successful!"))
         except Exception as e:
-            self.stdout.write(self.style.ERROR(f"Clean students failed : {e}"))
+            self.stdout.write(self.style.ERROR(f"Clean calendar failed : {e}"))
