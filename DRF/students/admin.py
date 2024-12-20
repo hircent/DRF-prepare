@@ -6,7 +6,7 @@ class StudentsAdmin(admin.ModelAdmin):
 
     search_fields =('fullname',)
     
-    list_filter = ('branch',)
+    list_filter = ('branch','status',)
 
     # def formfield_for_foreignkey(self, db_field, request, **kwargs):
     #     if db_field.name == 'parent':

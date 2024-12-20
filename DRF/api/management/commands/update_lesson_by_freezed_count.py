@@ -16,7 +16,7 @@ class Command(BaseCommand):
         self._branch_enrolments(total_branch)
 
     def _branch_enrolments(self,total_branch):
-        enrolments = StudentEnrolment.objects.filter(branch__id=32)
+        enrolments = StudentEnrolment.objects.filter(branch__id=2)
         self._update_lesson_by_freezed_count(enrolments)
 
         # try:
