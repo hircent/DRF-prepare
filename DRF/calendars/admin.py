@@ -3,7 +3,7 @@ from .models import Calendar, CalendarThemeLesson
 # Register your models here.
 
 class CalendarAdmin(admin.ModelAdmin):
-    list_display = ('title', 'start_datetime', 'end_datetime', 'entry_type', 'branch')
+    list_display = ('title', 'year', 'start_datetime', 'end_datetime', 'entry_type', 'branch')
     list_filter = ('entry_type', 'branch')
     search_fields = ('title', 'description')
     ordering = ('start_datetime',)

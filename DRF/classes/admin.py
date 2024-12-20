@@ -19,7 +19,7 @@ class ClassLessonAdmin(admin.ModelAdmin):
 class StudentAttendanceAdmin(admin.ModelAdmin):
     list_display = ('id', 'enrollment__id','enrollment', 'branch', 'class_lesson','class_lesson__id', 'date', 'start_time', 'has_attended', 'status')
     search_fields = ('enrollment__student__fullname', 'class_lesson__theme_lesson__theme__name')
-    list_filter = ('status','branch','enrollment__student__fullname','class_lesson__theme_lesson__theme__name')
+    list_filter = ('status','branch','enrollment__student__fullname','enrollment__id',)
 
 class EnrolmentExtensionAdmin(admin.ModelAdmin):
     list_display = ('id', 'enrolment','enrolment__id', 'branch', 'start_date')
