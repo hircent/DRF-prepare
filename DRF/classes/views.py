@@ -153,8 +153,6 @@ class ClassLessonFutureListByDateView(BaseCustomListNoPaginationAPIView):
         
         has_event = self._has_event(date,branch_id)
 
-        print(f"has_event: {has_event}")
-
         all_classes = Class.objects.filter(branch__id=branch_id,day=date.strftime("%A")).order_by('start_time')
 
         if is_superadmin:
@@ -167,7 +165,12 @@ class ClassLessonFutureListByDateView(BaseCustomListNoPaginationAPIView):
                 return all_classes if not has_event else []
             
     def _has_event(self,date,branch_id):
-        all_events = Calendar.objects.filter(branch_id=branch_id,year=date.year)
+        blockedDate = self._get_blocked_date(branch_id=branch_id,year=date.year)
+        
+        return date in blockedDate
+    
+    def _get_blocked_date(self,branch_id,year):
+        all_events = Calendar.objects.filter(branch_id=branch_id,year=year)
 
         blockedDate = []
 
@@ -183,8 +186,8 @@ class ClassLessonFutureListByDateView(BaseCustomListNoPaginationAPIView):
                 while start_date <= end_date:
                     blockedDate.append(start_date)
                     start_date += timedelta(days=1)
-        
-        return date in blockedDate
+
+        return blockedDate
     
     def get_serializer_context(self):
         context =  super().get_serializer_context()
