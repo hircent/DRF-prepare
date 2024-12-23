@@ -170,43 +170,65 @@ class ClassLessonFutureListByDateView(BaseCustomListNoPaginationAPIView):
         return date in blockedDate
     
     def _get_blocked_date(self,branch_id,year):
-        all_events = Calendar.objects.filter(branch_id=branch_id,year=year)
-
-        blockedDate = []
-
-        for event in all_events:
+        events = Calendar.objects.filter(
+            branch_id=branch_id,
+            year=year
+        ).values_list('start_datetime', 'end_datetime')
+        
+        blocked_dates = set()
+        
+        for start_datetime, end_datetime in events:
+            start_date = start_datetime.date()
+            end_date = end_datetime.date()
             
-            start_date = event.start_datetime.date()
-            end_date = event.end_datetime.date()
-
+            # If single day event
             if start_date == end_date:
-                blockedDate.append(start_date)
+                blocked_dates.add(start_date)
             else:
-
-                while start_date <= end_date:
-                    blockedDate.append(start_date)
-                    start_date += timedelta(days=1)
-
-        return blockedDate
+                # Add all dates in range
+                current_date = start_date
+                while current_date <= end_date:
+                    blocked_dates.add(current_date)
+                    current_date += timedelta(days=1)
+                    
+        return blocked_dates
     
     def get_serializer_context(self):
         context =  super().get_serializer_context()
         checkDate = self.request.query_params.get('date')
+        branch_id = self.request.headers.get('BranchId')
 
-        check_after_week = self._calculate_after_week(checkDate)
+        date = datetime.strptime(checkDate, '%Y-%m-%d').date()
+        blockedDate = self._get_blocked_date(branch_id=branch_id,year=date.year)
+
+        check_after_week = self._calculate_after_week(date,blockedDate,branch_id)
 
         context['check_after_week'] = check_after_week
         return context
     
-    def _calculate_after_week(self,checkDate):
+    def _calculate_after_week(self,checkDate,blockedDate,branch_id):
         today = date.today()
-        parsed_date = datetime.strptime(checkDate, '%Y-%m-%d').date()
 
-        days = (parsed_date - today).days
+        days = (checkDate - today).days
 
         check_after_week = days // 7
 
-        return abs(check_after_week)
+        blocked_weeks = 0
+
+        for week_num in range(check_after_week):
+            current_date = checkDate - timedelta(weeks=week_num + 1)
+            
+            if current_date.year == checkDate.year:
+                if current_date in blockedDate:
+                    blocked_weeks += 1
+            else:
+                blockedDatePreviousYear = self._get_blocked_date(branch_id=branch_id,year=current_date.year)
+                
+                if current_date in blockedDatePreviousYear:
+                    blocked_weeks += 1
+                
+        
+        return check_after_week - blocked_weeks
     
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
