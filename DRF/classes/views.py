@@ -1,6 +1,5 @@
-import datetime
-from typing import Any
-from django.http import HttpRequest
+from typing import Set, Dict
+from collections import defaultdict
 from django.http.response import HttpResponse as HttpResponse
 from rest_framework.generics import CreateAPIView, UpdateAPIView, RetrieveAPIView, DestroyAPIView
 from rest_framework.response import Response
@@ -169,7 +168,7 @@ class ClassLessonFutureListByDateView(BaseCustomListNoPaginationAPIView):
         
         return date in blockedDate
     
-    def _get_blocked_date(self,branch_id,year):
+    def _get_blocked_date(self, branch_id: int, year: int) -> Set[date]:
         events = Calendar.objects.filter(
             branch_id=branch_id,
             year=year
@@ -206,29 +205,48 @@ class ClassLessonFutureListByDateView(BaseCustomListNoPaginationAPIView):
         context['check_after_week'] = check_after_week
         return context
     
-    def _calculate_after_week(self,checkDate,blockedDate,branch_id):
-        today = date.today()
-
-        days = (checkDate - today).days
-
-        check_after_week = days // 7
-
-        blocked_weeks = 0
-
-        for week_num in range(check_after_week):
-            current_date = checkDate - timedelta(weeks=week_num + 1)
-            
-            if current_date.year == checkDate.year:
-                if current_date in blockedDate:
-                    blocked_weeks += 1
-            else:
-                blockedDatePreviousYear = self._get_blocked_date(branch_id=branch_id,year=current_date.year)
-                
-                if current_date in blockedDatePreviousYear:
-                    blocked_weeks += 1
-                
+    def _calculate_after_week(self, check_date: date, blocked_dates: Set[date], branch_id: int) -> int:
+        """
+        Calculate the number of available weeks between today and check_date, 
+        excluding blocked dates across multiple years.
         
-        return check_after_week - blocked_weeks
+        Args:
+            check_date: Target date to check until
+            blocked_dates: Set of blocked dates for the current year
+            branch_id: Branch ID for fetching blocked dates of other years
+            
+        Returns:
+            int: Number of available weeks
+        """
+        today = date.today()
+        total_weeks = (check_date - today).days // 7
+        
+        # Early return if no weeks to check
+        if total_weeks <= 0:
+            return 0
+            
+        # Create a cache for blocked dates by year
+        blocked_dates_by_year: Dict[int, Set[date]] = defaultdict(set)
+        blocked_dates_by_year[check_date.year] = blocked_dates
+        
+        blocked_weeks = 0
+        check_year = check_date.year
+        
+        for week_num in range(total_weeks):
+            current_date = check_date - timedelta(weeks=week_num + 1)
+            current_year = current_date.year
+            
+            # If we need blocked dates for a new year, fetch and cache them
+            if current_year != check_year and current_year not in blocked_dates_by_year:
+                blocked_dates_by_year[current_year] = set(
+                    self._get_blocked_date(branch_id=branch_id, year=current_year)
+                )
+            
+            # Check if the current date is blocked
+            if current_date in blocked_dates_by_year[current_year]:
+                blocked_weeks += 1
+                
+        return total_weeks - blocked_weeks
     
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
