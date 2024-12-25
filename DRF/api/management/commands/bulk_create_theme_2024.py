@@ -5,14 +5,14 @@ from csv import DictReader
 from datetime import datetime
 
 class Command(CustomBaseCommand):
-    help = 'Bulk import Theme 2023'
+    help = 'Bulk import Theme 2024'
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.logger = self.setup_logger("bulk_create_theme_2023",__name__)
+        self.logger = self.setup_logger("bulk_create_theme_2024",__name__)
     
     def handle(self, *args, **options):
-        filepath = self.get_csv_path("theme_2023.csv")
+        filepath = self.get_csv_path("theme_2024.csv")
         batch_size = options['batch_size']
         start_time = datetime.now()
         

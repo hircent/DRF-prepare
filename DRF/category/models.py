@@ -5,9 +5,9 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
 class Category(models.Model):
     CATEGORY_CHOICES = [
-        ('KIDDO', 'Kiddo'),
-        ('KIDS', 'Kids'),
-        ('SUPERKIDS', 'Superkids'),
+        ('Kiddo', 'Kiddo'),
+        ('Kids', 'Kids'),
+        ('Superkids', 'Superkids'),
     ]
     
     name        = models.CharField(max_length=20, choices=CATEGORY_CHOICES)

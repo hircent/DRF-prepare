@@ -30,16 +30,15 @@ class Command(CustomBaseCommand):
                     for row in reader:
                         
                         cat = Category(
-                            id = row['id'],
-                            name = row['name'],
-                            label = row['name'] + ' ' + str(datetime.now().year),
-                            year = datetime.now().year,
+                            name = row['name'].capitalize(),
+                            label = row['name'].capitalize() + ' 2024',
+                            year = 2024,
                             created_at = self.parse_datetime(row['created_at']),
                             updated_at = self.parse_datetime(row['updated_at'])
                         ) 
                         
                         categoriess_arr.append(cat)
-                        self.stdout.write(self.style.SUCCESS(f"categories with id:{row['id']} has appended at time {datetime.now()}"))
+                        self.stdout.write(self.style.SUCCESS(f"New categories 2024 has appended at time {datetime.now()}"))
                         
                         if len(categoriess_arr)>= batch_size:
                             Category.objects.bulk_create(categoriess_arr)
