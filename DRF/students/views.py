@@ -40,8 +40,7 @@ class BasedCustomStudentsView(GenericViewWithExtractJWTInfo):
                 return branch.students.all()
             
     def get_object(self):
-
-        branch_id = self.kwargs.get("branch_id")
+        branch_id = self.request.headers.get('BranchId')
         student_id = self.kwargs.get("student_id")
 
         if not branch_id:
