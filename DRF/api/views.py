@@ -39,7 +39,7 @@ class ChangePasswordView(APIView):
 
         if attempts >= 5:  # Max attempts
             return Response(
-                {"error": "Too many failed attempts. Please try again later."},
+                {"msg": "Too many failed attempts. Please try again later."},
                 status=status.HTTP_429_TOO_MANY_REQUESTS
             )
 
@@ -49,7 +49,7 @@ class ChangePasswordView(APIView):
                 # Increment failed attempts
                 cache.set(cache_key, attempts + 1, 3600)  # Expire in 1 hour
                 return Response(
-                    {"old_password": "Wrong password."}, 
+                    {"msg": "Wrong password."}, 
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
@@ -61,8 +61,8 @@ class ChangePasswordView(APIView):
             cache.delete(cache_key)
 
             return Response(
-                {"message": "Password updated successfully"},
+                {"msg": "Password updated successfully"},
                 status=status.HTTP_200_OK
             )
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"msg":serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
