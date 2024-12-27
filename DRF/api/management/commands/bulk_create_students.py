@@ -8,6 +8,8 @@ from students.models import Students
 from accounts.models import User
 from branches.models import Branch
 import logging
+import json
+import ast
 
 class Command(BaseCommand):
     help = 'Import students'
@@ -78,6 +80,9 @@ class Command(BaseCommand):
                             deemcee_starting_grade = row['deemcee_starting_grade'],
                             status = row['status'],
                             enrolment_date = row['enrolment_date'],
+                            referral_channel = self.mapRefferalChannel(int(row['referral_channel_id'])),
+                            referral = row['referral'] if row['referral'] != "N" else None,
+                            starter_kits=self.parse_starter_kits(row['starter_kits']),
                             created_at = self.parse_datetime(row['created_at']),
                             updated_at = self.parse_datetime(row['updated_at']),
                         )
@@ -123,3 +128,41 @@ class Command(BaseCommand):
                 self.logger.info("Pg_get_serial_sequence for students success")
         except Exception as e:
             self.logger.error("Pg_get_serial_sequence error")
+
+    def mapRefferalChannel(self,referral_channel):
+        channel = {
+            1:'Facebook',
+            2:'Google Form',
+            3:'Centre FB Page',
+            4:'DeEmcee Referral',
+            5:'External Referral',
+            6:'Call In',
+            7:'Others'
+        }
+
+        return channel.get(referral_channel)
+    
+    
+    def parse_starter_kits(self,json_string):
+        """
+        Parse a JSON string into a Python list, with error handling
+        """
+        if not json_string or json_string == '[]':
+            return []
+            
+        try:
+            # Method 1: Try direct JSON parsing
+            return json.loads(json_string)
+        except json.JSONDecodeError:
+            try:
+                # Method 2: Try cleaning the string and parsing
+                # Remove single quotes and replace with double quotes
+                cleaned_string = json_string.replace("'", '"')
+                return json.loads(cleaned_string)
+            except json.JSONDecodeError:
+                try:
+                    # Method 3: Try using ast.literal_eval
+                    return ast.literal_eval(json_string)
+                except (ValueError, SyntaxError):
+                    # If all parsing methods fail, return empty list
+                    return []

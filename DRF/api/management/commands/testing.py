@@ -8,34 +8,28 @@ from accounts.models import User
 from category.models import Category,ThemeLesson
 from datetime import datetime ,timedelta,date
 from django.db import connection
+import json
 class Command(BaseCommand):
     help = 'testing function'
 
     def handle(self, *args, **kwargs):
-        today = date.today()
-        parsed_date = date(2024,12,28)
+        student = self.mapRefferalChannel(1)
+        # current_kits = json.loads(student.starter_kits)
+        print(student)
+        # current_kits.append({"id": 20, "name": "Science Lab Kit - G5"})
+        # student.starter_kits = current_kits
+        # student.save()
+        # print(student)
 
-        days = (parsed_date - today).days
+    def mapRefferalChannel(self,referral_channel):
+        channel = {
+            1:'Facebook',
+            2:'Google Form',
+            3:'Centre FB Page',
+            4:'DeEmcee Referral',
+            5:'External Referral',
+            6:'Call In',
+            7:'Others'
+        }
 
-        check_after_week = days // 7
-        print(check_after_week)
-
-    def _get_blocked_date(self,branch_id,year):
-        all_events = Calendar.objects.filter(branch_id=2,year=2024)
-
-        blockedDate = []
-
-        for event in all_events:
-            
-            start_date = event.start_datetime.date()
-            end_date = event.end_datetime.date()
-
-            if start_date == end_date:
-                blockedDate.append(start_date)
-            else:
-
-                while start_date <= end_date:
-                    blockedDate.append(start_date)
-                    start_date += timedelta(days=1)
-
-        return blockedDate
+        return channel.get(referral_channel)

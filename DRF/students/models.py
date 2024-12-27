@@ -45,6 +45,16 @@ class Students(models.Model):
         ('GRADUATED','GRADUATED')
     ]
 
+    REFERRAL_CHOICES = [
+        ('Facebook','Facebook'),
+        ('Google Form','Google Form'),
+        ('Centre FB Page','Centre FB Page'),
+        ('DeEmcee Referral','DeEmcee Referral'),
+        ('External Referral','External Referral'),
+        ('Call In','Call In'),
+        ('Others','Others'),
+    ]
+
     branch                  = models.ForeignKey(Branch,on_delete=models.CASCADE,related_name='students')
     parent                  = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,related_name='children')
     first_name              = models.CharField(max_length=50,null=True,blank=True)
@@ -54,9 +64,10 @@ class Students(models.Model):
     dob                     = models.DateField(null=True,blank=True)
     school                  = models.CharField(max_length=100)
     deemcee_starting_grade  = models.IntegerField(null=True,blank=True)
-    # referral_channel_id     = models.IntegerField()
-    # referral                = models.IntegerField()
     status                  = models.CharField(choices=STATUS,max_length=12,default='IN_PROGRESS')
+    referral_channel        = models.CharField(max_length=40,null=True,blank=True,choices=REFERRAL_CHOICES)
+    referral                = models.CharField(max_length=100,null=True,blank=True)
+    starter_kits            = models.JSONField(null=True,blank=True,default=list)
 
     enrolment_date          = models.DateField()
     created_at              = models.DateTimeField(auto_now_add=True)

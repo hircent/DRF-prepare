@@ -5,6 +5,9 @@
 python manage.py clean_calendar.py
 python manage.py clean_classes.py
 python manage.py clean_students.py
+
+replace all ("") with (')
+
 python manage.py clean_user_address.py
 python manage.py clean_user_profile.py
 python manage.py clean_users.py
