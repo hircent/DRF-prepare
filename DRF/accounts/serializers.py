@@ -170,12 +170,17 @@ class ParentDetailSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "created_at", "updated_at"]
 
 class StuSerializer(serializers.ModelSerializer):
-    enrolments = StudentEnrolmentListSerializer(many=True,read_only=True)
+    enrolments = serializers.SerializerMethodField()
     class Meta:
         model = Students
         fields = [
             'id','fullname','deemcee_starting_grade','status','enrolment_date','enrolments'
         ]
+
+    def get_enrolments(self, obj):
+        enrolments = obj.enrolments.filter(is_active=True)
+        serializer = StudentEnrolmentListSerializer(enrolments, many=True)
+        return serializer.data
 
 class ParentDetailsSerializer(serializers.ModelSerializer):
     address = UserAddressSerializer(source='user_address')
