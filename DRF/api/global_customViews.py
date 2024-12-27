@@ -221,3 +221,34 @@ class BaseCustomClassView(GenericViewWithExtractJWTInfo):
                 raise PermissionDenied("The requested user does not belong to the specified branch.")
 
             return clas
+        
+class BaseCustomParentView(GenericViewWithExtractJWTInfo):
+
+    def get_object(self):
+
+        branch_id = self.request.headers.get("BranchId")
+        parent_id = self.kwargs.get("parent_id")
+
+        if not branch_id:
+            raise PermissionDenied("Missing branch id.")
+        
+        user_branch_roles = self.extract_jwt_info("branch_role")
+        userId = self.extract_jwt_info("user_id")
+
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+
+        parent = get_object_or_404(User,id=parent_id)
+        if is_superadmin:
+            
+            return parent
+        else:
+            # For non-superadmins, check if they have access to the specified branch
+            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+                raise PermissionDenied("You don't have access to this branch.")
+
+            # Check if the requested user belongs to the specified branch
+            user_branch_role = UserBranchRole.objects.filter(user=User.objects.get(id=userId), branch_id=branch_id).first()
+            if not user_branch_role:
+                raise PermissionDenied("The requested user does not belong to the specified branch.")
+
+            return parent

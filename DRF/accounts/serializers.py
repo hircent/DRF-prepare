@@ -1,8 +1,11 @@
+from students.models import Students
+from classes.serializers import StudentEnrolmentListSerializer
 from branches.models import Branch,UserBranchRole
 from branches.serializers import UserBranchRoleSerializer
 from rest_framework import serializers
 
 from .models import User ,UserProfile,Role,UserAddress
+
 
 class UserAddressSerializer(serializers.ModelSerializer):
 
@@ -166,3 +169,40 @@ class ParentDetailSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
 
+class StuSerializer(serializers.ModelSerializer):
+    enrolments = StudentEnrolmentListSerializer(many=True,read_only=True)
+    class Meta:
+        model = Students
+        fields = [
+            'id','fullname','deemcee_starting_grade','status','enrolment_date','enrolments'
+        ]
+
+class ParentDetailsSerializer(serializers.ModelSerializer):
+    address = UserAddressSerializer(source='user_address')
+    details = UserProfileSerializer(source='user_profile')
+    user_branch_roles = serializers.SerializerMethodField(read_only=True)
+    children = StuSerializer(many=True,read_only=True)
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "is_active",
+            "created_at",
+            "updated_at",
+            "details",
+            "address",
+            "children",
+            "user_branch_roles"
+        ]
+        read_only_fields = ["id", "created_at", "updated_at", "user_branch_roles"]
+        extra_kwargs = {"password": {"write_only": True}}
+
+    
+    def get_user_branch_roles(self, obj):
+        user_branch_roles = UserBranchRole.objects.filter(user=obj)
+        return UserBranchRoleSerializer(user_branch_roles, many=True).data
+    

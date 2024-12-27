@@ -1,6 +1,7 @@
 from accounts.views import (
     RoleBasesUserListView,RoleBasedUserCreateView,RoleBasedUserDeleteView,
-    RoleBasedUserUpdateView,RoleBasedUserDetailsView
+    RoleBasedUserUpdateView,RoleBasedUserDetailsView,
+    ParentListView,ParentDetailsView
 )
 
 from api.views import (
@@ -62,6 +63,14 @@ urlpatterns = [
     path("student/create",StudentCreateView.as_view(),name="create-student"),
     path("student/update/<int:student_id>",StudentUpdateView.as_view(),name="update-student"),
     path("student/delete/<int:student_id>",StudentDeleteView.as_view(),name="delete-student"),
+
+
+    #Parents
+    path("parent/list",ParentListView.as_view(),name="parent-list"),
+    path("parent/details/<int:parent_id>",ParentDetailsView.as_view(),name="parent-details"),
+    # path("parent/create",parentCreateView.as_view(),name="create-parent"),
+    # path("parent/update/<int:parent_id>",parentUpdateView.as_view(),name="update-parent"),
+    # path("parent/delete/<int:parent_id>",parentDeleteView.as_view(),name="delete-parent"),
 
     #Calendars
     path('calendars/list', CalendarListView.as_view(), name='calendar-list'),

@@ -1,5 +1,5 @@
 
-from api.global_customViews import BaseCustomListAPIView,BaseRoleBasedUserView,BaseRoleBasedUserDetailsView
+from api.global_customViews import BaseCustomListAPIView,BaseRoleBasedUserView,BaseRoleBasedUserDetailsView,BaseCustomParentView
 from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher,IsManagerOrHigher,IsTeacherOrHigher
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import User
-from .serializers import UserSerializer,UserDetailSerializer
+from .serializers import UserSerializer,UserDetailSerializer,ParentDetailsSerializer
 # Create your views here.
     
 class RoleBasesUserListView(BaseCustomListAPIView):
@@ -28,7 +28,7 @@ class RoleBasesUserListView(BaseCustomListAPIView):
         is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
         
         # query_set = User.objects.filter(users__role__name=role).exclude(id=self.request.user.id)
-        query_set = User.objects.filter(users__role__name=role).order_by("id")
+        query_set = User.objects.filter(users__role__name=role,users__branch_id=branch_id).order_by("id")
         
         if q:
             query_set = query_set.filter(
@@ -38,14 +38,14 @@ class RoleBasesUserListView(BaseCustomListAPIView):
             if role == 'superadmin':
                 return query_set
             else:
-                return query_set.filter(users__branch_id=branch_id).distinct()
+                return query_set.distinct()
         else:
             
             if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
                 
                 raise PermissionDenied("You don't have access to this branch or role.")
             else:
-                return query_set.filter(users__branch_id=branch_id)
+                return query_set
             
     def get_permissions(self):
         role = self.kwargs.get('role')
@@ -160,20 +160,6 @@ class RoleBasedUserDeleteView(BaseRoleBasedUserView,DestroyAPIView):
 class RoleBasedUserDetailsView(BaseRoleBasedUserDetailsView,RetrieveAPIView):
     serializer_class = UserDetailSerializer  # Assuming this includes UserProfile data
     queryset = User.objects.all()
-
-    # def get_serializer_class(self):
-    #     user = self.get_object()
-    #     user_role = UserBranchRole.objects.filter(user=user).first()
-
-    #     if user_role:
-    #         if user_role.role.name == 'admin':
-    #             return AdminUserDetailSerializer
-    #         elif user_role.role.name == 'manager':
-    #             return ManagerUserDetailSerializer
-    #         elif user_role.role.name == 'employee':
-    #             return EmployeeUserDetailSerializer
-        
-    #     return UserDetailSerializer
     
     def get_object(self):
         # Get the user object by ID
@@ -230,3 +216,52 @@ class RoleBasedUserDetailsView(BaseRoleBasedUserDetailsView,RetrieveAPIView):
             'parent': [IsTeacherOrHigher]
         }
         return [permission() for permission in permission_classes.get(role, [])]
+    
+
+'''
+ParentViews
+
+'''
+
+
+
+class ParentListView(BaseCustomListAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsTeacherOrHigher]
+    
+    def get_queryset(self):    
+        branch_id = self.request.headers.get('BranchId')
+        q = self.request.query_params.get('q', None)
+        
+        if not branch_id:
+            raise PermissionDenied("Missing branch id.")
+        
+        user_branch_roles = self.extract_jwt_info("branch_role")
+
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+        
+        # query_set = User.objects.filter(users__role__name=role).exclude(id=self.request.user.id)
+        query_set = User.objects.filter(users__role__name='parent',users__branch_id=branch_id).order_by("id")
+        
+        if q:
+            query_set = query_set.filter(
+                Q(username__icontains=q)  # Case-insensitive search
+            )
+        if is_superadmin:
+            return query_set.distinct()
+        else:
+            
+            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+                
+                raise PermissionDenied("You don't have access to this branch or role.")
+            else:
+                return query_set
+            
+class ParentDetailsView(BaseCustomParentView,RetrieveAPIView):
+    serializer_class = ParentDetailsSerializer
+    permission_classes = [IsTeacherOrHigher]
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response({"success": True, "data": serializer.data}, status=status.HTTP_200_OK)
