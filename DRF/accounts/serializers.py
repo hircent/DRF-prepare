@@ -196,15 +196,11 @@ class ParentDetailsSerializer(serializers.ModelSerializer):
             "username",
             "email",
             "is_active",
-            "created_at",
-            "updated_at",
             "details",
             "address",
             "children",
             "user_branch_roles"
         ]
-        read_only_fields = ["id", "created_at", "updated_at", "user_branch_roles"]
-        extra_kwargs = {"password": {"write_only": True}}
 
     
     def get_user_branch_roles(self, obj):
