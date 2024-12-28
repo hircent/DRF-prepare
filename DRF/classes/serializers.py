@@ -8,6 +8,13 @@ from django.db.models import F,Value
 '''
 Student Enrolment Serializer
 '''
+class StudentEnrolmentListForParentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentEnrolment
+        fields = [
+            'id','start_date','status','remaining_lessons','is_active','freeze_lessons','grade'
+        ]
+
 class StudentEnrolmentListSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentEnrolment

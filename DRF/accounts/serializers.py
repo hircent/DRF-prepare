@@ -1,5 +1,5 @@
 from students.models import Students
-from classes.serializers import StudentEnrolmentListSerializer
+from classes.serializers import StudentEnrolmentListForParentSerializer
 from branches.models import Branch,UserBranchRole
 from branches.serializers import UserBranchRoleSerializer
 from rest_framework import serializers
@@ -179,7 +179,7 @@ class StuSerializer(serializers.ModelSerializer):
 
     def get_enrolments(self, obj):
         enrolments = obj.enrolments.filter(is_active=True)
-        serializer = StudentEnrolmentListSerializer(enrolments, many=True)
+        serializer = StudentEnrolmentListForParentSerializer(enrolments, many=True)
         return serializer.data
 
 class ParentDetailsSerializer(serializers.ModelSerializer):
