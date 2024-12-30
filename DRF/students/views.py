@@ -4,6 +4,7 @@ from accounts.permission import IsTeacherOrHigher ,IsManagerOrHigher
 from accounts.models import User
 from branches.models import Branch ,UserBranchRole
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 from rest_framework import generics,status
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
@@ -18,6 +19,7 @@ class BasedCustomStudentsView(GenericViewWithExtractJWTInfo):
 
     def get_queryset(self,*args, **kwargs):
         branch_id = self.request.headers.get('BranchId')
+        q = self.request.query_params.get('q', None)
 
         if not branch_id:
             raise PermissionDenied("Missing branch id.")
@@ -31,13 +33,19 @@ class BasedCustomStudentsView(GenericViewWithExtractJWTInfo):
         except Branch.DoesNotExist:
             raise PermissionDenied("Branch not found.")
 
+        query_set = branch.students.all()
+        if q:
+            query_set = query_set.filter(
+                Q(fullname__icontains=q)  # Case-insensitive search
+            )
+
         if is_superadmin:
-            return branch.students.all()
+            return query_set
         else:
             if not any(ubr['branch_id'] == branch_id for ubr in user_branch_roles):
                 raise PermissionDenied("You don't have access to this branch or role.")
             else:
-                return branch.students.all()
+                return query_set
             
     def get_object(self):
         branch_id = self.request.headers.get('BranchId')
