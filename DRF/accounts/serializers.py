@@ -207,3 +207,8 @@ class ParentDetailsSerializer(serializers.ModelSerializer):
         user_branch_roles = UserBranchRole.objects.filter(user=obj)
         return UserBranchRoleSerializer(user_branch_roles, many=True).data
     
+class TeachingUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["id","first_name","username"]

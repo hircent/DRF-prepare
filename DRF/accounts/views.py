@@ -1,5 +1,8 @@
 
-from api.global_customViews import BaseCustomListAPIView,BaseRoleBasedUserView,BaseRoleBasedUserDetailsView,BaseCustomParentView
+from api.global_customViews import (
+    BaseCustomListAPIView,BaseRoleBasedUserView,BaseRoleBasedUserDetailsView,
+    BaseCustomParentView,BaseCustomListNoPaginationAPIView
+)
 from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher,IsManagerOrHigher,IsTeacherOrHigher
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
@@ -10,7 +13,10 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import User
-from .serializers import UserSerializer,UserDetailSerializer,ParentDetailsSerializer
+from .serializers import (
+    UserSerializer,UserDetailSerializer,ParentDetailsSerializer,
+    TeachingUserSerializer
+)
 # Create your views here.
     
 class RoleBasesUserListView(BaseCustomListAPIView):
@@ -265,3 +271,20 @@ class ParentDetailsView(BaseCustomParentView,RetrieveAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response({"success": True, "data": serializer.data}, status=status.HTTP_200_OK)
+    
+class TeachingUserListView(BaseCustomListNoPaginationAPIView):
+    serializer_class = TeachingUserSerializer
+    permission_classes = [IsTeacherOrHigher]
+
+    def get_queryset(self):
+        branch_id = self.request.headers.get('BranchId')
+        
+        if not branch_id:
+            raise PermissionDenied("Missing branch id.")
+        
+        query_set = User.objects.filter(
+            users__role__name__in=['teacher','manager'],
+            users__branch_id=branch_id
+        ).order_by("-id")
+
+        return query_set
