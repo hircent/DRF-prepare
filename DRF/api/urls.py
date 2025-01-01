@@ -30,7 +30,7 @@ from category.views import (
 
 from classes.views import (
     ClassListView, StudentEnrolmentListView, ClassCreateView, ClassUpdateView,
-    ClassDetailsView, ClassDestroyView, ClassLessonListByDateView
+    ClassDetailsView, ClassDestroyView, ClassLessonListByDateView,ClassLessonFutureListByDateView
 )
 
 from django.urls import path
@@ -111,11 +111,13 @@ urlpatterns = [
     path('class/delete/<int:class_id>', ClassDestroyView.as_view(), name='delete-class'),
     path('student/enrolment/list', StudentEnrolmentListView.as_view(), name='student-enrolment-list'),
 
+    #Attendance
     path('class/attendance/list', ClassLessonListByDateView.as_view(), name='class-lesson-list-by-date'),
 
     #Others
     path("branch/principals/branch_grade",CombinedPrincipalsAndBranchGradesView.as_view(),name="principal-branch_grade-for-branch"),
     path("branch/selector",BranchSelectorListView.as_view(),name="branch-selector"),
+    path("timeslot/list",ClassLessonFutureListByDateView.as_view(),name="available-timeslot-list"),
 
     #Token
     path('login', CustomTokenObtainPairView.as_view(), name='login_token_obtain_pair'),

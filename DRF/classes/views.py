@@ -137,6 +137,7 @@ class ClassLessonFutureListByDateView(BaseCustomListNoPaginationAPIView):
 
     def get_queryset(self):
         branch_id = self.request.headers.get('BranchId')
+        category_name = self.request.query_params.get('category')
 
         if not branch_id:
             raise PermissionDenied("Missing branch id.")
@@ -152,7 +153,10 @@ class ClassLessonFutureListByDateView(BaseCustomListNoPaginationAPIView):
         
         has_event = self._has_event(date,branch_id)
 
-        all_classes = Class.objects.filter(branch__id=branch_id,day=date.strftime("%A")).order_by('start_time')
+        if category_name:
+            all_classes = Class.objects.filter(branch__id=branch_id,day=date.strftime("%A"),name=category_name).order_by('start_time')
+        else:
+            all_classes = Class.objects.filter(branch__id=branch_id,day=date.strftime("%A")).order_by('start_time')
 
         if is_superadmin:
             return all_classes if not has_event else []
