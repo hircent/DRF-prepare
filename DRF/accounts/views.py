@@ -34,7 +34,7 @@ class RoleBasesUserListView(BaseCustomListAPIView):
         is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
         
         # query_set = User.objects.filter(users__role__name=role).exclude(id=self.request.user.id)
-        query_set = User.objects.filter(users__role__name=role,users__branch_id=branch_id).order_by("id")
+        query_set = User.objects.filter(users__role__name=role,users__branch_id=branch_id)
         
         if q:
             query_set = query_set.filter(
@@ -247,7 +247,7 @@ class ParentListView(BaseCustomListAPIView):
         is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
         
         # query_set = User.objects.filter(users__role__name=role).exclude(id=self.request.user.id)
-        query_set = User.objects.filter(users__role__name='parent',users__branch_id=branch_id).order_by("id")
+        query_set = User.objects.filter(users__role__name='parent',users__branch_id=branch_id)
         
         if q:
             query_set = query_set.filter(
@@ -285,7 +285,7 @@ class TeachingUserListView(BaseCustomListNoPaginationAPIView):
         query_set = User.objects.filter(
             users__role__name__in=['teacher','manager'],
             users__branch_id=branch_id
-        ).order_by("-id")
+        )
 
         return query_set
     
@@ -306,7 +306,7 @@ class SearchParentListView(BaseCustomListNoPaginationAPIView):
         query_set = User.objects.filter(
             users__role__name='parent',
             users__branch_id=branch_id
-        ).order_by("-id")
+        )
 
         if q:
             query_set = query_set.filter(

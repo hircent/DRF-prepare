@@ -110,6 +110,7 @@ class User(AbstractBaseUser):
         db_table = 'users'
         verbose_name = 'User'
         verbose_name_plural = 'Users'
+        ordering = ['-id']
 
     def __str__(self) -> str:
         return self.username.capitalize()

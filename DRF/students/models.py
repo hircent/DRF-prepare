@@ -78,6 +78,7 @@ class Students(models.Model):
         managed = True #True by default, false if have legacy table in db , django wont create table during migrations
         verbose_name = 'Student'
         verbose_name_plural = 'Students'
+        ordering = ['-id']
 
     def __str__(self):
         return self.fullname
