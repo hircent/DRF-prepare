@@ -217,4 +217,4 @@ class SearchParentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id","first_name","username"]
+        fields = ["id","first_name","email"]

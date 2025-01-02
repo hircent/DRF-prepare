@@ -31,7 +31,7 @@ from category.views import (
 
 from classes.views import (
     ClassListView, StudentEnrolmentListView, ClassCreateView, ClassUpdateView,
-    ClassDetailsView, ClassDestroyView, ClassLessonListByDateView,ClassLessonFutureListByDateView
+    ClassDetailsView, ClassDestroyView, ClassLessonListByDateView,SearchTimeSlotListView
 )
 
 from django.urls import path
@@ -118,7 +118,7 @@ urlpatterns = [
     #Others
     path("branch/principals/branch_grade",CombinedPrincipalsAndBranchGradesView.as_view(),name="principal-branch_grade-for-branch"),
     path("branch/selector",BranchSelectorListView.as_view(),name="branch-selector"),
-    path("timeslot/list",ClassLessonFutureListByDateView.as_view(),name="available-timeslot-list"),
+    path("timeslot/list",SearchTimeSlotListView.as_view(),name="available-timeslot-list"),
     path("teaching-user/list",TeachingUserListView.as_view(),name="teaching-user-list"),
     path("search/parent/list",SearchParentListView.as_view(),name="search-parent-list"),
 

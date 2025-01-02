@@ -139,3 +139,26 @@ class ClassLessonListSerializer(serializers.ModelSerializer):
         attendances = obj.attendances.all()
         serializer = StudentAttendanceListSerializer(attendances, many=True)
         return serializer.data
+    
+
+'''
+Time Slot Serializer
+'''
+class TimeslotListSerializer(serializers.ModelSerializer):
+    student_in_class = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Class
+        fields = ['id','label','day','student_in_class']
+
+    def get_student_in_class(self, obj):
+        check_after_week = self.context.get('check_after_week')
+
+        enrolments = obj.enrolments.annotate(
+            future_remaining_lessons= F('remaining_lessons') - Value(check_after_week)
+        ).filter(
+            future_remaining_lessons__gt=0,
+            is_active=True
+        )
+
+        return len(enrolments)

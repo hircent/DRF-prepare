@@ -18,7 +18,7 @@ from datetime import date, datetime ,timedelta
 from .models import Class,StudentEnrolment,ClassLesson
 from .serializers import (
     ClassListSerializer,StudentEnrolmentListSerializer,ClassCreateUpdateSerializer,ClassEnrolmentListSerializer,
-    ClassLessonListSerializer
+    ClassLessonListSerializer,TimeslotListSerializer
 )
 
 class ClassListView(BaseCustomListAPIView):
@@ -131,42 +131,7 @@ class StudentEnrolmentListView(BaseCustomListAPIView):
     serializer_class = StudentEnrolmentListSerializer
     permission_classes = [IsAuthenticated]
 
-class ClassLessonFutureListByDateView(BaseCustomListNoPaginationAPIView):
-    serializer_class = ClassEnrolmentListSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        branch_id = self.request.headers.get('BranchId')
-        category_name = self.request.query_params.get('category')
-
-        if not branch_id:
-            raise PermissionDenied("Missing branch id.")
-
-        user_branch_roles = self.extract_jwt_info("branch_role")
-        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
-
-        date = self.request.query_params.get('date')
-        if not date:
-            raise PermissionDenied("Missing date.")
-        
-        date = datetime.strptime(date, '%Y-%m-%d').date()
-        
-        has_event = self._has_event(date,branch_id)
-
-        if category_name:
-            all_classes = Class.objects.filter(branch__id=branch_id,day=date.strftime("%A"),name=category_name).order_by('start_time')
-        else:
-            all_classes = Class.objects.filter(branch__id=branch_id,day=date.strftime("%A")).order_by('start_time')
-
-        if is_superadmin:
-            return all_classes if not has_event else []
-        else:
-            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
-                
-                raise PermissionDenied("You don't have access to this branch or role.")
-            else:
-                return all_classes if not has_event else []
-            
+class BaseClassLessonView(BaseCustomListNoPaginationAPIView):
     def _has_event(self,date,branch_id):
         blockedDate = self._get_blocked_date(branch_id=branch_id,year=date.year)
         
@@ -252,17 +217,75 @@ class ClassLessonFutureListByDateView(BaseCustomListNoPaginationAPIView):
                 
         return total_weeks - blocked_weeks
     
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
+class SearchTimeSlotListView(BaseClassLessonView):
+    serializer_class = TimeslotListSerializer
+    permission_classes = [IsAuthenticated]
 
-        serializer = self.get_serializer(queryset, many=True)
-        return Response({
-            "success": True,
-            "past_lessons": False,
-            "data": serializer.data
-        })
+    def get_queryset(self):
+        branch_id = self.request.headers.get('BranchId')
+        category_name = self.request.query_params.get('category')
+
+        if not category_name:
+            raise PermissionDenied("Missing category name.")
+        
+        if not branch_id:
+            raise PermissionDenied("Missing branch id.")
+
+        user_branch_roles = self.extract_jwt_info("branch_role")
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+
+        date = self.request.query_params.get('date')
+        if not date:
+            raise PermissionDenied("Missing date.")
+        
+        date = datetime.strptime(date, '%Y-%m-%d').date()
+        
+        has_event = self._has_event(date,branch_id)
+
+        all_classes = Class.objects.filter(branch__id=branch_id,day=date.strftime("%A"),name=category_name).order_by('start_time')
+
+        if is_superadmin:
+            return all_classes if not has_event else []
+        else:
+            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+                
+                raise PermissionDenied("You don't have access to this branch or role.")
+            else:
+                return all_classes if not has_event else []
+
+
+class ClassLessonFutureListByDateView(BaseClassLessonView):
+    serializer_class = ClassEnrolmentListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        branch_id = self.request.headers.get('BranchId')
+
+        if not branch_id:
+            raise PermissionDenied("Missing branch id.")
+
+        user_branch_roles = self.extract_jwt_info("branch_role")
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+
+        date = self.request.query_params.get('date')
+        if not date:
+            raise PermissionDenied("Missing date.")
+        
+        date = datetime.strptime(date, '%Y-%m-%d').date()
+        
+        has_event = self._has_event(date,branch_id)
+
+        all_classes = Class.objects.filter(branch__id=branch_id,day=date.strftime("%A")).order_by('start_time')
+
+        if is_superadmin:
+            return all_classes if not has_event else []
+        else:
+            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+                
+                raise PermissionDenied("You don't have access to this branch or role.")
+            else:
+                return all_classes if not has_event else []
     
-
 class ClassLessonPastListByDateView(BaseCustomListNoPaginationAPIView):
     serializer_class = ClassLessonListSerializer
     permission_classes = [IsAuthenticated]
