@@ -212,3 +212,9 @@ class TeachingUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id","first_name","username"]
+
+class SearchParentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["id","first_name","username"]

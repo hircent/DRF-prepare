@@ -15,7 +15,7 @@ from rest_framework import status
 from .models import User
 from .serializers import (
     UserSerializer,UserDetailSerializer,ParentDetailsSerializer,
-    TeachingUserSerializer
+    TeachingUserSerializer,SearchParentSerializer
 )
 # Create your views here.
     
@@ -286,5 +286,31 @@ class TeachingUserListView(BaseCustomListNoPaginationAPIView):
             users__role__name__in=['teacher','manager'],
             users__branch_id=branch_id
         ).order_by("-id")
+
+        return query_set
+    
+class SearchParentListView(BaseCustomListNoPaginationAPIView):
+    serializer_class = SearchParentSerializer
+    permission_classes = [IsTeacherOrHigher]
+
+    def get_queryset(self):
+        branch_id = self.request.headers.get('BranchId')
+        q = self.request.query_params.get('q', None)
+        
+        if not q:
+            raise PermissionDenied("Missing search query.")
+        
+        if not branch_id:
+            raise PermissionDenied("Missing branch id.")
+        
+        query_set = User.objects.filter(
+            users__role__name='parent',
+            users__branch_id=branch_id
+        ).order_by("-id")
+
+        if q:
+            query_set = query_set.filter(
+                Q(email__icontains=q)  # Case-insensitive search
+            )
 
         return query_set

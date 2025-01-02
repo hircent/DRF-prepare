@@ -1,7 +1,8 @@
 from accounts.views import (
     RoleBasesUserListView,RoleBasedUserCreateView,RoleBasedUserDeleteView,
     RoleBasedUserUpdateView,RoleBasedUserDetailsView,
-    ParentListView,ParentDetailsView,TeachingUserListView
+    ParentListView,ParentDetailsView,TeachingUserListView,
+    SearchParentListView
 )
 
 from api.views import (
@@ -119,6 +120,7 @@ urlpatterns = [
     path("branch/selector",BranchSelectorListView.as_view(),name="branch-selector"),
     path("timeslot/list",ClassLessonFutureListByDateView.as_view(),name="available-timeslot-list"),
     path("teaching-user/list",TeachingUserListView.as_view(),name="teaching-user-list"),
+    path("search/parent/list",SearchParentListView.as_view(),name="search-parent-list"),
 
     #Token
     path('login', CustomTokenObtainPairView.as_view(), name='login_token_obtain_pair'),
