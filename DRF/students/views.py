@@ -109,7 +109,11 @@ class StudentCreateView(BasedCustomStudentsView,generics.CreateAPIView):
     permission_classes = [IsManagerOrHigher]
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        branch_id = self.request.headers.get('BranchId')
+        data = request.data.copy()
+        
+        data['branch'] = int(branch_id)
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
