@@ -31,6 +31,10 @@ class StudentEnrolmentListForClassSerializer(serializers.ModelSerializer):
     def get_student(self, obj):
         return { "id": obj.student.id, "fullname": obj.student.fullname }
 
+class StudentEnrolmentDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentEnrolment
+        fields = ['id','start_date','status','remaining_lessons','is_active','freeze_lessons','grade']
 
 '''
 Student Attendance Serializer

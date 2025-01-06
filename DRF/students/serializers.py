@@ -3,6 +3,7 @@ from accounts.models import User ,Role
 from branches.models import Branch ,UserBranchRole
 from .models import Students
 from classes.models import StudentEnrolment,Class
+from classes.serializers import StudentEnrolmentDetailsSerializer
 from category.models import Grade
 from rest_framework import serializers
 import json
@@ -19,16 +20,18 @@ class StudentListSerializer(serializers.ModelSerializer):
 
 
 class StudentDetailsSerializer(serializers.ModelSerializer):
-    parent = ParentDetailSerializer(read_only=True)
+    parent = ParentDetailSerializer()
+    enrolments = StudentEnrolmentDetailsSerializer(many=True)
+
     class Meta:
         model = Students
         fields = [
             'id','first_name','last_name','fullname','gender','dob',
             'school','deemcee_starting_grade','status','enrolment_date',
-            'branch','parent','created_at','updated_at'
+            'branch','parent','enrolments'
         ]
 
-        read_only_fields = ['branch', 'parent']
+        # read_only_fields = ['branch', 'parent']
 
 class StudentCreateUpdateSerializer(serializers.ModelSerializer):
     timeslot = serializers.CharField(write_only=True)
