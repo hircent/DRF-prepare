@@ -3,11 +3,15 @@ from api.pagination import CustomPagination
 from accounts.permission import IsTeacherOrHigher ,IsManagerOrHigher
 from accounts.models import User
 from branches.models import Branch ,UserBranchRole
+from datetime import datetime
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.http import HttpResponse
 from rest_framework import generics,status
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.views import APIView
+import csv
 
 
 from .models import Students
@@ -160,3 +164,54 @@ class StudentDeleteView(BasedCustomStudentsView,generics.DestroyAPIView):
         id = instance.id
         self.perform_destroy(instance)
         return Response({"success": True, "message": f"Student {id} deleted successfully"})
+
+class ExportStudentsCSV(APIView):
+    def get(self, request):
+        branchId = self.request.headers.get('branchId')
+
+        if not branchId:
+            return Response({"message": "Branch ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+        # Create the HttpResponse object with CSV header
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="students-{datetime.now().strftime("%Y-%m-%d")}.csv"'
+
+        # Create CSV writer
+        writer = csv.writer(response)
+        
+        # Write headers
+        writer.writerow([
+            'Full Name',
+            'Gender',
+            'Date of Birth',
+            'School',
+            'Starting Grade',
+            'Status',
+            'Referral Channel',
+            'Referral',
+            'Enrolment Date',
+            'Branch',
+            'Parent',
+            'Email',
+        ])
+
+        # Get all students
+        students = Students.objects.select_related('branch').all()
+        students = students.filter(branch_id=branchId)
+        # Write data
+        for student in students:
+            writer.writerow([
+                student.fullname,
+                student.gender,
+                student.dob.strftime('%Y-%m-%d') if student.dob else '',
+                student.school,
+                student.deemcee_starting_grade,
+                student.status,
+                student.referral_channel,
+                student.referral,
+                student.enrolment_date.strftime('%Y-%m-%d'),
+                student.branch.name,  # Assuming branch has a name field
+                student.parent.username if student.parent else '',
+                student.parent.email
+            ])
+
+        return response
