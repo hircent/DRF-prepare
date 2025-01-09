@@ -78,7 +78,7 @@ class Command(BaseCommand):
                             dob = row['dob'],
                             school = 'SMK',
                             deemcee_starting_grade = row['deemcee_starting_grade'],
-                            status = row['status'],
+                            status = 'IN_PROGRESS' if row['status'] == 'EXTENDED' else row['status'],
                             enrolment_date = row['enrolment_date'],
                             referral_channel = self.mapRefferalChannel(int(row['referral_channel_id'])),
                             referral = row['referral'] if row['referral'] != "N" else None,
