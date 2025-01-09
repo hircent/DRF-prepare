@@ -28,14 +28,14 @@ class StudentDetailsSerializer(serializers.ModelSerializer):
         fields = [
             'id','first_name','last_name','fullname','gender','dob',
             'school','deemcee_starting_grade','status','enrolment_date',
-            'branch','parent','enrolments'
+            'branch','parent','enrolments','referral_channel','referral','starter_kits'
         ]
 
     def get_branch(self, obj):
         return obj.branch.display_name
         # read_only_fields = ['branch', 'parent']
 
-class StudentCreateUpdateSerializer(serializers.ModelSerializer):
+class StudentCreateSerializer(serializers.ModelSerializer):
     timeslot = serializers.CharField(write_only=True)
 
     class Meta:
@@ -112,3 +112,15 @@ class StudentCreateUpdateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"timeslot": "Invalid class ID provided"})
 
         return student
+
+class StudentUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Students
+        fields = [
+            'id','first_name','last_name','fullname','gender','dob',
+            'school','deemcee_starting_grade','status','enrolment_date','referral_channel','referral'
+        ]
+
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)

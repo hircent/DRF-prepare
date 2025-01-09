@@ -11,7 +11,10 @@ from rest_framework.exceptions import PermissionDenied
 
 
 from .models import Students
-from .serializers import StudentListSerializer,StudentDetailsSerializer,StudentCreateUpdateSerializer
+from .serializers import (
+    StudentListSerializer,StudentDetailsSerializer,StudentCreateSerializer,
+    StudentUpdateSerializer
+)
 # Create your views here.
 
 
@@ -105,7 +108,7 @@ class StudentDetailsView(BasedCustomStudentsView,generics.RetrieveAPIView):
     
 class StudentCreateView(BasedCustomStudentsView,generics.CreateAPIView):
     queryset = Students.objects.all()
-    serializer_class = StudentCreateUpdateSerializer
+    serializer_class = StudentCreateSerializer
     permission_classes = [IsManagerOrHigher]
 
     def create(self, request, *args, **kwargs):
@@ -121,13 +124,14 @@ class StudentCreateView(BasedCustomStudentsView,generics.CreateAPIView):
 
 class StudentUpdateView(BasedCustomStudentsView,generics.UpdateAPIView):
     queryset = Students.objects.all()
-    serializer_class = StudentCreateUpdateSerializer
+    serializer_class = StudentUpdateSerializer
     permission_classes = [IsManagerOrHigher]
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        
         serializer.is_valid(raise_exception=True)
     
         self.perform_update(serializer)
