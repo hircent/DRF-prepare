@@ -22,7 +22,7 @@ class StudentListSerializer(serializers.ModelSerializer):
 class StudentDetailsSerializer(serializers.ModelSerializer):
     parent = ParentDetailSerializer()
     enrolments = StudentEnrolmentDetailsSerializer(many=True)
-
+    branch = serializers.SerializerMethodField()
     class Meta:
         model = Students
         fields = [
@@ -31,6 +31,8 @@ class StudentDetailsSerializer(serializers.ModelSerializer):
             'branch','parent','enrolments'
         ]
 
+    def get_branch(self, obj):
+        return obj.branch.display_name
         # read_only_fields = ['branch', 'parent']
 
 class StudentCreateUpdateSerializer(serializers.ModelSerializer):
