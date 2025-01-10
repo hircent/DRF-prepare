@@ -65,7 +65,7 @@ urlpatterns = [
     path("student/create",StudentCreateView.as_view(),name="create-student"),
     path("student/update/<int:student_id>",StudentUpdateView.as_view(),name="update-student"),
     path("student/delete/<int:student_id>",StudentDeleteView.as_view(),name="delete-student"),
-    path('api/students/export-csv/', ExportStudentsCSV.as_view(), name='export-students-csv'),
+    path('students/export-csv', ExportStudentsCSV.as_view(), name='export-students-csv'),
 
     #Parents
     path("parent/list",ParentListView.as_view(),name="parent-list"),

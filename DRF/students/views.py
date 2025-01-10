@@ -167,51 +167,59 @@ class StudentDeleteView(BasedCustomStudentsView,generics.DestroyAPIView):
 
 class ExportStudentsCSV(APIView):
     def get(self, request):
-        branchId = self.request.headers.get('branchId')
+        try:
+            branchId = self.request.headers.get('branchId')
 
-        if not branchId:
-            return Response({"message": "Branch ID is required"}, status=status.HTTP_400_BAD_REQUEST)
-        # Create the HttpResponse object with CSV header
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = f'attachment; filename="students-{datetime.now().strftime("%Y-%m-%d")}.csv"'
+            if not branchId:
+                return Response({"message": "Branch ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+                
+            # Create the HttpResponse object with CSV header
+            response = HttpResponse(
+                    content_type='text/csv; charset=utf-8',
+                    headers={
+                        'Content-Disposition': f'attachment; filename="students-{datetime.now().strftime("%Y-%m-%d")}.csv"',
+                        'Access-Control-Allow-Origin': '*',  # Or your specific frontend domain
+                        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+                        'Access-Control-Allow-Headers': 'Accept, Content-Type, X-Requested-With, branchId',
+                    },
+                )
 
-        # Create CSV writer
-        writer = csv.writer(response)
-        
-        # Write headers
-        writer.writerow([
-            'Full Name',
-            'Gender',
-            'Date of Birth',
-            'School',
-            'Starting Grade',
-            'Status',
-            'Referral Channel',
-            'Referral',
-            'Enrolment Date',
-            'Branch',
-            'Parent',
-            'Email',
-        ])
-
-        # Get all students
-        students = Students.objects.select_related('branch').all()
-        students = students.filter(branch_id=branchId)
-        # Write data
-        for student in students:
+            # Create CSV writer
+            writer = csv.writer(response)
+            
+            # Write headers
             writer.writerow([
-                student.fullname,
-                student.gender,
-                student.dob.strftime('%Y-%m-%d') if student.dob else '',
-                student.school,
-                student.deemcee_starting_grade,
-                student.status,
-                student.referral_channel,
-                student.referral,
-                student.enrolment_date.strftime('%Y-%m-%d'),
-                student.branch.name,  # Assuming branch has a name field
-                student.parent.username if student.parent else '',
-                student.parent.email
+                'Full Name',
+                'Gender',
+                'Date of Birth',
+                'School',
+                'Starting Grade',
+                'Status',
+                'Enrolment Date',
+                'Branch',
+                'Parent',
+                'Email',
             ])
 
-        return response
+            # Get all students
+            students = Students.objects.select_related('branch').all()
+            students = students.filter(branch_id=branchId)
+            # Write data
+            for student in students:
+                writer.writerow([
+                    student.fullname,
+                    student.gender,
+                    student.dob.strftime('%Y-%m-%d') if student.dob else '',
+                    student.school,
+                    student.deemcee_starting_grade,
+                    student.status,
+                    student.enrolment_date.strftime('%Y-%m-%d'),
+                    student.branch.name,  # Assuming branch has a name field
+                    student.parent.username if student.parent else '',
+                    student.parent.email
+                ])
+            return response
+        
+        except Exception as e:
+            print(f"Export error: {str(e)}")  # Add logging
+            return Response({'error': str(e)}, status=500)
