@@ -29,6 +29,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'dob',
             'ic_number',
             'occupation',
+            'phone',
             'spouse_name',
             'spouse_phone',
             'spouse_occupation',

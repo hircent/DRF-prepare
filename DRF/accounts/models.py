@@ -159,6 +159,7 @@ class UserProfile(models.Model):
     dob                 = models.DateField(null=True,blank=True)
     ic_number           = models.CharField(max_length=100,null=True,blank=True)
     occupation          = models.CharField(max_length=100,null=True,blank=True)
+    phone               = models.CharField(max_length=100,null=True,blank=True)
     spouse_name         = models.CharField(max_length=100,null=True,blank=True) 
     spouse_phone        = models.CharField(max_length=100,null=True,blank=True) 
     spouse_occupation   = models.CharField(max_length=100,null=True,blank=True) 
