@@ -139,13 +139,13 @@ class BranchDetailsSerializer(serializers.ModelSerializer):
         return None
 
 class UserBranchRoleSerializer(serializers.ModelSerializer):
-    role_name = serializers.CharField(source='role.name', read_only=True)
+    branch_role = serializers.CharField(source='role.name', read_only=True)
     branch_name = serializers.CharField(source='branch.name', read_only=True)
     branch_id = serializers.IntegerField(source='branch.id', read_only=True)
 
     class Meta:
         model = UserBranchRole
-        fields = ['role_name', 'branch_name', 'branch_id']
+        fields = ['branch_role', 'branch_name', 'branch_id']
 
 
 class PrincipalSerializer(serializers.ModelSerializer):
