@@ -88,7 +88,13 @@ class StudentListView(BasedCustomStudentsView,generics.ListAPIView):
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
+        filter = self.request.query_params.get('filter', None)
+
+        if filter:
+            queryset = queryset.filter(status=filter)
+
         page = self.paginate_queryset(queryset)
+        
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
