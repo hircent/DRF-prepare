@@ -4,7 +4,7 @@ from api.pagination import CustomPagination
 from branches.models import Branch, UserBranchRole
 from calendars.models import Calendar
 from category.models import Category
-from classes.models import Class
+from classes.models import Class,StudentEnrolment
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework.response import Response
@@ -252,3 +252,34 @@ class BaseCustomParentView(GenericViewWithExtractJWTInfo):
                 raise PermissionDenied("The requested user does not belong to the specified branch.")
 
             return parent
+        
+class BaseCustomEnrolmentView(GenericViewWithExtractJWTInfo):
+
+    def get_object(self):
+
+        branch_id = self.request.headers.get("BranchId")
+        enrolment_id = self.kwargs.get("enrolment_id")
+
+        if not branch_id:
+            raise PermissionDenied("Missing branch id.")
+        
+        user_branch_roles = self.extract_jwt_info("branch_role")
+        userId = self.extract_jwt_info("user_id")
+
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+
+        enrolment = get_object_or_404(StudentEnrolment,id=enrolment_id)
+        if is_superadmin:
+            
+            return enrolment
+        else:
+            # For non-superadmins, check if they have access to the specified branch
+            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+                raise PermissionDenied("You don't have access to this branch.")
+
+            # Check if the requested user belongs to the specified branch
+            user_branch_role = UserBranchRole.objects.filter(user=User.objects.get(id=userId), branch_id=branch_id).first()
+            if not user_branch_role:
+                raise PermissionDenied("The requested user does not belong to the specified branch.")
+
+            return enrolment
