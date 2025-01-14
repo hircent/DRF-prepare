@@ -3,6 +3,7 @@ from .models import (
     Class,StudentEnrolment,ClassLesson,StudentAttendance,EnrolmentExtension
 )
 from branches.models import Branch
+from category.serializers import ThemeLessonAndNameDetailsSerializer
 from django.db.models import F,Value
        
 '''
@@ -54,7 +55,6 @@ class StudentAttendanceListSerializer(serializers.ModelSerializer):
                 "fullname": obj.enrollment.student.fullname
             } 
         }
-
 
 '''
 Class Serializer
@@ -144,6 +144,13 @@ class ClassLessonListSerializer(serializers.ModelSerializer):
         serializer = StudentAttendanceListSerializer(attendances, many=True)
         return serializer.data
     
+class ClassLessonDetailsSerializer(serializers.ModelSerializer):
+    theme_lesson = ThemeLessonAndNameDetailsSerializer(many=False)
+
+    class Meta:
+        model = ClassLesson
+        fields = ['id','theme_lesson']
+    
 
 '''
 Time Slot Serializer
@@ -166,3 +173,12 @@ class TimeslotListSerializer(serializers.ModelSerializer):
         )
 
         return len(enrolments)
+    
+
+
+class EnrolmentLessonListSerializer(serializers.ModelSerializer):
+    class_lesson = ClassLessonDetailsSerializer(read_only=True)
+
+    class Meta:
+        model = StudentAttendance
+        fields = ['id','class_lesson','date','day','start_time','end_time','has_attended','status']

@@ -11,6 +11,16 @@ class ThemeLessonDetailsSerializer(serializers.ModelSerializer):
         model = ThemeLesson
         fields = ['id', 'name', 'order']
 
+class ThemeLessonAndNameDetailsSerializer(serializers.ModelSerializer):
+    theme = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ThemeLesson
+        fields = ['id', 'name', 'theme']
+
+    def get_theme(self, obj):
+        return obj.theme.name
+
 class ThemeLessonCreateUpdateSerializer(serializers.Serializer):
     lesson_one = serializers.CharField(required=True)
     lesson_two = serializers.CharField(required=True)
