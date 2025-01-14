@@ -14,14 +14,16 @@ from api.global_customViews import (
 from accounts.permission import IsManagerOrHigher
 from calendars.models import Calendar
 from django.db.models import Q
+from django.utils import timezone
 from rest_framework.views import APIView
 from django.http import JsonResponse
 from datetime import date, datetime ,timedelta
 
-from .models import Class,StudentEnrolment,ClassLesson
+from .models import Class,StudentEnrolment,ClassLesson,EnrolmentExtension
 from .serializers import (
     ClassListSerializer,StudentEnrolmentListSerializer,ClassCreateUpdateSerializer,ClassEnrolmentListSerializer,
-    ClassLessonListSerializer,TimeslotListSerializer,StudentEnrolmentDetailsSerializer,EnrolmentLessonListSerializer
+    ClassLessonListSerializer,TimeslotListSerializer,StudentEnrolmentDetailsSerializer,EnrolmentLessonListSerializer,
+    EnrolmentExtensionSerializer
 )
 
 '''
@@ -438,3 +440,36 @@ class EnrolmentLessonListView(BaseCustomListNoPaginationAPIView):
                 raise PermissionDenied("You don't have access to this branch or role.")
             else:
                 return student_lessons
+
+class EnrolmentExtendView(BaseCustomEnrolmentView,UpdateAPIView):
+    serializer_class = EnrolmentExtensionSerializer
+    permission_classes = [IsManagerOrHigher]
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        
+        if not instance.is_active:
+            return Response({
+                "success": False,
+                "msg": "Enrolment is not active, cannot extend."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            ext = EnrolmentExtension.objects.create(
+                enrolment=instance, 
+                branch=instance.branch, 
+                start_date=timezone.now().date()
+            )
+
+            if ext:
+                instance.remaining_lessons += 12
+                instance.save()
+                return Response({
+                    "success": True,
+                    "msg": "Enrolment extended successfully.",
+                })
+        except:
+            return Response({
+                "success": False,
+                "msg": "Something went wrong."
+                }, status=status.HTTP_404_NOT_FOUND)

@@ -5,6 +5,7 @@ from .models import (
 from branches.models import Branch
 from category.serializers import ThemeLessonAndNameDetailsSerializer
 from django.db.models import F,Value
+from django.utils import timezone
        
 '''
 Student Enrolment Serializer
@@ -173,8 +174,6 @@ class TimeslotListSerializer(serializers.ModelSerializer):
         )
 
         return len(enrolments)
-    
-
 
 class EnrolmentLessonListSerializer(serializers.ModelSerializer):
     class_lesson = ClassLessonDetailsSerializer(read_only=True)
@@ -182,3 +181,20 @@ class EnrolmentLessonListSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentAttendance
         fields = ['id','class_lesson','date','day','start_time','end_time','has_attended','status']
+
+class EnrolmentExtensionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentEnrolment
+        fields = ['id','remaining_lessons']
+
+    def update(self, instance, validated_data):
+
+        enrolmentExt,created = EnrolmentExtension.objects.get_or_create(
+            enrolment=instance, 
+            branch=instance.branch, 
+            start_date=timezone.now().date()
+        )
+
+        if created:
+            instance.remaining_lessons += 12
+            instance.save()
