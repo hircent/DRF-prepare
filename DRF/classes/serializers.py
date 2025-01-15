@@ -49,34 +49,33 @@ class StudentEnrolmentDetailsSerializer(serializers.ModelSerializer):
     def _get_cached_blocked_dates(self, year, branch_id):
         cache_key = f"{year}_{branch_id}"
         if cache_key not in self._blocked_dates_cache:
-            self._blocked_dates_cache[cache_key] = set(self._get_blocked_dates(year, branch_id))
+            self._blocked_dates_cache[cache_key] = set(self._get_blocked_dates([year,datetime.today().year], branch_id))
         return self._blocked_dates_cache[cache_key]
 
     def get_end_date(self, obj):
         blocked_dates = self._get_cached_blocked_dates(obj.start_date.year, obj.branch.id)
-        
-        # Calculate initial end date
+    
         today = datetime.today().date()
-        weeks_to_add = obj.remaining_lessons
-        
-        # Get day of week as integer (0 = Monday, 6 = Sunday)
         target_weekday = obj.start_date.weekday()
         initial_weekday = today.weekday()
         
-        # Calculate days to add to reach target weekday
+        # Calculate initial days to reach target weekday
         days_to_add = (target_weekday - initial_weekday) % 7
         
-        # Calculate base end date
-        end_date = today + timedelta(weeks=weeks_to_add, days=days_to_add)
+        # Start with today's date
+        current_date = today + timedelta(days=days_to_add)
+        weeks_remaining = obj.remaining_lessons
         
-        # Adjust for blocked dates
-        while end_date in blocked_dates:
-            end_date += timedelta(weeks=1)
-            
-        return end_date.strftime("%Y-%m-%d")
+        # Count weeks, skipping blocked dates
+        while weeks_remaining > 0:
+            current_date += timedelta(weeks=1)
+            if current_date not in blocked_dates:
+                weeks_remaining -= 1
+        
+        return current_date.strftime("%Y-%m-%d")
     
-    def _get_blocked_dates(self, year, branch_id):
-        all_events = Calendar.objects.filter(branch_id=branch_id, year=year)
+    def _get_blocked_dates(self, year_list, branch_id):
+        all_events = Calendar.objects.filter(branch_id=branch_id, year__in=year_list)
         blocked_dates = []
         for event in all_events:
             start_date = event.start_datetime.date()
