@@ -34,7 +34,7 @@ from classes.views import (
     ClassListView, StudentEnrolmentListView, ClassCreateView, ClassUpdateView,
     ClassDetailsView, ClassDestroyView, ClassLessonListByDateView,SearchTimeSlotListView,
     StudentEnrolmentDetailView, StudentEnrolmentUpdateView, StudentEnrolmentDeleteView,
-    EnrolmentLessonListView, EnrolmentExtendView
+    EnrolmentLessonListView, EnrolmentExtendView, VideoAssignmentListView
 )
 
 from django.urls import path
@@ -121,6 +121,9 @@ urlpatterns = [
     path('student/enrolment/delete/<int:enrolment_id>', StudentEnrolmentDeleteView.as_view(), name='delete-student-enrolment'),
     path('student/enrolment/<int:enrolment_id>/lessons/list', EnrolmentLessonListView.as_view(), name='student-enrolment-lesson-list'),
     path('student/enrolment/<int:enrolment_id>/extend', EnrolmentExtendView.as_view(), name='enrolment-extend'),
+
+    #Video Assignment
+    path('student/enrolment/<int:enrolment_id>/video/list', VideoAssignmentListView.as_view(), name='video-assignment-list'),
 
     #Attendance
     path('class/attendance/list', ClassLessonListByDateView.as_view(), name='class-lesson-list-by-date'),

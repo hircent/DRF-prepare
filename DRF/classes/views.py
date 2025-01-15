@@ -8,8 +8,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from api.global_customViews import (
-    BaseCustomListAPIView ,GenericViewWithExtractJWTInfo, BaseCustomClassView, BaseCustomListNoPaginationAPIView,
-    BaseCustomEnrolmentView
+    BaseCustomListAPIView, GenericViewWithExtractJWTInfo, BaseCustomClassView, BaseCustomListNoPaginationAPIView,
+    BaseCustomEnrolmentView, BaseVideoAssignmentView
 )
 from accounts.permission import IsManagerOrHigher
 from calendars.models import Calendar
@@ -23,7 +23,7 @@ from .models import Class,StudentEnrolment,ClassLesson,EnrolmentExtension
 from .serializers import (
     ClassListSerializer,StudentEnrolmentListSerializer,ClassCreateUpdateSerializer,ClassEnrolmentListSerializer,
     ClassLessonListSerializer,TimeslotListSerializer,StudentEnrolmentDetailsSerializer,EnrolmentLessonListSerializer,
-    EnrolmentExtensionSerializer
+    EnrolmentExtensionSerializer,VideoAssignmentListSerializer
 )
 
 '''
@@ -473,3 +473,31 @@ class EnrolmentExtendView(BaseCustomEnrolmentView,UpdateAPIView):
                 "success": False,
                 "msg": "Something went wrong."
                 }, status=status.HTTP_404_NOT_FOUND)
+
+class VideoAssignmentListView(BaseCustomListNoPaginationAPIView):
+    serializer_class = VideoAssignmentListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        branch_id = self.request.headers.get('BranchId')
+        enrolment_id = self.kwargs.get("enrolment_id")
+
+        if not enrolment_id:
+            raise PermissionDenied("Missing enrolment id.")
+        
+        if not branch_id:
+            raise PermissionDenied("Missing branch id.")
+
+        user_branch_roles = self.extract_jwt_info("branch_role")
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+
+        enrolment_videos = StudentEnrolment.objects.get(id=enrolment_id).video_assignments.all()
+
+        if is_superadmin:
+            return enrolment_videos 
+        else:
+            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+                
+                raise PermissionDenied("You don't have access to this branch or role.")
+            else:
+                return enrolment_videos

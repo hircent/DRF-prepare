@@ -51,7 +51,7 @@ class Command(CustomBaseCommand):
                             id          = row['id'],
                             enrolment   = enrolment,
                             theme       = theme,
-                            video_url   = row['video_url'],
+                            video_url   = row['video_url'] if row['video_url'] else None,
                             video_number    = row['video_number'],
                             submission_date  = self.parse_datetime_to_date(row['submission_date']) if row['submission_date'] else None,
                             created_at  = self.parse_datetime(row['created_at']),

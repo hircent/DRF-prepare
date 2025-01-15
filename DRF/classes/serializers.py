@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from .models import (
-    Class,StudentEnrolment,ClassLesson,StudentAttendance,EnrolmentExtension
+    Class,StudentEnrolment,ClassLesson,StudentAttendance,EnrolmentExtension, VideoAssignment
 )
+from api.mixins import BlockedDatesMixin
 from branches.models import Branch
 from category.serializers import ThemeLessonAndNameDetailsSerializer
 from calendars.models import Calendar
@@ -35,22 +36,12 @@ class StudentEnrolmentListForClassSerializer(serializers.ModelSerializer):
     def get_student(self, obj):
         return { "id": obj.student.id, "fullname": obj.student.fullname }
 
-class StudentEnrolmentDetailsSerializer(serializers.ModelSerializer):
+class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSerializer):
     end_date = serializers.SerializerMethodField()
 
     class Meta:
         model = StudentEnrolment
         fields = ['id','start_date','end_date','status','remaining_lessons','is_active','freeze_lessons','grade']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._blocked_dates_cache = {}
-
-    def _get_cached_blocked_dates(self, year, branch_id):
-        cache_key = f"{year}_{branch_id}"
-        if cache_key not in self._blocked_dates_cache:
-            self._blocked_dates_cache[cache_key] = set(self._get_blocked_dates([year,datetime.today().year], branch_id))
-        return self._blocked_dates_cache[cache_key]
 
     def get_end_date(self, obj):
         blocked_dates = self._get_cached_blocked_dates(obj.start_date.year, obj.branch.id)
@@ -73,20 +64,6 @@ class StudentEnrolmentDetailsSerializer(serializers.ModelSerializer):
                 weeks_remaining -= 1
         
         return current_date.strftime("%Y-%m-%d")
-    
-    def _get_blocked_dates(self, year_list, branch_id):
-        all_events = Calendar.objects.filter(branch_id=branch_id, year__in=year_list)
-        blocked_dates = []
-        for event in all_events:
-            start_date = event.start_datetime.date()
-            end_date = event.end_datetime.date()
-            if start_date == end_date:
-                blocked_dates.append(start_date)
-            else:
-                while start_date <= end_date:
-                    blocked_dates.append(start_date)
-                    start_date += timedelta(days=1)
-        return blocked_dates
 
 '''
 Student Attendance Serializer
@@ -248,3 +225,25 @@ class EnrolmentExtensionSerializer(serializers.ModelSerializer):
         if created:
             instance.remaining_lessons += 12
             instance.save()
+
+class VideoAssignmentListSerializer(BlockedDatesMixin,serializers.ModelSerializer):
+    submit_due_date = serializers.SerializerMethodField()
+
+    class Meta:
+        model = VideoAssignment
+        fields = ['id','video_url','video_number','submission_date','submit_due_date']
+    
+    def get_submit_due_date(self, obj):
+        blockedDate = self._get_cached_blocked_dates(obj.enrolment.start_date.year, obj.enrolment.branch.id)
+
+        current_date = obj.enrolment.start_date
+
+        weeks_remaining = int(obj.video_number) * 12
+
+        while weeks_remaining > 0:
+            current_date += timedelta(weeks=1)
+            if current_date not in blockedDate:
+                weeks_remaining -= 1
+
+        return current_date.strftime("%Y-%m-%d")
+
