@@ -178,4 +178,4 @@ class VideoAssignment(models.Model):
         verbose_name_plural = 'Video Assignments'
 
     def __str__(self) -> str:
-        return self.enrolment.student.fullname + "'s video assignment"
+        return self.enrolment.student.fullname + "'s video assignment " + str(self.video_number)
