@@ -7,6 +7,7 @@ from classes.serializers import StudentEnrolmentDetailsSerializer
 from category.models import Grade
 from rest_framework import serializers
 import json
+from datetime import datetime
 
 
 class StudentListSerializer(serializers.ModelSerializer):
@@ -107,6 +108,9 @@ class StudentCreateSerializer(serializers.ModelSerializer):
                     start_date=student.enrolment_date  # Set start_date before saving
                 )
                 new_enrolment.save()
+
+                student.enrolment_date = datetime.now().date()
+                student.save()
                 
             except Class.DoesNotExist:
                 raise serializers.ValidationError({"timeslot": "Invalid class ID provided"})
