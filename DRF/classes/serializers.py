@@ -4,8 +4,10 @@ from .models import (
 )
 from branches.models import Branch
 from category.serializers import ThemeLessonAndNameDetailsSerializer
+from calendars.models import Calendar
 from django.db.models import F,Value
 from django.utils import timezone
+from datetime import timedelta
        
 '''
 Student Enrolment Serializer
@@ -34,9 +36,33 @@ class StudentEnrolmentListForClassSerializer(serializers.ModelSerializer):
         return { "id": obj.student.id, "fullname": obj.student.fullname }
 
 class StudentEnrolmentDetailsSerializer(serializers.ModelSerializer):
+    end_date = serializers.SerializerMethodField()
+
     class Meta:
         model = StudentEnrolment
-        fields = ['id','start_date','status','remaining_lessons','is_active','freeze_lessons','grade']
+        fields = ['id','start_date','end_date','status','remaining_lessons','is_active','freeze_lessons','grade']
+
+    def get_end_date(self, obj):
+        blockedDate = set(self._get_blocked_dates(obj.start_date.year, obj.branch.id))
+        end_date = obj.start_date + timedelta(weeks=obj.remaining_lessons)
+        while end_date in blockedDate:
+            end_date += timedelta(weeks=1)
+
+        return end_date.strftime("%Y-%m-%d")
+    
+    def _get_blocked_dates(self, year, branch_id):
+        all_events = Calendar.objects.filter(branch_id=branch_id, year=year)
+        blocked_dates = []
+        for event in all_events:
+            start_date = event.start_datetime.date()
+            end_date = event.end_datetime.date()
+            if start_date == end_date:
+                blocked_dates.append(start_date)
+            else:
+                while start_date <= end_date:
+                    blocked_dates.append(start_date)
+                    start_date += timedelta(days=1)
+        return blocked_dates
 
 '''
 Student Attendance Serializer
