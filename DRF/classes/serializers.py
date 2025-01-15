@@ -9,6 +9,30 @@ from calendars.models import Calendar
 from django.db.models import F,Value
 from django.utils import timezone
 from datetime import timedelta ,  datetime
+
+'''
+Video Assignment Serializer
+'''
+class VideoAssignmentListSerializer(BlockedDatesMixin,serializers.ModelSerializer):
+    submit_due_date = serializers.SerializerMethodField()
+
+    class Meta:
+        model = VideoAssignment
+        fields = ['id','video_number','submission_date','submit_due_date']
+    
+    def get_submit_due_date(self, obj):
+        blockedDate = self._get_cached_blocked_dates(obj.enrolment.start_date.year, obj.enrolment.branch.id)
+
+        current_date = obj.enrolment.start_date
+
+        weeks_remaining = int(obj.video_number) * 12
+
+        while weeks_remaining > 0:
+            current_date += timedelta(weeks=1)
+            if current_date not in blockedDate:
+                weeks_remaining -= 1
+
+        return current_date.strftime("%Y-%m-%d")
        
 '''
 Student Enrolment Serializer
@@ -38,10 +62,15 @@ class StudentEnrolmentListForClassSerializer(serializers.ModelSerializer):
 
 class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSerializer):
     end_date = serializers.SerializerMethodField()
+    video_assignments = VideoAssignmentListSerializer(many=True)
 
     class Meta:
         model = StudentEnrolment
-        fields = ['id','start_date','end_date','status','remaining_lessons','is_active','freeze_lessons','grade']
+        fields = [
+            'id','start_date','end_date','status',
+            'remaining_lessons','is_active','freeze_lessons',
+            'grade','video_assignments'
+        ]
 
     def get_end_date(self, obj):
         blocked_dates = self._get_cached_blocked_dates(obj.start_date.year, obj.branch.id)
@@ -226,24 +255,5 @@ class EnrolmentExtensionSerializer(serializers.ModelSerializer):
             instance.remaining_lessons += 12
             instance.save()
 
-class VideoAssignmentListSerializer(BlockedDatesMixin,serializers.ModelSerializer):
-    submit_due_date = serializers.SerializerMethodField()
 
-    class Meta:
-        model = VideoAssignment
-        fields = ['id','video_url','video_number','submission_date','submit_due_date']
-    
-    def get_submit_due_date(self, obj):
-        blockedDate = self._get_cached_blocked_dates(obj.enrolment.start_date.year, obj.enrolment.branch.id)
-
-        current_date = obj.enrolment.start_date
-
-        weeks_remaining = int(obj.video_number) * 12
-
-        while weeks_remaining > 0:
-            current_date += timedelta(weeks=1)
-            if current_date not in blockedDate:
-                weeks_remaining -= 1
-
-        return current_date.strftime("%Y-%m-%d")
 
