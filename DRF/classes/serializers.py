@@ -7,7 +7,7 @@ from category.serializers import ThemeLessonAndNameDetailsSerializer
 from calendars.models import Calendar
 from django.db.models import F,Value
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta ,  datetime
        
 '''
 Student Enrolment Serializer
@@ -44,7 +44,16 @@ class StudentEnrolmentDetailsSerializer(serializers.ModelSerializer):
 
     def get_end_date(self, obj):
         blockedDate = set(self._get_blocked_dates(obj.start_date.year, obj.branch.id))
-        end_date = obj.start_date + timedelta(weeks=obj.remaining_lessons)
+
+        day = obj.start_date.strftime("%A")
+
+        today = datetime.today().date()
+
+        end_date = today + timedelta(weeks=obj.remaining_lessons)
+
+        while end_date.strftime("%A") != day:
+            end_date += timedelta(days=1)
+
         while end_date in blockedDate:
             end_date += timedelta(weeks=1)
 
