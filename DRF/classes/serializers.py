@@ -42,21 +42,37 @@ class StudentEnrolmentDetailsSerializer(serializers.ModelSerializer):
         model = StudentEnrolment
         fields = ['id','start_date','end_date','status','remaining_lessons','is_active','freeze_lessons','grade']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._blocked_dates_cache = {}
+
+    def _get_cached_blocked_dates(self, year, branch_id):
+        cache_key = f"{year}_{branch_id}"
+        if cache_key not in self._blocked_dates_cache:
+            self._blocked_dates_cache[cache_key] = set(self._get_blocked_dates(year, branch_id))
+        return self._blocked_dates_cache[cache_key]
+
     def get_end_date(self, obj):
-        blockedDate = set(self._get_blocked_dates(obj.start_date.year, obj.branch.id))
-
-        day = obj.start_date.strftime("%A")
-
+        blocked_dates = self._get_cached_blocked_dates(obj.start_date.year, obj.branch.id)
+        
+        # Calculate initial end date
         today = datetime.today().date()
-
-        end_date = today + timedelta(weeks=obj.remaining_lessons)
-
-        while end_date.strftime("%A") != day:
-            end_date += timedelta(days=1)
-
-        while end_date in blockedDate:
+        weeks_to_add = obj.remaining_lessons
+        
+        # Get day of week as integer (0 = Monday, 6 = Sunday)
+        target_weekday = obj.start_date.weekday()
+        initial_weekday = today.weekday()
+        
+        # Calculate days to add to reach target weekday
+        days_to_add = (target_weekday - initial_weekday) % 7
+        
+        # Calculate base end date
+        end_date = today + timedelta(weeks=weeks_to_add, days=days_to_add)
+        
+        # Adjust for blocked dates
+        while end_date in blocked_dates:
             end_date += timedelta(weeks=1)
-
+            
         return end_date.strftime("%Y-%m-%d")
     
     def _get_blocked_dates(self, year, branch_id):
