@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Class,StudentEnrolment,ClassLesson,StudentAttendance,EnrolmentExtension
+from .models import (
+    Class,StudentEnrolment,ClassLesson,StudentAttendance,
+    EnrolmentExtension,VideoAssignment
+)
 
 class ClassAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'label', 'start_time', 'end_time', 'day', 'branch')
@@ -26,9 +29,15 @@ class EnrolmentExtensionAdmin(admin.ModelAdmin):
     search_fields = ('enrolment__student__fullname',)
     list_filter = ('branch','enrolment__student__fullname',)
 
+class VideoAssignmentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'enrolment__student__fullname', 'theme', 'video_url', 'video_number', 'submission_date')
+    search_fields = ('enrolment__student__fullname',)
+    list_filter = ('enrolment__student__fullname','enrolment__branch')
+
 admin.site.register(Class, ClassAdmin)    
 admin.site.register(StudentEnrolment, StudentEnrolmentAdmin)
 admin.site.register(ClassLesson, ClassLessonAdmin)
 admin.site.register(StudentAttendance, StudentAttendanceAdmin)
 admin.site.register(EnrolmentExtension, EnrolmentExtensionAdmin)
+admin.site.register(VideoAssignment, VideoAssignmentAdmin)
 # Register your models here.

@@ -11,6 +11,7 @@ replace all ("") with (')
 python manage.py clean_user_address.py
 python manage.py clean_user_profile.py
 python manage.py clean_users.py
+python manage.py clean_video.py
 
 python manage.py create_role
 python manage.py create_branch_grade
@@ -36,6 +37,7 @@ python manage.py bulk_create_classes
 python manage.py bulk_create_students
 python manage.py bulk_create_enrolments
 python manage.py bulk_create_enrolment_extensions
+python manage.py bulk_create_video_assign
 
 python manage.py bulk_create_class_lesson
 python manage.py bulk_create_student_lessons

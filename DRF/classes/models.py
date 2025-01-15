@@ -163,18 +163,19 @@ class EnrolmentExtension(models.Model):
         return self.enrolment.student.fullname + "'s enrolment extension"
     
 
-# class VideoAssignment(models.Model):
-#     enrolment       = models.ForeignKey(StudentEnrolment, on_delete=models.CASCADE,related_name='video_assignments')
-#     submission_date = models.DateField()
-#     video_url       = models.URLField()
-#     theme           = models.ForeignKey(Theme, on_delete=models.SET_NULL, null=True)
-#     created_at      = models.DateTimeField(auto_now_add=True)
-#     updated_at      = models.DateTimeField(auto_now=True)
+class VideoAssignment(models.Model):
+    enrolment       = models.ForeignKey(StudentEnrolment, on_delete=models.CASCADE,related_name='video_assignments')
+    theme           = models.ForeignKey(Theme, on_delete=models.SET_NULL, null=True)
+    video_url       = models.URLField(null=True,blank=True)
+    video_number    = models.PositiveIntegerField()
+    submission_date = models.DateField(null=True,blank=True)
+    created_at      = models.DateTimeField(auto_now_add=True)
+    updated_at      = models.DateTimeField(auto_now=True)
 
-#     class Meta:
-#         db_table = 'video_assignments'
-#         verbose_name = 'Video Assignment'
-#         verbose_name_plural = 'Video Assignments'
+    class Meta:
+        db_table = 'video_assignments'
+        verbose_name = 'Video Assignment'
+        verbose_name_plural = 'Video Assignments'
 
-#     def __str__(self) -> str:
-#         return self.enrolment.student.fullname + "'s video assignment"
+    def __str__(self) -> str:
+        return self.enrolment.student.fullname + "'s video assignment"
