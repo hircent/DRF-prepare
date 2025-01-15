@@ -38,12 +38,12 @@ class StudentDetailsSerializer(serializers.ModelSerializer):
 
 class StudentCreateSerializer(serializers.ModelSerializer):
     timeslot = serializers.CharField(write_only=True)
-
+    start_date = serializers.DateField(write_only=True)
     class Meta:
         model = Students
         fields = [
             'id','first_name','last_name','fullname','gender','dob',
-            'school','deemcee_starting_grade','status','enrolment_date','timeslot','referral_channel','referral','starter_kits',
+            'school','deemcee_starting_grade','status','start_date','timeslot','referral_channel','referral','starter_kits',
             'branch','parent','created_at','updated_at'
         ]
 
@@ -92,7 +92,7 @@ class StudentCreateSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         timeslot = validated_data.pop('timeslot',None)
-
+        start_date = validated_data.pop('start_date')
         student = Students.objects.create(**validated_data)
 
         if timeslot:
@@ -105,12 +105,9 @@ class StudentCreateSerializer(serializers.ModelSerializer):
                     classroom=class_instance,
                     branch=student.branch,
                     grade=Grade.objects.get(grade_level=student.deemcee_starting_grade),
-                    start_date=student.enrolment_date  # Set start_date before saving
+                    start_date=start_date,
                 )
                 new_enrolment.save()
-
-                student.enrolment_date = datetime.now().date()
-                student.save()
                 
             except Class.DoesNotExist:
                 raise serializers.ValidationError({"timeslot": "Invalid class ID provided"})

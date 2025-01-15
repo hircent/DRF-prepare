@@ -69,7 +69,7 @@ class Students(models.Model):
     referral                = models.CharField(max_length=100,null=True,blank=True)
     starter_kits            = models.JSONField(null=True,blank=True,default=list)
 
-    enrolment_date          = models.DateField()
+    enrolment_date          = models.DateField(auto_now_add=True)
     created_at              = models.DateTimeField(auto_now_add=True)
     updated_at              = models.DateTimeField(auto_now=True)
 
