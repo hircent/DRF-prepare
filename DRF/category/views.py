@@ -104,8 +104,14 @@ class ThemeListView(BaseCustomThemeListAPIView):
     def get_queryset(self):
         queryset = Theme.objects.all()
         q = self.request.query_params.get('q', None)
+        year = self.request.query_params.get('year', None)
+        cat_name = self.request.query_params.get('category', None)
+
         if q:
             queryset = queryset.filter(category__id=q)
+
+        if year and cat_name:
+            queryset = queryset.filter(category__year=year,category__name=cat_name).order_by('-id')
     
         return queryset
     
