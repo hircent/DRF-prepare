@@ -13,7 +13,7 @@ class BlockedDatesMixin:
         return self._blocked_dates_cache[cache_key]
 
     def _get_blocked_dates(self, year_list, branch_id):
-        all_events = Calendar.objects.filter(branch_id=branch_id, year__in=year_list)
+        all_events = Calendar.objects.filter(branch_id=branch_id, year__in=year_list, entry_type='centre holiday')
         blocked_dates = []
         for event in all_events:
             start_date = event.start_datetime.date()
@@ -25,3 +25,16 @@ class BlockedDatesMixin:
                     blocked_dates.append(start_date)
                     start_date += timedelta(days=1)
         return blocked_dates
+    
+    def _calculate_video_due_date_weeks(self,video_number):
+        match int(video_number):
+            case 1:
+                weeks_remaining = 12
+            case 2:
+                weeks_remaining = 22
+            case 3:
+                weeks_remaining = 34
+            case 4:
+                weeks_remaining = 46
+
+        return weeks_remaining
