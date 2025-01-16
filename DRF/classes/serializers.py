@@ -1,14 +1,17 @@
-from rest_framework import serializers
+from api.mixins import BlockedDatesMixin
+from branches.models import Branch
+
+from category.models import Theme
+from calendars.models import Calendar
 from .models import (
     Class,StudentEnrolment,ClassLesson,StudentAttendance,EnrolmentExtension, VideoAssignment
 )
-from api.mixins import BlockedDatesMixin
-from branches.models import Branch
 from category.serializers import ThemeLessonAndNameDetailsSerializer
-from calendars.models import Calendar
 from django.db.models import F,Value
 from django.utils import timezone
 from datetime import timedelta ,  datetime
+from rest_framework import serializers
+
 
 '''
 Video Assignment Serializer
@@ -54,6 +57,27 @@ class VideoAssignmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSerial
                 weeks_remaining -= 1
 
         return current_date.strftime("%Y-%m-%d")
+    
+class VideoAssignmentUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = VideoAssignment
+        fields = ['id','theme','video_url','submission_date']
+    
+    def validate_theme(self, value):
+        if value and not Theme.objects.filter(id=value.id).exists():
+            raise serializers.ValidationError("Invalid Theme ID.")
+        return value
+        
+    def validate_video_url(self, value):
+        if value and not value.startswith(('http://', 'https://')):
+            raise serializers.ValidationError("Invalid URL format.")
+        return value
+
+    def update(self, instance, validated_data):
+        super().update(instance, validated_data)
+        instance.save()
+        return instance
        
 '''
 Student Enrolment Serializer
