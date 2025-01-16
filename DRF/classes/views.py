@@ -23,7 +23,7 @@ from .models import Class,StudentEnrolment,ClassLesson,EnrolmentExtension
 from .serializers import (
     ClassListSerializer,StudentEnrolmentListSerializer,ClassCreateUpdateSerializer,ClassEnrolmentListSerializer,
     ClassLessonListSerializer,TimeslotListSerializer,StudentEnrolmentDetailsSerializer,EnrolmentLessonListSerializer,
-    EnrolmentExtensionSerializer,VideoAssignmentListSerializer
+    EnrolmentExtensionSerializer,VideoAssignmentListSerializer,VideoAssignmentDetailsSerializer
 )
 
 '''
@@ -501,3 +501,12 @@ class VideoAssignmentListView(BaseCustomListNoPaginationAPIView):
                 raise PermissionDenied("You don't have access to this branch or role.")
             else:
                 return enrolment_videos
+            
+class VideoAssignmentDetailsView(BaseVideoAssignmentView,RetrieveAPIView):
+    serializer_class = VideoAssignmentDetailsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response({"success": True, "data": serializer.data}, status=status.HTTP_200_OK)

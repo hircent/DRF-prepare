@@ -4,7 +4,7 @@ from api.pagination import CustomPagination
 from branches.models import Branch, UserBranchRole
 from calendars.models import Calendar
 from category.models import Category
-from classes.models import Class,StudentEnrolment
+from classes.models import Class,StudentEnrolment,VideoAssignment
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework.response import Response
@@ -289,7 +289,7 @@ class BaseVideoAssignmentView(GenericViewWithExtractJWTInfo):
     def get_object(self):
 
         branch_id = self.request.headers.get("BranchId")
-        enrolment_id = self.kwargs.get("enrolment_id")
+        video_id = self.kwargs.get("video_id")
 
         if not branch_id:
             raise PermissionDenied("Missing branch id.")
@@ -299,10 +299,11 @@ class BaseVideoAssignmentView(GenericViewWithExtractJWTInfo):
 
         is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
 
-        enrolment = get_object_or_404(StudentEnrolment,id=enrolment_id)
+        video_assignments = get_object_or_404(VideoAssignment,id=video_id)
+        
         if is_superadmin:
             
-            return enrolment.video_assignments.all()
+            return video_assignments
         else:
             # For non-superadmins, check if they have access to the specified branch
             if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
@@ -313,4 +314,4 @@ class BaseVideoAssignmentView(GenericViewWithExtractJWTInfo):
             if not user_branch_role:
                 raise PermissionDenied("The requested user does not belong to the specified branch.")
 
-            return enrolment.video_assignments.all()
+            return video_assignments

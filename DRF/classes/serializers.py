@@ -25,7 +25,28 @@ class VideoAssignmentListSerializer(BlockedDatesMixin,serializers.ModelSerialize
 
         current_date = obj.enrolment.start_date
 
-        weeks_remaining = int(obj.video_number) * 12
+        weeks_remaining = self._calculate_video_due_date_weeks(obj.video_number)
+
+        while weeks_remaining > 0:
+            current_date += timedelta(weeks=1)
+            if current_date not in blockedDate:
+                weeks_remaining -= 1
+
+        return current_date.strftime("%Y-%m-%d")
+    
+class VideoAssignmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSerializer):
+    submit_due_date = serializers.SerializerMethodField()
+
+    class Meta:
+        model = VideoAssignment
+        fields = ['id','theme','video_url','video_number','submission_date','submit_due_date']
+
+    def get_submit_due_date(self, obj):
+        blockedDate = self._get_cached_blocked_dates(obj.enrolment.start_date.year, obj.enrolment.branch.id)
+
+        current_date = obj.enrolment.start_date
+
+        weeks_remaining = self._calculate_video_due_date_weeks(obj.video_number)
 
         while weeks_remaining > 0:
             current_date += timedelta(weeks=1)
