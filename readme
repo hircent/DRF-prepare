@@ -25,7 +25,9 @@ python manage.py bulk_create_categories_2024
 python manage.py bulk_create_categories_2025
 python manage.py bulk_create_theme_2023
 python manage.py bulk_create_theme_2024
+python manage.py bulk_create_theme_2025
 python manage.py bulk_create_theme_lessons
+python manage.py bulk_create_theme_lessons_2025
 
 python manage.py bulk_create_users
 python manage.py bulk_create_user_address
