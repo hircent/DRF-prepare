@@ -176,6 +176,7 @@ class VideoAssignment(models.Model):
         db_table = 'video_assignments'
         verbose_name = 'Video Assignment'
         verbose_name_plural = 'Video Assignments'
+        ordering = ['video_number']
 
     def __str__(self) -> str:
         return self.enrolment.student.fullname + "'s video assignment " + str(self.video_number)
