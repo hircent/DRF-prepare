@@ -269,6 +269,7 @@ class CalendarThemeLessonListView(BaseCustomCalendarThemeLessonListView):
         year = self.request.query_params.get('year')
         month = self.request.query_params.get('month')
         day = self.request.query_params.get('day')
+        date = self.request.query_params.get('date')
         branch_id = self.request.headers.get('BranchId')
         queryset = CalendarThemeLesson.objects.all().order_by('lesson_date')
 
@@ -285,6 +286,8 @@ class CalendarThemeLessonListView(BaseCustomCalendarThemeLessonListView):
             queryset = queryset.filter(month=month)
         if day:
             queryset = queryset.filter(day=day)
+        if date:
+            queryset = queryset.filter(lesson_date=date)
 
         if is_superadmin:
             return queryset.filter(branch_id=branch_id).distinct()
