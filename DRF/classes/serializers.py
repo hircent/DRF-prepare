@@ -253,6 +253,29 @@ class ClassLessonDetailsSerializer(serializers.ModelSerializer):
         model = ClassLesson
         fields = ['id','theme_lesson']
     
+class TodayClassLessonSerializer(serializers.ModelSerializer):
+    student_attendances = serializers.SerializerMethodField()
+    class_instance = ClassDetailsSerializer(read_only=True)
+    unmarked_students = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ClassLesson
+        fields = ['id', 'branch', 'class_instance', 'teacher', 'co_teacher', 'theme_lesson', 'date', 'status', 'student_attendances', 'unmarked_students']
+
+    def get_student_attendances(self, obj):
+        attendances = obj.attendances.all()
+        serializer = StudentAttendanceListSerializer(attendances, many=True)
+        return serializer.data
+    
+    def get_unmarked_students(self, obj):
+        # Get all active enrollments for this class
+        all_enrollments = obj.class_instance.enrolments.filter(is_active=True)
+        # Get IDs of students who already have attendance marked
+        marked_student_ids = obj.attendances.values_list('enrollment__student__id', flat=True)
+        # Filter enrollments to get only unmarked students
+        unmarked_enrollments = all_enrollments.exclude(student__id__in=marked_student_ids)
+        
+        return StudentEnrolmentListForClassSerializer(unmarked_enrollments, many=True).data
 
 '''
 Time Slot Serializer

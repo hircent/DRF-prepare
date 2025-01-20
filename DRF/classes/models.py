@@ -100,7 +100,7 @@ class ClassLesson(models.Model):
         verbose_name_plural = 'Class Lessons'
 
     def __str__(self):
-        return self.theme_lesson.name + "-" + self.theme_lesson.theme.category.label
+        return self.class_instance.name + ' ' + self.class_instance.day + " - " + str(self.class_instance.start_time)
 
 class StudentAttendance(models.Model):
     ATTENDANCE_CHOICES = [

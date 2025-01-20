@@ -24,7 +24,7 @@ from .serializers import (
     ClassListSerializer,StudentEnrolmentListSerializer,ClassCreateUpdateSerializer,ClassEnrolmentListSerializer,
     ClassLessonListSerializer,TimeslotListSerializer,StudentEnrolmentDetailsSerializer,EnrolmentLessonListSerializer,
     EnrolmentExtensionSerializer,VideoAssignmentListSerializer,VideoAssignmentDetailsSerializer,
-    VideoAssignmentUpdateSerializer
+    VideoAssignmentUpdateSerializer,TodayClassLessonSerializer
 )
 
 '''
@@ -202,7 +202,8 @@ class BaseClassLessonView(BaseCustomListNoPaginationAPIView):
     def _get_blocked_date(self, branch_id: int, year: int) -> Set[date]:
         events = Calendar.objects.filter(
             branch_id=branch_id,
-            year=year
+            year=year,
+            entry_type='centre holiday'
         ).values_list('start_datetime', 'end_datetime')
         
         blocked_dates = set()
@@ -389,6 +390,61 @@ class ClassLessonPastListByDateView(BaseCustomListNoPaginationAPIView):
             "data": serializer.data
         })
     
+class ClassLessonTodayListByDateView(BaseClassLessonView):
+    serializer_class = TodayClassLessonSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        branch_id = self.request.headers.get('BranchId')
+
+        if not branch_id:
+            raise PermissionDenied("Missing branch id.")
+
+        user_branch_roles = self.extract_jwt_info("branch_role")
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+
+        date = self.request.query_params.get('date')
+        if not date:
+            raise PermissionDenied("Missing date.")
+        
+        today = datetime.strptime(date, '%Y-%m-%d').date()
+
+        has_event = self._has_event(today,branch_id)
+        
+        if has_event:
+            return ClassLesson.objects.none()
+        
+        today_classes = Class.objects.filter(
+                branch__id=branch_id,
+                day=today.strftime("%A")
+            ).order_by('start_time')
+        
+        all_classes = []
+
+        for class_instance in today_classes:
+            lesson, created = ClassLesson.objects.get_or_create(
+                branch_id=branch_id,
+                class_instance=class_instance,
+                date=today,
+                defaults={
+                    'start_datetime': datetime.combine(today, class_instance.start_time),
+                    'end_datetime': datetime.combine(today, class_instance.end_time)
+                }
+            )
+            all_classes.append(lesson)
+
+        all_classes = ClassLesson.objects.filter(branch__id=branch_id,date=date).order_by('start_datetime')
+        
+        if is_superadmin:
+            return all_classes
+        else:
+            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+                
+                raise PermissionDenied("You don't have access to this branch or role.")
+            else:
+                return all_classes
+
+    
 class ClassLessonListByDateView(APIView):
     
     def dispatch(self, request, *args, **kwargs):
@@ -403,13 +459,21 @@ class ClassLessonListByDateView(APIView):
         except ValueError:
             return JsonResponse({"error": "Invalid date format. Use YYYY-MM-DD."}, status=400)
 
-        # Check if any ClassLesson exists for the given date
-        if ClassLesson.objects.filter(date=given_date).exists():
+        today = datetime.today().date()
+
+        # If past date
+        if given_date < today:
             # Use ClassLessonPastListByDateView if ClassLesson exists for the given date
             view = ClassLessonPastListByDateView.as_view()
-        else:
+
+        # If future date
+        elif given_date > today:
             # Use ClassEnrolmentListByDateView otherwise
             view = ClassLessonFutureListByDateView.as_view()
+
+        # If today's date
+        else:
+            view = ClassLessonTodayListByDateView.as_view()
 
         # Call the selected view
         return view(request, *args, **kwargs)
