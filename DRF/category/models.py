@@ -70,7 +70,7 @@ class ThemeLesson(models.Model):
         ordering = ['order']
     
     def __str__(self):
-        return self.name
+        return self.theme.name + ' ' + self.name + ' ' + str(self.theme.category.year)
 
 class Grade(models.Model):
     GRADE_CHOICES = [

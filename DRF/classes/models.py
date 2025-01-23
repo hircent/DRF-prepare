@@ -68,7 +68,7 @@ class StudentEnrolment(models.Model):
         verbose_name_plural = 'Student Enrollments'
 
     def __str__(self):
-        return self.student.fullname + "'s enrolment"
+        return self.student.fullname + "'s enrolment " + str(self.start_date.year)
 
     def save(self, *args, **kwargs):
         if self.remaining_lessons <= 0:
@@ -84,7 +84,7 @@ class ClassLesson(models.Model):
     branch              = models.ForeignKey(Branch,on_delete=models.CASCADE,related_name='class_lessons')
     class_instance      = models.ForeignKey(Class, on_delete=models.CASCADE,related_name='lessons')
     teacher             = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,related_name='teacher_class_lessons')
-    co_teacher          = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,related_name='co_teacher_class_lessons')
+    co_teacher          = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,related_name='co_teacher_class_lessons')
     theme_lesson        = models.ForeignKey(ThemeLesson,on_delete=models.SET_NULL, null=True,related_name='class_theme_lessons')
     date                = models.DateField()
     start_datetime      = models.DateTimeField(null=True)
@@ -100,7 +100,7 @@ class ClassLesson(models.Model):
         verbose_name_plural = 'Class Lessons'
 
     def __str__(self):
-        return self.class_instance.name + ' ' + self.class_instance.day + " - " + str(self.class_instance.start_time)
+        return str(self.id) + ' '+ self.class_instance.name + ' ' + self.class_instance.day + " - " + str(self.class_instance.start_time)
 
 class StudentAttendance(models.Model):
     ATTENDANCE_CHOICES = [
