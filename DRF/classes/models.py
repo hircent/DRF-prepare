@@ -107,7 +107,7 @@ class StudentAttendance(models.Model):
         ('ATTENDED', 'Attended'),
         ('ABSENT', 'Absent'),
         ('FREEZED', 'Freezed'),
-        ('REPLACED', 'Replaced'),
+        ('REPLACEMENT', 'Replacement'),
     ]
 
     DAY_CHOICES = [
@@ -128,7 +128,7 @@ class StudentAttendance(models.Model):
     start_time      = models.TimeField()
     end_time        = models.TimeField()
     has_attended    = models.BooleanField(default=False)
-    status          = models.CharField(max_length=10, choices=ATTENDANCE_CHOICES)
+    status          = models.CharField(max_length=20, choices=ATTENDANCE_CHOICES)
     created_at      = models.DateTimeField(auto_now_add=True)
     updated_at      = models.DateTimeField(auto_now=True)
 
