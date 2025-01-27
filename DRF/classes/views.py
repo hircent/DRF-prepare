@@ -627,9 +627,13 @@ class MarkAttendanceView(BaseAPIView):
     def post(self, request, *args, **kwargs):
         try:
             branch_id = self.request.headers.get('BranchId')
+            date = self.request.query_params.get('date')
 
             if not branch_id:
                 raise PermissionDenied("Missing branch id.")
+            
+            if not date:
+                raise PermissionDenied("Missing attendance date.")
 
             user_branch_roles = self.extract_jwt_info("branch_role")
             is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
@@ -645,12 +649,6 @@ class MarkAttendanceView(BaseAPIView):
 
             class_lesson = ClassLesson.objects.get(id=class_lesson_id)
 
-            class_lesson.theme_lesson_id = theme_lesson_id
-            class_lesson.teacher_id = teacher_id
-
-            if co_teacher_id:
-                class_lesson.co_teacher_id = co_teacher_id
-
             if not is_superadmin:
                 if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
                     
@@ -659,10 +657,10 @@ class MarkAttendanceView(BaseAPIView):
             if class_status == "COMPLETED":
                 self.update_attendance(student_enrolments,class_lesson)
             elif class_status == "PENDING":
-                self.create_attendances(student_enrolments,class_lesson)
+                self.create_attendances(student_enrolments,class_lesson,branch_id,date)
                 class_lesson.status = "COMPLETED"
 
-            class_lesson.save()
+            self._update_class(class_lesson,theme_lesson_id,teacher_id,co_teacher_id)
 
             return Response({'success': True,'msg': 'Attendance updated successfully.'}, status=status.HTTP_200_OK)
         except Exception as e:
@@ -675,16 +673,17 @@ class MarkAttendanceView(BaseAPIView):
     def update_attendance(self,enrolments,class_lesson_instance):
         try:
             for enrolment in enrolments:
-                enrolment_id = enrolment.get('id')
+                attendance_id = enrolment.get('id')
                 enrolment_status = enrolment.get('status')
 
-                attendance = StudentAttendance.objects.get(
-                    enrollment_id=enrolment_id, 
-                    class_lesson=class_lesson_instance
-                )
-                attendance.status = enrolment_status
-                attendance.has_attended = enrolment_status == 'ATTENDED'
-                attendance.save()
+                if attendance_id and enrolment_status:
+                    attendance = StudentAttendance.objects.get(
+                        id=attendance_id, 
+                        class_lesson=class_lesson_instance
+                    )
+                    attendance.status = enrolment_status
+                    attendance.has_attended = enrolment_status == 'ATTENDED'
+                    attendance.save()
 
         except Exception as e:
             return Response({
@@ -693,25 +692,78 @@ class MarkAttendanceView(BaseAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
     @transaction.atomic
-    def create_attendances(self,enrolments,class_lesson_instance):
+    def create_attendances(self, enrolments, class_lesson_instance, branch_id, date):
         try:
             att_arr = []
-            for enrolment in enrolments:
-                enrolment_id = enrolment.get('id')
-                enrolment_status = enrolment.get('status')
-                attendance = StudentAttendance(
-                    
-                    enrolment_id=enrolment_id,
-                    class_lesson=class_lesson_instance,
-                    status=enrolment_status,
-                    has_attended=True
-                )
+            # Get the time values once
+            start_time = class_lesson_instance.class_instance.start_time
+            end_time = class_lesson_instance.class_instance.end_time
 
-                att_arr.append(attendance)
-            StudentAttendance.objects.bulk_create(att_arr)
+            for enrolment in enrolments:
+                try:
+                    enrolment_id = enrolment.get('id')
+                    enrolment_status = enrolment.get('status')
+                    if not enrolment_id or not enrolment_status:
+                        print(f"Skipping invalid enrolment data: {enrolment}")
+                        continue
+
+                    # Validate the data before creating attendance
+                    if not all([
+                        branch_id,
+                        class_lesson_instance,
+                        class_lesson_instance.class_instance,
+                        date
+                    ]):
+                        print("Missing required data:", {
+                            'branch_id': branch_id,
+                            'class_lesson': bool(class_lesson_instance),
+                            'class_instance': bool(class_lesson_instance and class_lesson_instance.class_instance),
+                            'date': date
+                        })
+                        continue
+
+                    # Create attendance object with detailed error checking
+                    try:
+                        attendance = StudentAttendance(
+                            enrollment_id=enrolment_id,
+                            branch_id=branch_id,
+                            class_lesson=class_lesson_instance,
+                            date=date,
+                            day=class_lesson_instance.class_instance.day,
+                            start_time=start_time,
+                            end_time=end_time,
+                            has_attended=enrolment_status == 'ATTENDED',
+                            status=enrolment_status,
+                        )
+                        print(f"Created attendance object with times - start: {attendance.start_time}, end: {attendance.end_time}")
+                        att_arr.append(attendance)
+
+                    except Exception as model_error:
+                        print(f"Error creating attendance object: {str(model_error)}")
+                        raise
+
+                except Exception as loop_error:
+                    print(f"Error processing enrolment {enrolment}: {str(loop_error)}")
+                    raise
+
+            if att_arr:
+                created_attendances = StudentAttendance.objects.bulk_create(att_arr)
+                return created_attendances
+            else:
+                return []
 
         except Exception as e:
-            return Response({
-                'success': False, 
-                'msg': str(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            raise Exception(f"Error while creating attendances: {str(e)}")
+        
+    def _update_class(self, class_lesson_instance,theme_lesson_id,teacher_id,co_teacher_id):
+        class_lesson_instance.theme_lesson_id = theme_lesson_id
+        class_lesson_instance.teacher_id = teacher_id
+
+        if co_teacher_id:
+            class_lesson_instance.co_teacher_id = co_teacher_id
+
+        class_lesson_instance.save()
+
+    def _update_enrolment_remaining_lesson(self,attendances):
+        pass
+
