@@ -14,7 +14,7 @@ from api.global_customViews import (
 from accounts.permission import IsManagerOrHigher
 from calendars.models import Calendar
 from classes.models import StudentAttendance
-from django.db.models import Q
+from django.db.models import Q, F, Case, When, Value
 from django.db import transaction
 from django.utils import timezone
 from django.http import JsonResponse
@@ -669,7 +669,6 @@ class MarkAttendanceView(BaseAPIView):
                 'msg': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
 
-    @transaction.atomic
     def update_attendance(self,enrolments,class_lesson_instance):
         try:
             for enrolment in enrolments:
@@ -691,11 +690,18 @@ class MarkAttendanceView(BaseAPIView):
                 'msg': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
 
-    @transaction.atomic
     def create_attendances(self, enrolments, class_lesson_instance, branch_id, date):
         try:
             att_arr = []
-            # Get the time values once
+
+            attend_or_absent_arr = []
+
+            freeze_arr = []
+
+            sfreeze_arr = []
+
+            replacement_arr = []
+
             start_time = class_lesson_instance.class_instance.start_time
             end_time = class_lesson_instance.class_instance.end_time
 
@@ -738,6 +744,15 @@ class MarkAttendanceView(BaseAPIView):
                         print(f"Created attendance object with times - start: {attendance.start_time}, end: {attendance.end_time}")
                         att_arr.append(attendance)
 
+                        if enrolment_status in ['ATTENDED','ABSENT']:
+                            attend_or_absent_arr.append(enrolment_id)
+                        elif enrolment_status == 'FREEZED':
+                            freeze_arr.append(enrolment_id)
+                        elif enrolment_status == 'SFREEZED':
+                            sfreeze_arr.append(enrolment_id)
+                        elif enrolment_status == 'REPLACEMENT':
+                            replacement_arr.append(enrolment_id)
+
                     except Exception as model_error:
                         print(f"Error creating attendance object: {str(model_error)}")
                         raise
@@ -747,10 +762,11 @@ class MarkAttendanceView(BaseAPIView):
                     raise
 
             if att_arr:
-                created_attendances = StudentAttendance.objects.bulk_create(att_arr)
-                return created_attendances
-            else:
-                return []
+                StudentAttendance.objects.bulk_create(att_arr)
+
+                self._update_enrolment_remaining_lesson_after_create_attendance(
+                    attend_or_absent_arr,freeze_arr,sfreeze_arr,replacement_arr
+                )
 
         except Exception as e:
             raise Exception(f"Error while creating attendances: {str(e)}")
@@ -764,6 +780,67 @@ class MarkAttendanceView(BaseAPIView):
 
         class_lesson_instance.save()
 
-    def _update_enrolment_remaining_lesson(self,attendances):
-        pass
+    def _update_enrolment_remaining_lesson_after_create_attendance(self,attend_or_absent_arr,freeze_arr,sfreeze_arr,replacement_arr):
+        
+        try:
+            enrolments_to_update = []
+
+            if attend_or_absent_arr:
+                StudentEnrolment.objects.filter(
+                    id__in=attend_or_absent_arr
+                ).select_for_update().update(
+                    remaining_lessons=F("remaining_lessons") - 1,
+                    is_active=Case(
+                        When(remaining_lessons=1, then=Value(False)), # When remaining_lessons becomes 0 after decrement
+                        default=Value(True)
+                    ),
+                    status=Case(
+                        When(remaining_lessons=1, then=Value('COMPLETED')), # When remaining_lessons becomes 0 after decrement
+                        default=F('status')
+                    )
+                )
+
+            if freeze_arr:
+                student_enrolments = StudentEnrolment.objects.filter(
+                    id__in=freeze_arr
+                ).select_for_update()
+
+                for se in student_enrolments:
+
+                    if se.freeze_lessons <= 0:
+                        raise ValueError(f"Enrolment {se.id} has exceeded freeze count")
+                    
+                    se.freeze_lessons = F("freeze_lessons") - 1
+                    se.remaining_lessons = F("remaining_lessons") + 1
+                
+                    enrolments_to_update.append(se)
+            
+            if sfreeze_arr:
+                student_enrolments = StudentEnrolment.objects.filter(
+                    id__in=sfreeze_arr
+                ).select_for_update()
+
+                for se in student_enrolments:
+                    se.remaining_lessons = F("remaining_lessons") + 1
+
+                    enrolments_to_update.append(se)
+            
+            if replacement_arr:
+                student_enrolments = StudentEnrolment.objects.filter(
+                    id__in=replacement_arr
+                ).select_for_update()
+            
+                for se in student_enrolments:
+                    se.remaining_lessons = F("remaining_lessons") + 1
+                    enrolments_to_update.append(se)
+
+            if enrolments_to_update:
+                fields_to_update = ['remaining_lessons', 'is_active', 'status', 'freeze_lessons']
+                StudentEnrolment.objects.bulk_update(
+                    enrolments_to_update,
+                    fields_to_update
+                )
+        
+        except Exception as e:
+            raise Exception(f"Error updating enrolment lessons: {str(e)}")
 

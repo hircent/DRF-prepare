@@ -46,9 +46,9 @@ class Class(models.Model):
 
 class StudentEnrolment(models.Model):
     ENROLMENT_STATUS_CHOICES = [
-        ('IN_PROGRESS', 'In Progress'),
-        ('COMPLETED', 'Completed'),
-        ('DROPPED_OUT', 'Dropped Out'),
+        ('IN_PROGRESS', 'IN PROGRESS'),
+        ('COMPLETED', 'COMPLETED'),
+        ('DROPPED_OUT', 'DROPPED OUT'),
     ]
     branch              = models.ForeignKey(Branch, on_delete=models.CASCADE, related_name='enrolments')
     grade               = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True)
@@ -77,15 +77,15 @@ class StudentEnrolment(models.Model):
 
 class ClassLesson(models.Model):
     LESSON_STATUS_CHOICES = [
-        ('PENDING', 'Pending'),
-        ('COMPLETED', 'Completed')
+        ('PENDING', 'PENDING'),
+        ('COMPLETED', 'COMPLETED')
     ]
 
     branch              = models.ForeignKey(Branch,on_delete=models.CASCADE,related_name='class_lessons')
     class_instance      = models.ForeignKey(Class, on_delete=models.CASCADE,related_name='lessons')
-    teacher             = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,related_name='teacher_class_lessons')
+    teacher             = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,related_name='teacher_class_lessons')
     co_teacher          = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,related_name='co_teacher_class_lessons')
-    theme_lesson        = models.ForeignKey(ThemeLesson,on_delete=models.SET_NULL, null=True,related_name='class_theme_lessons')
+    theme_lesson        = models.ForeignKey(ThemeLesson,on_delete=models.SET_NULL, null=True, blank=True,related_name='class_theme_lessons')
     date                = models.DateField()
     start_datetime      = models.DateTimeField(null=True)
     end_datetime        = models.DateTimeField(null=True)
@@ -104,10 +104,11 @@ class ClassLesson(models.Model):
 
 class StudentAttendance(models.Model):
     ATTENDANCE_CHOICES = [
-        ('ATTENDED', 'Attended'),
-        ('ABSENT', 'Absent'),
-        ('FREEZED', 'Freezed'),
-        ('REPLACEMENT', 'Replacement'),
+        ('ATTENDED', 'ATTENDED'),
+        ('ABSENT', 'ABSENT'),
+        ('FREEZED', 'FREEZED'),
+        ('SFREEZED', 'SFREEZED'),
+        ('REPLACEMENT', 'REPLACEMENT'),
     ]
 
     DAY_CHOICES = [
