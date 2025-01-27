@@ -413,40 +413,52 @@ class ClassLessonTodayListByDateView(BaseClassLessonView):
         
         today = datetime.strptime(date, '%Y-%m-%d').date()
 
-        has_event = self._has_event(today,branch_id)
+        has_event = self._has_event(today, branch_id)
         
         if has_event:
             return ClassLesson.objects.none()
         
+        # First check for existing class lessons
+        existing_lessons = ClassLesson.objects.filter(
+            branch_id=branch_id,
+            date=today
+        ).select_related('class_instance')
+        
+        # Get all classes for today
         today_classes = Class.objects.filter(
-                branch__id=branch_id,
-                day=today.strftime("%A")
-            ).order_by('start_time')
+            branch_id=branch_id,
+            day=today.strftime("%A")
+        ).order_by('start_time')
         
-        all_classes = []
-
+        # Create missing lessons
+        existing_class_ids = set(lesson.class_instance_id for lesson in existing_lessons)
+        lessons_to_create = []
+        
         for class_instance in today_classes:
-            lesson, created = ClassLesson.objects.get_or_create(
-                branch_id=branch_id,
-                class_instance=class_instance,
-                date=today,
-                defaults={
-                    'start_datetime': datetime.combine(today, class_instance.start_time),
-                    'end_datetime': datetime.combine(today, class_instance.end_time)
-                }
-            )
-            all_classes.append(lesson)
-
-        all_classes = ClassLesson.objects.filter(branch__id=branch_id,date=date).order_by('start_datetime')
+            if class_instance.id not in existing_class_ids:
+                lessons_to_create.append(
+                    ClassLesson(
+                        branch_id=branch_id,
+                        class_instance=class_instance,
+                        date=today,
+                        start_datetime=datetime.combine(today, class_instance.start_time),
+                        end_datetime=datetime.combine(today, class_instance.end_time)
+                    )
+                )
         
-        if is_superadmin:
-            return all_classes
-        else:
-            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
-                
-                raise PermissionDenied("You don't have access to this branch or role.")
-            else:
-                return all_classes
+        if lessons_to_create:
+            ClassLesson.objects.bulk_create(lessons_to_create)
+            
+        # Get all lessons for today after creation
+        all_lessons = ClassLesson.objects.filter(
+            branch_id=branch_id,
+            date=today
+        ).order_by('start_datetime')
+        
+        if not is_superadmin and not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+            raise PermissionDenied("You don't have access to this branch or role.")
+            
+        return all_lessons
 
     
 class ClassLessonListByDateView(APIView):
@@ -626,6 +638,7 @@ class MarkAttendanceView(BaseAPIView):
 
             class_lesson_id = data.get('classId') or data.get('class_lesson')
             teacher_id = data.get('teacherId') or data.get('teacher')
+            class_status = data.get('status')
             co_teacher_id = data.get('coTeacherId') or data.get('co_teacher')
             student_enrolments = json.loads(data.get('student_enrolments'))
             theme_lesson_id = data.get('theme_lesson')
@@ -643,17 +656,17 @@ class MarkAttendanceView(BaseAPIView):
                     
                     raise PermissionDenied("You don't have access to this branch or role.")
 
-            if class_lesson.status == "COMPLETED":
+            if class_status == "COMPLETED":
                 self.update_attendance(student_enrolments,class_lesson)
-            elif class_lesson.status == "PENDING":
+            elif class_status == "PENDING":
                 self.create_attendances(student_enrolments,class_lesson)
                 class_lesson.status = "COMPLETED"
 
             class_lesson.save()
 
-            return JsonResponse({'success': True,'msg': 'Attendance updated successfully.'},status=status.HTTP_200_OK)
+            return Response({'success': True,'msg': 'Attendance updated successfully.'}, status=status.HTTP_200_OK)
         except Exception as e:
-            return JsonResponse({
+            return Response({
                 'success': False, 
                 'msg': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
@@ -674,7 +687,7 @@ class MarkAttendanceView(BaseAPIView):
                 attendance.save()
 
         except Exception as e:
-            return JsonResponse({
+            return Response({
                 'success': False, 
                 'msg': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
@@ -684,18 +697,21 @@ class MarkAttendanceView(BaseAPIView):
         try:
             att_arr = []
             for enrolment in enrolments:
+                enrolment_id = enrolment.get('id')
+                enrolment_status = enrolment.get('status')
                 attendance = StudentAttendance(
-                    user=enrolment.user,
+                    
+                    enrolment_id=enrolment_id,
                     class_lesson=class_lesson_instance,
-                    status='PENDING',
-                    has_attended=False
+                    status=enrolment_status,
+                    has_attended=True
                 )
 
                 att_arr.append(attendance)
             StudentAttendance.objects.bulk_create(att_arr)
 
         except Exception as e:
-            return JsonResponse({
+            return Response({
                 'success': False, 
                 'msg': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
