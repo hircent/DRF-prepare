@@ -35,7 +35,7 @@ from classes.views import (
     ClassDetailsView, ClassDestroyView, ClassLessonListByDateView,SearchTimeSlotListView,
     StudentEnrolmentDetailView, StudentEnrolmentUpdateView, StudentEnrolmentDeleteView,
     EnrolmentLessonListView, EnrolmentExtendView, VideoAssignmentListView, VideoAssignmentDetailsView,
-    VideoAssignmentUpdateView
+    VideoAssignmentUpdateView, MarkAttendanceView
 )
 
 from django.urls import path
@@ -130,6 +130,7 @@ urlpatterns = [
 
     #Attendance
     path('class/attendance/list', ClassLessonListByDateView.as_view(), name='class-lesson-list-by-date'),
+    path('class/mark-attendance', MarkAttendanceView.as_view(), name='mark-attendance'),
 
     #Others
     path("branch/principals/branch_grade",CombinedPrincipalsAndBranchGradesView.as_view(),name="principal-branch_grade-for-branch"),

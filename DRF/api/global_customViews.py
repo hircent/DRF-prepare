@@ -3,12 +3,12 @@ from accounts.serializers import UserSerializer
 from api.pagination import CustomPagination
 from branches.models import Branch, UserBranchRole
 from calendars.models import Calendar
-from category.models import Category
 from classes.models import Class,StudentEnrolment,VideoAssignment
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.views import APIView
 
 
 class GenericViewWithExtractJWTInfo(GenericAPIView):
@@ -315,3 +315,12 @@ class BaseVideoAssignmentView(GenericViewWithExtractJWTInfo):
                 raise PermissionDenied("The requested user does not belong to the specified branch.")
 
             return video_assignments
+        
+class BaseAPIView(GenericViewWithExtractJWTInfo,APIView):
+
+    def check_is_superadmin(self):
+        user_branch_roles = self.extract_jwt_info("branch_role")
+
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+
+        return is_superadmin

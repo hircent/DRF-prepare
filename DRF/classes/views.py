@@ -9,15 +9,17 @@ from rest_framework.response import Response
 from rest_framework import status
 from api.global_customViews import (
     BaseCustomListAPIView, GenericViewWithExtractJWTInfo, BaseCustomClassView, BaseCustomListNoPaginationAPIView,
-    BaseCustomEnrolmentView, BaseVideoAssignmentView
+    BaseCustomEnrolmentView, BaseVideoAssignmentView, BaseAPIView
 )
 from accounts.permission import IsManagerOrHigher
 from calendars.models import Calendar
+from classes.models import StudentAttendance
 from django.db.models import Q
+from django.db import transaction
 from django.utils import timezone
-from rest_framework.views import APIView
 from django.http import JsonResponse
 from datetime import date, datetime ,timedelta
+from rest_framework.views import APIView
 
 from .models import Class,StudentEnrolment,ClassLesson,EnrolmentExtension
 from .serializers import (
@@ -26,6 +28,8 @@ from .serializers import (
     EnrolmentExtensionSerializer,VideoAssignmentListSerializer,VideoAssignmentDetailsSerializer,
     VideoAssignmentUpdateSerializer,TodayClassLessonSerializer
 )
+
+import json
 
 '''
 Class Views
@@ -604,3 +608,94 @@ class VideoAssignmentUpdateView(BaseVideoAssignmentView,UpdateAPIView):
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
+    
+class MarkAttendanceView(BaseAPIView):
+
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        try:
+            branch_id = self.request.headers.get('BranchId')
+
+            if not branch_id:
+                raise PermissionDenied("Missing branch id.")
+
+            user_branch_roles = self.extract_jwt_info("branch_role")
+            is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+
+            data = json.loads(request.body)
+
+            class_lesson_id = data.get('classId') or data.get('class_lesson')
+            teacher_id = data.get('teacherId') or data.get('teacher')
+            co_teacher_id = data.get('coTeacherId') or data.get('co_teacher')
+            student_enrolments = json.loads(data.get('student_enrolments'))
+            theme_lesson_id = data.get('theme_lesson')
+
+            class_lesson = ClassLesson.objects.get(id=class_lesson_id)
+
+            class_lesson.theme_lesson_id = theme_lesson_id
+            class_lesson.teacher_id = teacher_id
+
+            if co_teacher_id:
+                class_lesson.co_teacher_id = co_teacher_id
+
+            if not is_superadmin:
+                if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+                    
+                    raise PermissionDenied("You don't have access to this branch or role.")
+
+            if class_lesson.status == "COMPLETED":
+                self.update_attendance(student_enrolments,class_lesson)
+            elif class_lesson.status == "PENDING":
+                self.create_attendances(student_enrolments,class_lesson)
+                class_lesson.status = "COMPLETED"
+
+            class_lesson.save()
+
+            return JsonResponse({'success': True,'msg': 'Attendance updated successfully.'},status=status.HTTP_200_OK)
+        except Exception as e:
+            return JsonResponse({
+                'success': False, 
+                'msg': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+    @transaction.atomic
+    def update_attendance(self,enrolments,class_lesson_instance):
+        try:
+            for enrolment in enrolments:
+                enrolment_id = enrolment.get('id')
+                enrolment_status = enrolment.get('status')
+
+                attendance = StudentAttendance.objects.get(
+                    enrollment_id=enrolment_id, 
+                    class_lesson=class_lesson_instance
+                )
+                attendance.status = enrolment_status
+                attendance.has_attended = enrolment_status == 'ATTENDED'
+                attendance.save()
+
+        except Exception as e:
+            return JsonResponse({
+                'success': False, 
+                'msg': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+    @transaction.atomic
+    def create_attendances(self,enrolments,class_lesson_instance):
+        try:
+            att_arr = []
+            for enrolment in enrolments:
+                attendance = StudentAttendance(
+                    user=enrolment.user,
+                    class_lesson=class_lesson_instance,
+                    status='PENDING',
+                    has_attended=False
+                )
+
+                att_arr.append(attendance)
+            StudentAttendance.objects.bulk_create(att_arr)
+
+        except Exception as e:
+            return JsonResponse({
+                'success': False, 
+                'msg': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
