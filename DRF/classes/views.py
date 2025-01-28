@@ -680,15 +680,102 @@ class MarkAttendanceView(BaseAPIView):
                         id=attendance_id, 
                         class_lesson=class_lesson_instance
                     )
-                    attendance.status = enrolment_status
-                    attendance.has_attended = enrolment_status == 'ATTENDED'
-                    attendance.save()
+                    
+                    if enrolment_status in ['ATTENDED','ABSENT']:
+                        self._update_attendance_for_attended_or_absent(attendance,enrolment_status)
+                    elif enrolment_status == 'FREEZED':
+                        self._update_attendance_for_freeze(attendance,enrolment_status)
+                    elif enrolment_status == 'SFREEZED':
+                        self._update_attendance_for_sfreeze(attendance,enrolment_status)
+                    elif enrolment_status == 'REPLACEMENT':
+                        self._update_attendance_for_replacement(attendance,enrolment_status)
 
         except Exception as e:
             return Response({
                 'success': False, 
                 'msg': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
+        
+    def _update_attendance_for_attended_or_absent(self,attendance_instance,enrolment_status):
+        try:
+            attendance_status = attendance_instance.status
+            enrolment = attendance_instance.enrollment
+ 
+            if attendance_status == 'FREEZED':
+                enrolment.freeze_lessons += 1
+                enrolment.remaining_lessons -= 1
+            elif attendance_status == 'SFREEZED':
+                enrolment.remaining_lessons -= 1
+            elif attendance_status == 'REPLACEMENT':
+                enrolment.remaining_lessons -= 1
+            enrolment.save()
+
+            attendance_instance.status = enrolment_status
+            attendance_instance.has_attended = enrolment_status != 'REPLACEMENT'
+            attendance_instance.save()
+                
+        except Exception as e:
+            raise Exception(f"Error updating attendance attended or absent: {str(e)}")
+        
+    def _update_attendance_for_freeze(self,attendance_instance,enrolment_status):
+        try:
+            attendance_status = attendance_instance.status
+            enrolment = attendance_instance.enrollment
+ 
+            if attendance_status in ['ATTENDED','ABSENT']:
+                enrolment.remaining_lessons += 1
+                enrolment.freeze_lessons -= 1
+            elif attendance_status == 'SFREEZED':
+                enrolment.freeze_lessons -= 1
+            elif attendance_status == 'REPLACEMENT':
+                enrolment.freeze_lessons -= 1
+            enrolment.save()
+
+            attendance_instance.status = enrolment_status
+            attendance_instance.has_attended = enrolment_status != 'REPLACEMENT'
+            attendance_instance.save()
+            
+            
+        except Exception as e:
+            raise Exception(f"Error updating attendance freeze: {str(e)}")
+
+    def _update_attendance_for_sfreeze(self,attendance_instance,enrolment_status):
+        try:
+            attendance_status = attendance_instance.status
+            enrolment = attendance_instance.enrollment
+ 
+            if attendance_status in ['ATTENDED','ABSENT']:
+                enrolment.remaining_lessons += 1
+            elif attendance_status == 'FREEZED':
+                enrolment.freeze_lessons += 1
+            
+            enrolment.save()
+
+            attendance_instance.status = enrolment_status
+            attendance_instance.has_attended = enrolment_status != 'REPLACEMENT'
+            attendance_instance.save()
+
+        except Exception as e:
+            raise Exception(f"Error updating attendance sfreeze: {str(e)}")
+        
+    def _update_attendance_for_replacement(self,attendance_instance,enrolment_status):
+        try:
+            attendance_status = attendance_instance.status
+            enrolment = attendance_instance.enrollment
+ 
+            if attendance_status in ['ATTENDED','ABSENT']:
+                enrolment.remaining_lessons += 1
+            elif attendance_status == 'FREEZED':
+                enrolment.freeze_lessons += 1
+            
+            enrolment.save()
+
+            attendance_instance.status = enrolment_status
+            attendance_instance.has_attended = enrolment_status != 'REPLACEMENT'
+            attendance_instance.save()
+            
+        except Exception as e:
+            raise Exception(f"Error updating attendance replacement: {str(e)}")
 
     def create_attendances(self, enrolments, class_lesson_instance, branch_id, date):
         try:
@@ -741,7 +828,6 @@ class MarkAttendanceView(BaseAPIView):
                             has_attended=enrolment_status == 'ATTENDED',
                             status=enrolment_status,
                         )
-                        print(f"Created attendance object with times - start: {attendance.start_time}, end: {attendance.end_time}")
                         att_arr.append(attendance)
 
                         if enrolment_status in ['ATTENDED','ABSENT']:
@@ -811,19 +897,20 @@ class MarkAttendanceView(BaseAPIView):
                         raise ValueError(f"Enrolment {se.id} has exceeded freeze count")
                     
                     se.freeze_lessons = F("freeze_lessons") - 1
-                    se.remaining_lessons = F("remaining_lessons") + 1
                 
                     enrolments_to_update.append(se)
             
             if sfreeze_arr:
-                student_enrolments = StudentEnrolment.objects.filter(
-                    id__in=sfreeze_arr
-                ).select_for_update()
+                # It should do ntg 
+                pass
+                # student_enrolments = StudentEnrolment.objects.filter(
+                #     id__in=sfreeze_arr
+                # ).select_for_update()
 
-                for se in student_enrolments:
-                    se.remaining_lessons = F("remaining_lessons") + 1
+                # for se in student_enrolments:
+                #     se.remaining_lessons = F("remaining_lessons") + 1
 
-                    enrolments_to_update.append(se)
+                #     enrolments_to_update.append(se)
             
             if replacement_arr:
                 student_enrolments = StudentEnrolment.objects.filter(
