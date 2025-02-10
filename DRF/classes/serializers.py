@@ -178,13 +178,14 @@ class ClassDetailsSerializer(serializers.ModelSerializer):
 Class Enrolment (Check For Future Lessons)
 '''
 class ClassEnrolmentListSerializer(serializers.ModelSerializer):
-    student_enrolments = serializers.SerializerMethodField()
+    unmarked_enrolments = serializers.SerializerMethodField()
+    class_instance = serializers.SerializerMethodField()
     
     class Meta:
         model = Class
-        fields = ['id','branch','name','label','start_time','end_time','day','student_enrolments']
+        fields = ['id','branch','class_instance','unmarked_enrolments']
 
-    def get_student_enrolments(self, obj):
+    def get_unmarked_enrolments(self, obj):
         check_after_week = self.context.get('check_after_week')
 
         enrolments = obj.enrolments.annotate(
@@ -198,6 +199,15 @@ class ClassEnrolmentListSerializer(serializers.ModelSerializer):
 
 
         return serializer.data
+    
+    def get_class_instance(self, obj):
+        return {
+            "name": obj.name,
+            "label": obj.label,
+            "start_time": obj.start_time,
+            "end_time": obj.end_time,
+            "day": obj.day
+        }
 
 class ClassCreateUpdateSerializer(serializers.ModelSerializer):
     branch = serializers.PrimaryKeyRelatedField(
@@ -257,18 +267,18 @@ class ClassLessonDetailsSerializer(serializers.ModelSerializer):
 class TodayClassLessonSerializer(serializers.ModelSerializer):
     student_attendances = serializers.SerializerMethodField()
     class_instance = ClassDetailsSerializer(read_only=True)
-    unmarked_students = serializers.SerializerMethodField()
+    unmarked_enrolments = serializers.SerializerMethodField()
 
     class Meta:
         model = ClassLesson
-        fields = ['id', 'branch', 'class_instance', 'teacher', 'co_teacher', 'theme_lesson', 'date', 'status', 'student_attendances', 'unmarked_students']
+        fields = ['id', 'branch', 'class_instance', 'teacher', 'co_teacher', 'theme_lesson', 'date', 'status', 'student_attendances', 'unmarked_enrolments']
 
     def get_student_attendances(self, obj):
         attendances = obj.attendances.all()
         serializer = StudentAttendanceListSerializer(attendances, many=True)
         return serializer.data
     
-    def get_unmarked_students(self, obj):
+    def get_unmarked_enrolments(self, obj):
         # Get all active enrollments for this class
         all_enrollments = obj.class_instance.enrolments.filter(is_active=True)
         # Get IDs of students who already have attendance marked
