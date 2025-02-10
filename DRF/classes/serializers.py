@@ -4,7 +4,8 @@ from branches.models import Branch
 from category.models import Theme
 from calendars.models import Calendar
 from .models import (
-    Class,StudentEnrolment,ClassLesson,StudentAttendance,EnrolmentExtension, VideoAssignment
+    Class,StudentEnrolment,ClassLesson,StudentAttendance,EnrolmentExtension, VideoAssignment,
+    ReplacementAttendance
 )
 from category.serializers import ThemeLessonAndNameDetailsSerializer
 from django.db.models import F,Value
@@ -323,5 +324,8 @@ class EnrolmentExtensionSerializer(serializers.ModelSerializer):
             instance.remaining_lessons += 12
             instance.save()
 
-
+class ReplacementAttendanceListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReplacementAttendance
+        fields = ['id','attendances','class_instance','date','status']
 

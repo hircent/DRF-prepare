@@ -181,3 +181,28 @@ class VideoAssignment(models.Model):
 
     def __str__(self) -> str:
         return self.enrolment.student.fullname + "'s video assignment " + str(self.video_number)
+
+class ReplacementAttendance(models.Model):
+    ATTENDANCE_CHOICES = [
+        ('ATTENDED', 'ATTENDED'),
+        ('ABSENT', 'ABSENT'),
+        ('PENDING', 'PENDING'),
+    ]
+
+    attendances         = models.ForeignKey(StudentAttendance, on_delete=models.CASCADE,related_name='replacement_attendances')
+    class_instance      = models.ForeignKey(Class, on_delete=models.CASCADE,related_name='replacement_attendances')
+    date                = models.DateField()
+    status              = models.CharField(max_length=20, choices=ATTENDANCE_CHOICES,default='PENDING')
+    created_at          = models.DateTimeField(auto_now_add=True)
+    updated_at          = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'replacement_attendances'
+        verbose_name = 'Replacement Attendance'
+        verbose_name_plural = 'Replacement Attendances'
+        indexes = [
+            models.Index(fields=['attendances', 'class_instance', 'date']),
+        ]
+
+    def __str__(self) -> str:
+        return self.attendances.enrollment.student.fullname + "'s replacement attendance at " + str(self.date)

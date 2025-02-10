@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     Class,StudentEnrolment,ClassLesson,StudentAttendance,
-    EnrolmentExtension,VideoAssignment
+    EnrolmentExtension,VideoAssignment,ReplacementAttendance
 )
 
 class ClassAdmin(admin.ModelAdmin):
@@ -34,10 +34,21 @@ class VideoAssignmentAdmin(admin.ModelAdmin):
     search_fields = ('enrolment__student__fullname',)
     list_filter = ('enrolment__student__fullname','enrolment__branch')
 
+class ReplacementAttendanceAdmin(admin.ModelAdmin):
+    list_display = ('id', 'attendances','class_instance','date','status')
+    search_fields = ('attendances__enrollment__student__fullname',)
+    list_filter = ('class_instance',)
+    list_select_related = ['attendances', 'class_instance']
+    
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.select_related('attendances__enrollment__student', 'class_instance')
+    
 admin.site.register(Class, ClassAdmin)    
 admin.site.register(StudentEnrolment, StudentEnrolmentAdmin)
 admin.site.register(ClassLesson, ClassLessonAdmin)
 admin.site.register(StudentAttendance, StudentAttendanceAdmin)
 admin.site.register(EnrolmentExtension, EnrolmentExtensionAdmin)
 admin.site.register(VideoAssignment, VideoAssignmentAdmin)
+admin.site.register(ReplacementAttendance, ReplacementAttendanceAdmin)
 # Register your models here.

@@ -13,6 +13,6 @@ class Command(BaseCommand):
     help = 'testing function'
 
     def handle(self, *args, **kwargs):
-        ext = EnrolmentExtension.objects.filter(enrolment_id=4987)
+        ext = StudentAttendance.objects.filter(id=236460)
 
         print(ext)
