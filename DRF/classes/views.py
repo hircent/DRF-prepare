@@ -21,7 +21,7 @@ from django.http import JsonResponse
 from datetime import date, datetime ,timedelta
 from rest_framework.views import APIView
 
-from .models import Class,StudentEnrolment,ClassLesson,EnrolmentExtension
+from .models import Class,StudentEnrolment,ClassLesson,EnrolmentExtension,ReplacementAttendance
 from .serializers import (
     ClassListSerializer,StudentEnrolmentListSerializer,ClassCreateUpdateSerializer,ClassEnrolmentListSerializer,
     ClassLessonListSerializer,TimeslotListSerializer,StudentEnrolmentDetailsSerializer,EnrolmentLessonListSerializer,
@@ -711,7 +711,7 @@ class MarkAttendanceView(BaseAPIView):
             enrolment.save()
 
             attendance_instance.status = enrolment_status
-            attendance_instance.has_attended = enrolment_status != 'REPLACEMENT'
+            attendance_instance.has_attended = enrolment_status == 'ATTENDED'
             attendance_instance.save()
                 
         except Exception as e:
@@ -732,7 +732,7 @@ class MarkAttendanceView(BaseAPIView):
             enrolment.save()
 
             attendance_instance.status = enrolment_status
-            attendance_instance.has_attended = enrolment_status != 'REPLACEMENT'
+            attendance_instance.has_attended = enrolment_status == 'ATTENDED'
             attendance_instance.save()
             
             
@@ -752,7 +752,7 @@ class MarkAttendanceView(BaseAPIView):
             enrolment.save()
 
             attendance_instance.status = enrolment_status
-            attendance_instance.has_attended = enrolment_status != 'REPLACEMENT'
+            attendance_instance.has_attended = enrolment_status == 'ATTENDED'
             attendance_instance.save()
 
         except Exception as e:
@@ -771,7 +771,7 @@ class MarkAttendanceView(BaseAPIView):
             enrolment.save()
 
             attendance_instance.status = enrolment_status
-            attendance_instance.has_attended = enrolment_status != 'REPLACEMENT'
+            attendance_instance.has_attended = enrolment_status == 'ATTENDED'
             attendance_instance.save()
             
         except Exception as e:
@@ -789,6 +789,8 @@ class MarkAttendanceView(BaseAPIView):
 
             replacement_arr = []
 
+            replacement_details_arr = []
+
             start_time = class_lesson_instance.class_instance.start_time
             end_time = class_lesson_instance.class_instance.end_time
 
@@ -796,26 +798,7 @@ class MarkAttendanceView(BaseAPIView):
                 try:
                     enrolment_id = enrolment.get('id')
                     enrolment_status = enrolment.get('status')
-                    if not enrolment_id or not enrolment_status:
-                        print(f"Skipping invalid enrolment data: {enrolment}")
-                        continue
 
-                    # Validate the data before creating attendance
-                    if not all([
-                        branch_id,
-                        class_lesson_instance,
-                        class_lesson_instance.class_instance,
-                        date
-                    ]):
-                        print("Missing required data:", {
-                            'branch_id': branch_id,
-                            'class_lesson': bool(class_lesson_instance),
-                            'class_instance': bool(class_lesson_instance and class_lesson_instance.class_instance),
-                            'date': date
-                        })
-                        continue
-
-                    # Create attendance object with detailed error checking
                     try:
                         attendance = StudentAttendance(
                             enrollment_id=enrolment_id,
@@ -838,6 +821,11 @@ class MarkAttendanceView(BaseAPIView):
                             sfreeze_arr.append(enrolment_id)
                         elif enrolment_status == 'REPLACEMENT':
                             replacement_arr.append(enrolment_id)
+                            replacement_details_arr.append({
+                                'enrolment_id': enrolment_id,
+                                'replacement_date': enrolment.get('replacement_date'),
+                                'replacement_timeslot_class_id': enrolment.get('replacement_timeslot_class_id'),
+                            })
 
                     except Exception as model_error:
                         print(f"Error creating attendance object: {str(model_error)}")
@@ -853,6 +841,9 @@ class MarkAttendanceView(BaseAPIView):
                 self._update_enrolment_remaining_lesson_after_create_attendance(
                     attend_or_absent_arr,freeze_arr,sfreeze_arr,replacement_arr
                 )
+
+                if replacement_arr and replacement_details_arr:
+                    self._create_replacement_attendance(replacement_details_arr)
 
         except Exception as e:
             raise Exception(f"Error while creating attendances: {str(e)}")
@@ -913,13 +904,7 @@ class MarkAttendanceView(BaseAPIView):
                 #     enrolments_to_update.append(se)
             
             if replacement_arr:
-                student_enrolments = StudentEnrolment.objects.filter(
-                    id__in=replacement_arr
-                ).select_for_update()
-            
-                for se in student_enrolments:
-                    se.remaining_lessons = F("remaining_lessons") + 1
-                    enrolments_to_update.append(se)
+                pass
 
             if enrolments_to_update:
                 fields_to_update = ['remaining_lessons', 'is_active', 'status', 'freeze_lessons']
@@ -930,4 +915,70 @@ class MarkAttendanceView(BaseAPIView):
         
         except Exception as e:
             raise Exception(f"Error updating enrolment lessons: {str(e)}")
+        
+    def _create_replacement_attendance(self, replacement_details_arr):
+        """
+        Creates replacement attendance records for students
+        Args:
+            replacement_details_arr: List of dictionaries containing replacement details
+            Each dict should have: enrolment_id, replacement_date, replacement_timeslot_class_id
+        """
+        replacement_arr = []
+        
+        try:
+            # Validate input data
+            if not replacement_details_arr or not isinstance(replacement_details_arr, list):
+                raise ValueError("Invalid replacement details provided")
+
+            # Process each replacement
+            for replacement in replacement_details_arr:
+                # Extract and validate required fields
+                enrolment_id = replacement.get('enrolment_id')
+                replacement_date_str = replacement.get('replacement_date')
+                replacement_timeslot_class_id = replacement.get('replacement_timeslot_class_id')
+
+                if not all([enrolment_id, replacement_date_str, replacement_timeslot_class_id]):
+                    raise ValueError(f"Missing required fields for replacement: {replacement}")
+
+                try:
+                    replacement_date = datetime.strptime(replacement_date_str, '%Y-%m-%d').date()
+                except ValueError:
+                    raise ValueError(f"Invalid date format for replacement: {replacement_date_str}")
+
+                # Get the student's attendance for the replacement date
+                try:
+                    student_enrolment_attendance = StudentAttendance.objects.filter(enrollment_id=enrolment_id).first()
+                    
+                    if not student_enrolment_attendance:
+                        raise ValueError(f"No attendance found for student {enrolment_id} on {replacement_date}")
+
+                    # Check if replacement already exists
+                    existing_replacement = ReplacementAttendance.objects.filter(
+                        attendances_id=student_enrolment_attendance.id,
+                        date=replacement_date
+                    ).exists()
+
+                    if existing_replacement:
+                        raise ValueError(f"Replacement already exists for student {enrolment_id} on {replacement_date}")
+
+                    # Create new replacement attendance
+                    replacement_attendance = ReplacementAttendance(
+                        attendances_id=student_enrolment_attendance.id,
+                        class_instance_id=replacement_timeslot_class_id,
+                        date=replacement_date
+                    )
+                    replacement_arr.append(replacement_attendance)
+
+                except StudentEnrolment.DoesNotExist:
+                    raise ValueError(f"Student enrolment {enrolment_id} not found")
+                except Exception as e:
+                    raise ValueError(f"Error processing replacement for student {enrolment_id}: {str(e)}")
+
+            # Bulk create all valid replacement attendances
+            if replacement_arr:
+                ReplacementAttendance.objects.bulk_create(replacement_arr)
+
+        except Exception as e:
+            raise Exception(f"Error creating replacement attendances: {str(e)}")
+
 
