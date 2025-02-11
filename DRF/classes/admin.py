@@ -35,14 +35,22 @@ class VideoAssignmentAdmin(admin.ModelAdmin):
     list_filter = ('enrolment__student__fullname','enrolment__branch')
 
 class ReplacementAttendanceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'attendances','class_instance','date','status')
-    search_fields = ('attendances__enrollment__student__fullname',)
-    list_filter = ('class_instance',)
-    list_select_related = ['attendances', 'class_instance']
+    list_display = ('attendances', 'class_instance', 'date', 'status')
+    list_select_related = ('attendances', 'class_instance')  # Reduce database queries
     
+    search_fields = ('attendances__enrollment__student__fullname',)
+    list_filter = ('status', 'date')
+    
+    # Optimize the form for adding/editing
+    raw_id_fields = ('attendances', 'class_instance')  # Replace dropdown with search input
+    
+    # If you need to show related fields in the form
     def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        return queryset.select_related('attendances__enrollment__student', 'class_instance')
+        return super().get_queryset(request).select_related(
+            'attendances',
+            'class_instance',
+            'attendances__enrollment__student'
+        )
     
 admin.site.register(Class, ClassAdmin)    
 admin.site.register(StudentEnrolment, StudentEnrolmentAdmin)
