@@ -189,7 +189,7 @@ class ReplacementAttendance(models.Model):
         ('PENDING', 'PENDING'),
     ]
 
-    attendances         = models.ForeignKey(StudentAttendance, on_delete=models.CASCADE,related_name='replacement_attendances')
+    attendances         = models.OneToOneField(StudentAttendance, on_delete=models.CASCADE,related_name='replacement_attendances')
     class_instance      = models.ForeignKey(Class, on_delete=models.CASCADE,related_name='replacement_attendances')
     date                = models.DateField()
     status              = models.CharField(max_length=20, choices=ATTENDANCE_CHOICES,default='PENDING')
