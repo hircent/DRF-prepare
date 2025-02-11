@@ -253,9 +253,29 @@ class ClassLessonListSerializer(serializers.ModelSerializer):
         fields = ['id','branch','class_instance','teacher','co_teacher','theme_lesson','date','status','student_attendances']
 
     def get_student_attendances(self, obj):
-        attendances = obj.attendances.all()
-        serializer = StudentAttendanceListSerializer(attendances, many=True)
-        return serializer.data
+        attendances = obj.attendances.all().select_related(
+            'enrollment__student',
+            'enrollment__classroom'
+        ).prefetch_related('replacement_attendances')
+        
+        serialized_attendances = []
+        
+        for attendance in attendances:
+            attendance_data = StudentAttendanceListSerializer(attendance).data
+            # If status is replacement, add replacement attendance info
+            if attendance.status == 'REPLACEMENT':
+                replacement = attendance.replacement_attendances.first()  # Get the latest replacement
+                print(replacement)
+                if replacement:
+                    attendance_data['replacement_class_info'] = {
+                        'id': replacement.class_instance.id,
+                        'label': replacement.class_instance.label,
+                        'date': replacement.date
+                    }
+            
+            serialized_attendances.append(attendance_data)
+            
+        return serialized_attendances
     
 class ClassLessonDetailsSerializer(serializers.ModelSerializer):
     theme_lesson = ThemeLessonAndNameDetailsSerializer(many=False)
@@ -274,9 +294,29 @@ class TodayClassLessonSerializer(serializers.ModelSerializer):
         fields = ['id', 'branch', 'class_instance', 'teacher', 'co_teacher', 'theme_lesson', 'date', 'status', 'student_attendances', 'unmarked_enrolments']
 
     def get_student_attendances(self, obj):
-        attendances = obj.attendances.all()
-        serializer = StudentAttendanceListSerializer(attendances, many=True)
-        return serializer.data
+        attendances = obj.attendances.all().select_related(
+            'enrollment__student',
+            'enrollment__classroom'
+        ).prefetch_related('replacement_attendances')
+        
+        serialized_attendances = []
+        
+        for attendance in attendances:
+            attendance_data = StudentAttendanceListSerializer(attendance).data
+            # If status is replacement, add replacement attendance info
+            if attendance.status == 'REPLACEMENT':
+                replacement = attendance.replacement_attendances.first()  # Get the latest replacement
+                print(replacement)
+                if replacement:
+                    attendance_data['replacement_class_info'] = {
+                        'id': replacement.class_instance.id,
+                        'label': replacement.class_instance.label,
+                        'date': replacement.date
+                    }
+            
+            serialized_attendances.append(attendance_data)
+            
+        return serialized_attendances
     
     def get_unmarked_enrolments(self, obj):
         # Get all active enrollments for this class
