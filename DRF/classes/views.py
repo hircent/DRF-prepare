@@ -651,9 +651,11 @@ class MarkAttendanceView(BaseAPIView):
 
             if not is_superadmin:
                 if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
-                    
                     raise PermissionDenied("You don't have access to this branch or role.")
 
+            if len(student_enrolments) > 6:
+                raise PermissionDenied("You can only mark attendance for upto 6 students.")
+            
             if class_status == "COMPLETED":
                 self.update_attendance(student_enrolments,class_lesson)
             elif class_status == "PENDING":
@@ -688,7 +690,11 @@ class MarkAttendanceView(BaseAPIView):
                     elif enrolment_status == 'SFREEZED':
                         self._update_attendance_for_sfreeze(attendance,enrolment_status)
                     elif enrolment_status == 'REPLACEMENT':
-                        self._update_attendance_for_replacement(attendance,enrolment_status)
+                        self._update_attendance_for_replacement(
+                            attendance,enrolment_status,
+                            enrolment.get('replacement_date'),
+                            enrolment.get('replacement_timeslot_class_id'),
+                        )
 
         except Exception as e:
             return Response({
@@ -708,6 +714,7 @@ class MarkAttendanceView(BaseAPIView):
                 enrolment.remaining_lessons -= 1
             elif attendance_status == 'REPLACEMENT':
                 enrolment.remaining_lessons -= 1
+                self._delete_replacement_attendance(attendance_instance)
             enrolment.save()
 
             attendance_instance.status = enrolment_status
@@ -729,6 +736,7 @@ class MarkAttendanceView(BaseAPIView):
                 enrolment.freeze_lessons -= 1
             elif attendance_status == 'REPLACEMENT':
                 enrolment.freeze_lessons -= 1
+                self._delete_replacement_attendance(attendance_instance)
             enrolment.save()
 
             attendance_instance.status = enrolment_status
@@ -748,6 +756,9 @@ class MarkAttendanceView(BaseAPIView):
                 enrolment.remaining_lessons += 1
             elif attendance_status == 'FREEZED':
                 enrolment.freeze_lessons += 1
+            elif attendance_status == 'REPLACEMENT':
+                enrolment.freeze_lessons -= 1
+                self._delete_replacement_attendance(attendance_instance)
             
             enrolment.save()
 
@@ -758,7 +769,7 @@ class MarkAttendanceView(BaseAPIView):
         except Exception as e:
             raise Exception(f"Error updating attendance sfreeze: {str(e)}")
         
-    def _update_attendance_for_replacement(self,attendance_instance,enrolment_status):
+    def _update_attendance_for_replacement(self,attendance_instance,enrolment_status,replacement_date, replacement_timeslot_class_id):
         try:
             attendance_status = attendance_instance.status
             enrolment = attendance_instance.enrollment
@@ -770,12 +781,38 @@ class MarkAttendanceView(BaseAPIView):
             
             enrolment.save()
 
+            self._create_replacement_attendance_after_update(
+                attendance_instance, 
+                replacement_date, 
+                replacement_timeslot_class_id
+            )
+
             attendance_instance.status = enrolment_status
             attendance_instance.has_attended = enrolment_status == 'ATTENDED'
             attendance_instance.save()
             
         except Exception as e:
             raise Exception(f"Error updating attendance replacement: {str(e)}")
+        
+    def _create_replacement_attendance_after_update(self, attendance_instance, replacement_date, replacement_timeslot_class_id):
+        try:
+            ReplacementAttendance.objects.create(
+                attendances=attendance_instance,
+                class_instance_id=replacement_timeslot_class_id,
+                date=datetime.strptime(replacement_date,'%Y-%M-%d').date() 
+            )
+            
+        except Exception as e:
+            raise Exception(f"Error creating replacement attendance: {str(e)}")
+        
+    def _delete_replacement_attendance(self, attendance_instance):
+        try:
+            replacement_attendance = ReplacementAttendance.objects.get(
+                attendances=attendance_instance
+            )
+            replacement_attendance.delete()
+        except Exception as e:
+            raise Exception(f"Error deleting replacement attendance: {str(e)}")
 
     def create_attendances(self, enrolments, class_lesson_instance, branch_id, date):
         try:

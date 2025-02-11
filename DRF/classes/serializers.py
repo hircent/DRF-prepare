@@ -253,25 +253,31 @@ class ClassLessonListSerializer(serializers.ModelSerializer):
         fields = ['id','branch','class_instance','teacher','co_teacher','theme_lesson','date','status','student_attendances']
 
     def get_student_attendances(self, obj):
+    # Optimize query by prefetching replacement attendance and related class instance
         attendances = obj.attendances.all().select_related(
             'enrollment__student',
-            'enrollment__classroom'
-        ).prefetch_related('replacement_attendances')
+            'enrollment__classroom',
+            'replacement_attendances__class_instance'  # Prefetch the class instance for replacement
+        )
         
         serialized_attendances = []
         
         for attendance in attendances:
             attendance_data = StudentAttendanceListSerializer(attendance).data
+            
             # If status is replacement, add replacement attendance info
             if attendance.status == 'REPLACEMENT':
-                replacement = attendance.replacement_attendances.first()  # Get the latest replacement
-                print(replacement)
-                if replacement:
+                try:
+                    replacement = attendance.replacement_attendances
                     attendance_data['replacement_class_info'] = {
                         'id': replacement.class_instance.id,
                         'label': replacement.class_instance.label,
-                        'date': replacement.date
+                        'date': replacement.date,
+                        'status': replacement.status
                     }
+                except StudentAttendance.replacement_attendances.RelatedObjectDoesNotExist:
+                    # Handle case where there's no replacement attendance
+                    attendance_data['replacement_class_info'] = None
             
             serialized_attendances.append(attendance_data)
             
@@ -294,25 +300,31 @@ class TodayClassLessonSerializer(serializers.ModelSerializer):
         fields = ['id', 'branch', 'class_instance', 'teacher', 'co_teacher', 'theme_lesson', 'date', 'status', 'student_attendances', 'unmarked_enrolments']
 
     def get_student_attendances(self, obj):
+    # Optimize query by prefetching replacement attendance and related class instance
         attendances = obj.attendances.all().select_related(
             'enrollment__student',
-            'enrollment__classroom'
-        ).prefetch_related('replacement_attendances')
+            'enrollment__classroom',
+            'replacement_attendances__class_instance'  # Prefetch the class instance for replacement
+        )
         
         serialized_attendances = []
         
         for attendance in attendances:
             attendance_data = StudentAttendanceListSerializer(attendance).data
+            
             # If status is replacement, add replacement attendance info
             if attendance.status == 'REPLACEMENT':
-                replacement = attendance.replacement_attendances.first()  # Get the latest replacement
-                print(replacement)
-                if replacement:
+                try:
+                    replacement = attendance.replacement_attendances
                     attendance_data['replacement_class_info'] = {
                         'id': replacement.class_instance.id,
                         'label': replacement.class_instance.label,
-                        'date': replacement.date
+                        'date': replacement.date,
+                        'status': replacement.status
                     }
+                except StudentAttendance.replacement_attendances.RelatedObjectDoesNotExist:
+                    # Handle case where there's no replacement attendance
+                    attendance_data['replacement_class_info'] = None
             
             serialized_attendances.append(attendance_data)
             
