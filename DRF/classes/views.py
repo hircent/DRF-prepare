@@ -780,12 +780,18 @@ class MarkAttendanceView(BaseAPIView):
                 enrolment.freeze_lessons += 1
             
             enrolment.save()
-
-            self._create_replacement_attendance_after_update(
-                attendance_instance, 
-                replacement_date, 
-                replacement_timeslot_class_id
-            )
+            
+            if attendance_status != 'REPLACEMENT':
+                self._create_replacement_attendance_after_update(
+                    attendance_instance, 
+                    replacement_date, 
+                    replacement_timeslot_class_id
+                )
+            else:
+                replace_att = attendance_instance.replacement_attendances
+                replace_att.class_instance_id = replacement_timeslot_class_id
+                replace_att.date = replacement_date
+                replace_att.save()
 
             attendance_instance.status = enrolment_status
             attendance_instance.has_attended = enrolment_status == 'ATTENDED'
