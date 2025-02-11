@@ -180,10 +180,11 @@ Class Enrolment (Check For Future Lessons)
 class ClassEnrolmentListSerializer(serializers.ModelSerializer):
     unmarked_enrolments = serializers.SerializerMethodField()
     class_instance = serializers.SerializerMethodField()
+    replacement_students = serializers.SerializerMethodField()
     
     class Meta:
         model = Class
-        fields = ['id','branch','class_instance','unmarked_enrolments']
+        fields = ['id','branch','class_instance','unmarked_enrolments','replacement_students']
 
     def get_unmarked_enrolments(self, obj):
         check_after_week = self.context.get('check_after_week')
@@ -208,6 +209,26 @@ class ClassEnrolmentListSerializer(serializers.ModelSerializer):
             "end_time": obj.end_time,
             "day": obj.day
         }
+    
+    def get_replacement_students(self, obj):
+        replacement_students = obj.replacement_attendances.all().select_related(
+            'attendances','attendances__enrollment__student','attendances__enrollment'
+        )
+        
+        serialized_replacement_students = []
+        
+        for replacement in replacement_students:
+            serialized_replacement_students.append({
+                "id": replacement.attendances.enrollment.id,
+                "student":{
+                    "id": replacement.attendances.enrollment.student.id,
+                    "fullname": replacement.attendances.enrollment.student.fullname
+                    },
+                "is_active": replacement.attendances.enrollment.is_active,
+                "remaining_lessons": replacement.attendances.enrollment.remaining_lessons
+            })
+        
+        return serialized_replacement_students
 
 class ClassCreateUpdateSerializer(serializers.ModelSerializer):
     branch = serializers.PrimaryKeyRelatedField(
@@ -246,11 +267,14 @@ Class Lesson Serializer (Check For Attended Lessons)
 
 class ClassLessonListSerializer(serializers.ModelSerializer):
     student_attendances = serializers.SerializerMethodField()
+    replacement_students = serializers.SerializerMethodField()
     class_instance = ClassDetailsSerializer(read_only=True)
 
     class Meta:
         model = ClassLesson
-        fields = ['id','branch','class_instance','teacher','co_teacher','theme_lesson','date','status','student_attendances']
+        fields = ['id','branch','class_instance',
+                  'teacher','co_teacher','theme_lesson',
+                  'date','status','student_attendances','replacement_students']
 
     def get_student_attendances(self, obj):
     # Optimize query by prefetching replacement attendance and related class instance
@@ -283,6 +307,26 @@ class ClassLessonListSerializer(serializers.ModelSerializer):
             
         return serialized_attendances
     
+    def get_replacement_students(self, obj):
+        replacement_students = obj.class_instance.replacement_attendances.all().select_related(
+            'attendances','attendances__enrollment__student','attendances__enrollment'
+        )
+        
+        serialized_replacement_students = []
+        
+        for replacement in replacement_students:
+            serialized_replacement_students.append({
+                "id": replacement.attendances.enrollment.id,
+                "student":{
+                    "id": replacement.attendances.enrollment.student.id,
+                    "fullname": replacement.attendances.enrollment.student.fullname
+                    },
+                "is_active": replacement.attendances.enrollment.is_active,
+                "remaining_lessons": replacement.attendances.enrollment.remaining_lessons
+            })
+        
+        return serialized_replacement_students
+    
 class ClassLessonDetailsSerializer(serializers.ModelSerializer):
     theme_lesson = ThemeLessonAndNameDetailsSerializer(many=False)
 
@@ -294,10 +338,14 @@ class TodayClassLessonSerializer(serializers.ModelSerializer):
     student_attendances = serializers.SerializerMethodField()
     class_instance = ClassDetailsSerializer(read_only=True)
     unmarked_enrolments = serializers.SerializerMethodField()
+    replacement_students = serializers.SerializerMethodField()
 
     class Meta:
         model = ClassLesson
-        fields = ['id', 'branch', 'class_instance', 'teacher', 'co_teacher', 'theme_lesson', 'date', 'status', 'student_attendances', 'unmarked_enrolments']
+        fields = ['id', 'branch', 'class_instance', 
+                  'teacher', 'co_teacher', 'theme_lesson', 
+                  'date', 'status', 'student_attendances', 
+                  'unmarked_enrolments','replacement_students']
 
     def get_student_attendances(self, obj):
     # Optimize query by prefetching replacement attendance and related class instance
@@ -339,6 +387,26 @@ class TodayClassLessonSerializer(serializers.ModelSerializer):
         unmarked_enrollments = all_enrollments.exclude(student__id__in=marked_student_ids)
         
         return StudentEnrolmentListForClassSerializer(unmarked_enrollments, many=True).data
+    
+    def get_replacement_students(self, obj):
+        replacement_students = obj.class_instance.replacement_attendances.all().select_related(
+            'attendances','attendances__enrollment__student','attendances__enrollment'
+        )
+        
+        serialized_replacement_students = []
+        
+        for replacement in replacement_students:
+            serialized_replacement_students.append({
+                "id": replacement.attendances.enrollment.id,
+                "student":{
+                    "id": replacement.attendances.enrollment.student.id,
+                    "fullname": replacement.attendances.enrollment.student.fullname
+                    },
+                "is_active": replacement.attendances.enrollment.is_active,
+                "remaining_lessons": replacement.attendances.enrollment.remaining_lessons
+            })
+        
+        return serialized_replacement_students
 
 '''
 Time Slot Serializer
