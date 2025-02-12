@@ -225,6 +225,7 @@ class ClassEnrolmentListSerializer(serializers.ModelSerializer):
                     "fullname": replacement.attendances.enrollment.student.fullname
                     },
                 "is_active": replacement.attendances.enrollment.is_active,
+                "status": replacement.status,
                 "remaining_lessons": replacement.attendances.enrollment.remaining_lessons
             })
         
@@ -322,6 +323,7 @@ class ClassLessonListSerializer(serializers.ModelSerializer):
                     "fullname": replacement.attendances.enrollment.student.fullname
                     },
                 "is_active": replacement.attendances.enrollment.is_active,
+                "status": replacement.status,
                 "remaining_lessons": replacement.attendances.enrollment.remaining_lessons
             })
         
@@ -403,6 +405,7 @@ class TodayClassLessonSerializer(serializers.ModelSerializer):
                     "fullname": replacement.attendances.enrollment.student.fullname
                     },
                 "is_active": replacement.attendances.enrollment.is_active,
+                "status": replacement.status,
                 "remaining_lessons": replacement.attendances.enrollment.remaining_lessons
             })
         
