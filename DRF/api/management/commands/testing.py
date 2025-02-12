@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.db.models import Q,F ,Value
+from django.db import connection
 from branches.models import Branch
 from calendars.models import CalendarThemeLesson,Calendar
 from classes.models import Class,StudentEnrolment,ClassLesson,StudentAttendance,EnrolmentExtension,ReplacementAttendance
@@ -13,11 +14,9 @@ class Command(BaseCommand):
     help = 'testing function'
 
     def handle(self, *args, **kwargs):
-        ext = ReplacementAttendance.objects.get(attendances_id=236454)
+        pass
 
-        print(ext)
-
-    def learn(self):
+    def learn_select_related(self):
         # Without select_related
         # This will make N+1 queries (1 for ReplacementAttendance, N for each related StudentAttendance)
         replacement = ReplacementAttendance.objects.all()
@@ -29,3 +28,25 @@ class Command(BaseCommand):
         replacement = ReplacementAttendance.objects.select_related('attendances', 'attendances__student')
         for r in replacement:
             print(r.attendances.student.name)  # No additional queries needed
+
+    def learn_prefetch_related(self):
+        classes = Class.objects.prefetch_related("enrolments","enrolments__student").get(id=460)
+
+        print(classes)
+
+        for enrolment in classes.enrolments.all():
+            print(enrolment.status)
+            print(enrolment.remaining_lessons)
+            print(enrolment.student.fullname)
+
+        student_enrolments = StudentEnrolment.objects.select_related("student","classroom").get(id=5508)
+
+        print(student_enrolments.remaining_lessons)
+        print(student_enrolments.student.fullname)
+        print(student_enrolments.classroom.name)
+        print(student_enrolments.classroom.start_time)
+        print(student_enrolments.classroom.end_time)
+        print(student_enrolments.classroom.day)
+
+        for query in connection.queries:
+            print(query['sql'],end='\n\n')
