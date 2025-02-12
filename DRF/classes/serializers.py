@@ -219,7 +219,7 @@ class ClassEnrolmentListSerializer(serializers.ModelSerializer):
         
         for replacement in replacement_students:
             serialized_replacement_students.append({
-                "id": replacement.attendances.enrollment.id,
+                "id": replacement.id,
                 "student":{
                     "id": replacement.attendances.enrollment.student.id,
                     "fullname": replacement.attendances.enrollment.student.fullname
@@ -317,7 +317,7 @@ class ClassLessonListSerializer(serializers.ModelSerializer):
         
         for replacement in replacement_students:
             serialized_replacement_students.append({
-                "id": replacement.attendances.enrollment.id,
+                "id": replacement.id,
                 "student":{
                     "id": replacement.attendances.enrollment.student.id,
                     "fullname": replacement.attendances.enrollment.student.fullname
@@ -399,7 +399,7 @@ class TodayClassLessonSerializer(serializers.ModelSerializer):
         
         for replacement in replacement_students:
             serialized_replacement_students.append({
-                "id": replacement.attendances.enrollment.id,
+                "id": replacement.id,
                 "student":{
                     "id": replacement.attendances.enrollment.student.id,
                     "fullname": replacement.attendances.enrollment.student.fullname
