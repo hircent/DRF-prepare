@@ -14,7 +14,15 @@ class Command(BaseCommand):
     help = 'testing function'
 
     def handle(self, *args, **kwargs):
-        pass
+        replacement_att = ReplacementAttendance.objects.select_related("attendances","attendances__enrollment").get(id=13)
+
+        print(replacement_att.date)
+        print(replacement_att.status)
+        print(replacement_att.attendances.enrollment.remaining_lessons)
+        print(replacement_att.attendances.status)
+        print(replacement_att.attendances.has_attended)
+        for query in connection.queries:
+            print(query['sql'])
 
     def learn_select_related(self):
         # Without select_related

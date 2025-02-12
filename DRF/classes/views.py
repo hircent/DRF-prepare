@@ -674,10 +674,18 @@ class MarkAttendanceView(BaseAPIView):
     def update_attendance(self,enrolments,class_lesson_instance):
         try:
             for enrolment in enrolments:
-                attendance_id = enrolment.get('id')
-                enrolment_status = enrolment.get('status')
+                try:
+                    attendance_id = enrolment.get('id')
+                    enrolment_status = enrolment.get('status')
+                    is_replacement_lesson = enrolment.get('is_replacement_lesson')
+                except Exception as loop_error:
+                    print(f"Error processing enrolment in update_attendance : {str(loop_error)}")
+                    raise
 
-                if attendance_id and enrolment_status:
+                if is_replacement_lesson:
+                    self._update_replacement_lesson(attendance_id,enrolment_status)
+                else:
+
                     attendance = StudentAttendance.objects.get(
                         id=attendance_id, 
                         class_lesson=class_lesson_instance
@@ -697,10 +705,7 @@ class MarkAttendanceView(BaseAPIView):
                         )
 
         except Exception as e:
-            return Response({
-                'success': False, 
-                'msg': str(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            raise Exception(f"Error while updating attendance: {str(e)}")
         
     def _update_attendance_for_attended_or_absent(self,attendance_instance,enrolment_status):
         try:
@@ -713,7 +718,6 @@ class MarkAttendanceView(BaseAPIView):
             elif attendance_status == 'SFREEZED':
                 enrolment.remaining_lessons -= 1
             elif attendance_status == 'REPLACEMENT':
-                enrolment.remaining_lessons -= 1
                 self._delete_replacement_attendance(attendance_instance)
             enrolment.save()
 
@@ -736,6 +740,7 @@ class MarkAttendanceView(BaseAPIView):
                 enrolment.freeze_lessons -= 1
             elif attendance_status == 'REPLACEMENT':
                 enrolment.freeze_lessons -= 1
+                enrolment.remaining_lessons += 1
                 self._delete_replacement_attendance(attendance_instance)
             enrolment.save()
 
@@ -757,7 +762,7 @@ class MarkAttendanceView(BaseAPIView):
             elif attendance_status == 'FREEZED':
                 enrolment.freeze_lessons += 1
             elif attendance_status == 'REPLACEMENT':
-                enrolment.freeze_lessons -= 1
+                enrolment.freeze_lessons += 1
                 self._delete_replacement_attendance(attendance_instance)
             
             enrolment.save()
@@ -839,12 +844,20 @@ class MarkAttendanceView(BaseAPIView):
 
             for enrolment in enrolments:
                 try:
-                    enrolment_id = enrolment.get('id')
+                    id = enrolment.get('id')
                     enrolment_status = enrolment.get('status')
+                    is_replacement_lesson = enrolment.get('is_replacement_lesson')
 
+                except Exception as loop_error:
+                        print(f"Error processing enrolment in create_attendances: {str(loop_error)}")
+                        raise
+
+                if is_replacement_lesson:
+                    self._update_replacement_lesson(id,enrolment_status)
+                else:
                     try:
                         attendance = StudentAttendance(
-                            enrollment_id=enrolment_id,
+                            enrollment_id=id,
                             branch_id=branch_id,
                             class_lesson=class_lesson_instance,
                             date=date,
@@ -857,15 +870,15 @@ class MarkAttendanceView(BaseAPIView):
                         att_arr.append(attendance)
 
                         if enrolment_status in ['ATTENDED','ABSENT']:
-                            attend_or_absent_arr.append(enrolment_id)
+                            attend_or_absent_arr.append(id)
                         elif enrolment_status == 'FREEZED':
-                            freeze_arr.append(enrolment_id)
+                            freeze_arr.append(id)
                         elif enrolment_status == 'SFREEZED':
-                            sfreeze_arr.append(enrolment_id)
+                            sfreeze_arr.append(id)
                         elif enrolment_status == 'REPLACEMENT':
-                            replacement_arr.append(enrolment_id)
+                            replacement_arr.append(id)
                             replacement_details_arr.append({
-                                'enrolment_id': enrolment_id,
+                                'enrolment_id': id,
                                 'replacement_date': enrolment.get('replacement_date'),
                                 'replacement_timeslot_class_id': enrolment.get('replacement_timeslot_class_id'),
                             })
@@ -874,9 +887,7 @@ class MarkAttendanceView(BaseAPIView):
                         print(f"Error creating attendance object: {str(model_error)}")
                         raise
 
-                except Exception as loop_error:
-                    print(f"Error processing enrolment {enrolment}: {str(loop_error)}")
-                    raise
+                    
 
             if att_arr:
                 StudentAttendance.objects.bulk_create(att_arr)
@@ -1023,5 +1034,32 @@ class MarkAttendanceView(BaseAPIView):
 
         except Exception as e:
             raise Exception(f"Error creating replacement attendances: {str(e)}")
+
+    def _update_replacement_lesson(self,replacement_id,status):
+        try:
+
+            replacement_att = ReplacementAttendance.objects.select_related(
+                "attendances","attendances__enrollment").select_for_update().get(id=replacement_id)
+            
+            enrolment = replacement_att.attendances.enrollment
+            attendance = replacement_att.attendances
+
+            # Not going to decrement if status is PENDING
+            if replacement_att.status == "PENDING":
+                enrolment.remaining_lessons -= 1
+                enrolment.save()
+
+            replacement_att.status = status
+            replacement_att.save()
+
+            attendance.has_attended = status == 'ATTENDED'
+            attendance.save()
+
+
+        
+        except Exception as e:
+            raise Exception(f"Error updating replacement lesson attendance: {str(e)}")
+
+
 
 
