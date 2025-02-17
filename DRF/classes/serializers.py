@@ -226,7 +226,8 @@ class ClassEnrolmentListSerializer(serializers.ModelSerializer):
                     },
                 "is_active": replacement.attendances.enrollment.is_active,
                 "status": replacement.status,
-                "remaining_lessons": replacement.attendances.enrollment.remaining_lessons
+                "remaining_lessons": replacement.attendances.enrollment.remaining_lessons,
+                "replacement_for_lesson": replacement.attendances.date
             })
         
         return serialized_replacement_students
@@ -324,7 +325,8 @@ class ClassLessonListSerializer(serializers.ModelSerializer):
                     },
                 "is_active": replacement.attendances.enrollment.is_active,
                 "status": replacement.status,
-                "remaining_lessons": replacement.attendances.enrollment.remaining_lessons
+                "remaining_lessons": replacement.attendances.enrollment.remaining_lessons,
+                "replacement_for_lesson": replacement.attendances.date
             })
         
         return serialized_replacement_students
@@ -406,7 +408,8 @@ class TodayClassLessonSerializer(serializers.ModelSerializer):
                     },
                 "is_active": replacement.attendances.enrollment.is_active,
                 "status": replacement.status,
-                "remaining_lessons": replacement.attendances.enrollment.remaining_lessons
+                "remaining_lessons": replacement.attendances.enrollment.remaining_lessons,
+                "replacement_for_lesson": replacement.attendances.date
             })
         
         return serialized_replacement_students
