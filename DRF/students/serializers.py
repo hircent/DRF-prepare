@@ -188,14 +188,10 @@ class StudentCreateSerializer(serializers.ModelSerializer):
     def _create_video_assignments(self,enrolment_instance):
 
         try:
-            va_arr = []
-            for i in range(2):
-                va = VideoAssignment(
-                    enrolment=enrolment_instance,
-                    video_number=i+1
-                )
-                va_arr.append(va)
-
+            va_arr = [
+                VideoAssignment(enrolment=enrolment_instance, video_number=1),
+                VideoAssignment(enrolment=enrolment_instance, video_number=2)
+            ]
             VideoAssignment.objects.bulk_create(va_arr)
         except Exception as e:
             raise serializers.ValidationError({"Failed to create video assignments"})
