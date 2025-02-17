@@ -155,7 +155,7 @@ class UserProfile(models.Model):
     GENDER = [('male','Male'),('female','Female')]
     
     user                = models.OneToOneField(User,on_delete=models.CASCADE,related_name='user_profile')
-    gender              = models.CharField(choices=GENDER,max_length=6)
+    gender              = models.CharField(choices=GENDER,max_length=6,null=True,blank=True)
     dob                 = models.DateField(null=True,blank=True)
     ic_number           = models.CharField(max_length=100,null=True,blank=True)
     occupation          = models.CharField(max_length=100,null=True,blank=True)

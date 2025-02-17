@@ -126,6 +126,26 @@ class StudentCreateView(BasedCustomStudentsView,generics.CreateAPIView):
         data = request.data.copy()
         
         data['branch'] = int(branch_id)
+
+        if not branch_id:
+            return Response(
+                {"success": False, "message": "Branch ID is required"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        parent = data.get('parent')
+        parent_details = data.get('parent_details')
+
+        # If neither parent nor parent_details is provided, return error
+        if not parent and not parent_details:
+            return Response(
+                {
+                    "success": False, 
+                    "message": "Either parent ID or parent details must be provided"
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)

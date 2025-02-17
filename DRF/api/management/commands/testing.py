@@ -3,7 +3,7 @@ from django.db.models import Q,F ,Value
 from django.db import connection
 from branches.models import Branch
 from calendars.models import CalendarThemeLesson,Calendar
-from classes.models import Class,StudentEnrolment,ClassLesson,StudentAttendance,EnrolmentExtension,ReplacementAttendance
+from classes.models import Class,StudentEnrolment,ClassLesson,StudentAttendance,EnrolmentExtension,ReplacementAttendance,VideoAssignment
 from students.models import Students
 from accounts.models import User
 from category.models import Category,ThemeLesson
@@ -14,15 +14,9 @@ class Command(BaseCommand):
     help = 'testing function'
 
     def handle(self, *args, **kwargs):
-        replacement_att = ReplacementAttendance.objects.select_related("attendances","attendances__enrollment").get(id=13)
+        va = VideoAssignment.objects.filter(enrolment_id=5981)
 
-        print(replacement_att.date)
-        print(replacement_att.status)
-        print(replacement_att.attendances.enrollment.remaining_lessons)
-        print(replacement_att.attendances.status)
-        print(replacement_att.attendances.has_attended)
-        for query in connection.queries:
-            print(query['sql'])
+        print(va.count())
 
     def learn_select_related(self):
         # Without select_related

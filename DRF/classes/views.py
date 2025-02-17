@@ -21,7 +21,7 @@ from django.http import JsonResponse
 from datetime import date, datetime ,timedelta
 from rest_framework.views import APIView
 
-from .models import Class,StudentEnrolment,ClassLesson,EnrolmentExtension,ReplacementAttendance
+from .models import Class,StudentEnrolment,ClassLesson,EnrolmentExtension,ReplacementAttendance,VideoAssignment
 from .serializers import (
     ClassListSerializer,StudentEnrolmentListSerializer,ClassCreateUpdateSerializer,ClassEnrolmentListSerializer,
     ClassLessonListSerializer,TimeslotListSerializer,StudentEnrolmentDetailsSerializer,EnrolmentLessonListSerializer,
@@ -545,14 +545,34 @@ class EnrolmentExtendView(BaseCustomEnrolmentView,UpdateAPIView):
             if ext:
                 instance.remaining_lessons += 12
                 instance.save()
+
+                self._create_video_assignments_after_extend_enrolment(instance)
                 return Response({
                     "success": True,
                     "msg": "Enrolment extended successfully.",
                 })
+            
+            
         except:
             return Response({
                 "success": False,
                 "msg": "Something went wrong."
+                }, status=status.HTTP_404_NOT_FOUND)
+        
+    def _create_video_assignments_after_extend_enrolment(self,enrolment_instance):
+
+        try:
+            exisiting_video_assignments = VideoAssignment.objects.filter(enrolment_id=enrolment_instance)
+
+            VideoAssignment.objects.create(
+                enrolment=enrolment_instance,
+                video_number=exisiting_video_assignments.count() + 1
+            )
+
+        except Exception as e:
+            return Response({
+                "success": False,
+                "msg": "Failed to create video assignments"
                 }, status=status.HTTP_404_NOT_FOUND)
 
 class VideoAssignmentListView(BaseCustomListNoPaginationAPIView):
