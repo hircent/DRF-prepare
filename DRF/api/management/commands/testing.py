@@ -14,9 +14,9 @@ class Command(BaseCommand):
     help = 'testing function'
 
     def handle(self, *args, **kwargs):
-        va = VideoAssignment.objects.filter(enrolment_id=5981)
+        sa = StudentAttendance.objects.get(id=236481)
 
-        print(va.count())
+        print(sa.replacement_attendances.all())
 
     def learn_select_related(self):
         # Without select_related

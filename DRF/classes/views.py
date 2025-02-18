@@ -795,7 +795,7 @@ class MarkAttendanceView(BaseAPIView):
             raise Exception(f"Error updating attendance sfreeze: {str(e)}")
         
     def _update_attendance_for_replacement(self,attendance_instance,enrolment_status,replacement_date, replacement_timeslot_class_id):
-        print(f"replacement_date: {replacement_date}")
+
         try:
             attendance_status = attendance_instance.status
             enrolment = attendance_instance.enrollment
@@ -828,6 +828,9 @@ class MarkAttendanceView(BaseAPIView):
         
     def _create_replacement_attendance_after_update(self, attendance_instance, replacement_date, replacement_timeslot_class_id):
         try:
+            print("======================================")
+            print(f"replacement_date: {replacement_date}")
+            print("======================================")
             ReplacementAttendance.objects.create(
                 attendances=attendance_instance,
                 class_instance_id=replacement_timeslot_class_id,
