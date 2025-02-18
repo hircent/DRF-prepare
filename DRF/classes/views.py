@@ -893,9 +893,6 @@ class MarkAttendanceView(BaseAPIView):
         
     def _create_replacement_attendance_after_update(self, attendance_instance, replacement_date, replacement_timeslot_class_id):
         try:
-            print("======================================")
-            print(f"replacement_date: {replacement_date}")
-            print("======================================")
             ReplacementAttendance.objects.create(
                 attendances=attendance_instance,
                 class_instance_id=replacement_timeslot_class_id,
