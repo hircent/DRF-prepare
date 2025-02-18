@@ -26,6 +26,10 @@ class ClassDetailsSerializer(serializers.ModelSerializer):
         model = Class
         fields = ['id','name','label','start_time','end_time','day']
 
+class RescheduleClassListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Class
+        fields = ['id','label']
 
 '''
 Video Assignment Serializer

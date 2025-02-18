@@ -26,7 +26,8 @@ from .serializers import (
     ClassListSerializer,StudentEnrolmentListSerializer,ClassCreateUpdateSerializer,ClassEnrolmentListSerializer,
     ClassLessonListSerializer,TimeslotListSerializer,StudentEnrolmentDetailsSerializer,EnrolmentLessonListSerializer,
     EnrolmentExtensionSerializer,VideoAssignmentListSerializer,VideoAssignmentDetailsSerializer,
-    VideoAssignmentUpdateSerializer,TodayClassLessonSerializer,EnrolmentRescheduleClassSerializer
+    VideoAssignmentUpdateSerializer,TodayClassLessonSerializer,EnrolmentRescheduleClassSerializer,
+    RescheduleClassListSerializer
 )
 
 import json
@@ -137,6 +138,40 @@ class ClassDestroyView(BaseCustomClassView,DestroyAPIView):
         self.perform_destroy(instance)    
         return Response({"success": True, "message": f"Class {id} deleted successfully"})
     
+class RescheduleClassListView(BaseCustomListNoPaginationAPIView):
+    serializer_class = RescheduleClassListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        branch_id = self.request.headers.get('BranchId')
+        name = self.request.query_params.get('category_name', None)
+        date = self.request.query_params.get('date', None)
+        
+        if not branch_id:
+            raise PermissionDenied("Missing branch id.")
+        
+        if not name:
+            raise PermissionDenied("Missing category name.")
+        
+        if not date:
+            raise PermissionDenied("Missing date.")
+        
+        day = datetime.strptime(date, '%Y-%m-%d').date().strftime("%A")
+        
+        user_branch_roles = self.extract_jwt_info("branch_role")
+
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+        
+        query_set = Class.objects.filter(branch=int(branch_id),name=name,day=day)
+
+        if is_superadmin:
+            return query_set
+        else:
+            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+                
+                raise PermissionDenied("You don't have access to this branch or role.")
+            else:
+                return query_set
 
 '''
 Enrolment Views
