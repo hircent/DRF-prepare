@@ -26,7 +26,7 @@ from .serializers import (
     ClassListSerializer,StudentEnrolmentListSerializer,ClassCreateUpdateSerializer,ClassEnrolmentListSerializer,
     ClassLessonListSerializer,TimeslotListSerializer,StudentEnrolmentDetailsSerializer,EnrolmentLessonListSerializer,
     EnrolmentExtensionSerializer,VideoAssignmentListSerializer,VideoAssignmentDetailsSerializer,
-    VideoAssignmentUpdateSerializer,TodayClassLessonSerializer
+    VideoAssignmentUpdateSerializer,TodayClassLessonSerializer,EnrolmentRescheduleClassSerializer
 )
 
 import json
@@ -193,6 +193,36 @@ class StudentEnrolmentDeleteView(BaseCustomEnrolmentView,DestroyAPIView):
         id = instance.id
         self.perform_destroy(instance)    
         return Response({"success": True, "message": f"Student Enrolment {id} deleted successfully"})
+
+class EnrolmentRescheduleClassView(BaseCustomEnrolmentView,UpdateAPIView):
+    serializer_class = EnrolmentRescheduleClassSerializer
+    permission_classes = [IsManagerOrHigher]
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+
+        if not instance.is_active:
+            return Response({
+                "success": False,
+                "msg": "Enrolment is not active, cannot reschedule."
+            }, status=status.HTTP_400_BAD_REQUEST)
+    
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        
+        serializer.is_valid(raise_exception=True)
+    
+        self.perform_update(serializer)
+
+        updated_instance = self.get_object()
+        updated_serializer = self.get_serializer(updated_instance)
+
+        return Response({
+            "success": True,
+            "data": updated_serializer.data
+        })
+        
+        
 
 '''
 Class Lesson Views
@@ -1083,7 +1113,3 @@ class MarkAttendanceView(BaseAPIView):
         
         except Exception as e:
             raise Exception(f"Error updating replacement lesson attendance: {str(e)}")
-
-
-
-

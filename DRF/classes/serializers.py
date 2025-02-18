@@ -13,6 +13,19 @@ from django.utils import timezone
 from datetime import timedelta ,  datetime
 from rest_framework import serializers
 
+'''
+Class Serializer
+'''
+class ClassListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Class
+        fields = ['id','branch','name','label','start_date','start_time','end_time','day']
+
+class ClassDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Class
+        fields = ['id','name','label','start_time','end_time','day']
+
 
 '''
 Video Assignment Serializer
@@ -139,6 +152,31 @@ class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSeria
                 weeks_remaining -= 1
         
         return current_date.strftime("%Y-%m-%d")
+    
+class EnrolmentRescheduleClassSerializer(serializers.ModelSerializer):
+    classroom = serializers.PrimaryKeyRelatedField(
+        queryset=Class.objects.all(),
+        error_messages={
+            'does_not_exist': 'Invalid classroom.',
+        }
+    )
+    class Meta:
+        model = StudentEnrolment
+        fields = ['id','classroom']
+
+    def validate_classroom(self, value):
+        if not value:
+            raise serializers.ValidationError("Invalid classroom provided.")
+        
+        if not Class.objects.filter(id=value.id).exists():
+            raise serializers.ValidationError("Classroom not found.")
+        return value
+    
+    def update(self, instance, validated_data):
+        print(validated_data.get('classroom'))
+        super().update(instance, validated_data)
+        instance.save()
+        return instance
 
 '''
 Student Attendance Serializer
@@ -158,21 +196,6 @@ class StudentAttendanceListSerializer(serializers.ModelSerializer):
                 "fullname": obj.enrollment.student.fullname
             } 
         }
-
-'''
-Class Serializer
-'''
-class ClassListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Class
-        fields = ['id','branch','name','label','start_date','start_time','end_time','day']
-
-class ClassDetailsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Class
-        fields = ['id','name','label','start_time','end_time','day']
-
-
 
 '''
 Class Enrolment (Check For Future Lessons)
