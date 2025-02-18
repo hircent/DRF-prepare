@@ -145,7 +145,7 @@ class RescheduleClassListView(BaseCustomListNoPaginationAPIView):
     def get_queryset(self):
         branch_id = self.request.headers.get('BranchId')
         name = self.request.query_params.get('category_name', None)
-        date = self.request.query_params.get('date', None)
+        day = self.request.query_params.get('day', None)
         
         if not branch_id:
             raise PermissionDenied("Missing branch id.")
@@ -153,10 +153,8 @@ class RescheduleClassListView(BaseCustomListNoPaginationAPIView):
         if not name:
             raise PermissionDenied("Missing category name.")
         
-        if not date:
-            raise PermissionDenied("Missing date.")
-        
-        day = datetime.strptime(date, '%Y-%m-%d').date().strftime("%A")
+        if not day:
+            raise PermissionDenied("Missing day.")
         
         user_branch_roles = self.extract_jwt_info("branch_role")
 
