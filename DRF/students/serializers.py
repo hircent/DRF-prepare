@@ -182,6 +182,9 @@ class StudentCreateSerializer(serializers.ModelSerializer):
                 
             except Class.DoesNotExist:
                 raise serializers.ValidationError({"timeslot": "Invalid class ID provided"})
+        
+        else:
+            raise serializers.ValidationError({"timeslot": "Timeslot is required"})
 
         return student
     
