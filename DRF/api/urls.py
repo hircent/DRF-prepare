@@ -139,7 +139,7 @@ urlpatterns = [
     path("timeslot/list",SearchTimeSlotListView.as_view(),name="available-timeslot-list"),
     path("teaching-user/list",TeachingUserListView.as_view(),name="teaching-user-list"),
     path("search/parent/list",SearchParentListView.as_view(),name="search-parent-list"),
-    path("reschedule-class-list",RescheduleClassListView.as_view(),name="reschedule-class-list"),
+    # path("reschedule-class-list",RescheduleClassListView.as_view(),name="reschedule-class-list"),
 
     #Token
     path('login', CustomTokenObtainPairView.as_view(), name='login_token_obtain_pair'),
