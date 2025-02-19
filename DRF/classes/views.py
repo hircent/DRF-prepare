@@ -255,7 +255,8 @@ class EnrolmentRescheduleClassView(BaseCustomEnrolmentView,UpdateAPIView):
             "data": updated_serializer.data
         })
         
-        
+class EnrolmentAdvanceView(BaseCustomEnrolmentView,UpdateAPIView):
+    pass
 
 '''
 Class Lesson Views
