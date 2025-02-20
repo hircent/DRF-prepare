@@ -66,6 +66,7 @@ class StudentEnrolment(models.Model):
         db_table = 'student_enrolments'
         verbose_name = 'Student Enrollment'
         verbose_name_plural = 'Student Enrollments'
+        ordering = ['-created_at']
 
     def __str__(self):
         return self.student.fullname + "'s enrolment " + str(self.start_date.year)
