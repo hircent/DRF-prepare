@@ -290,7 +290,7 @@ class EnrolmentAdvanceView(BaseCustomEnrolmentView,CreateAPIView):
                 # Handle our custom formatted errors
                 return Response({
                     "success": False,
-                    "message": error_detail["message"]
+                    "msg": error_detail["message"]
                 }, status=status.HTTP_400_BAD_REQUEST)
             else:
                 # Handle other validation errors

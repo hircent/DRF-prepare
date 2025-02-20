@@ -274,7 +274,7 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
                 code="too_many_lessons"
             )
         
-        if not is_early_advance and current_enrolment.remaining_lessons > 12:
+        if not is_early_advance and current_enrolment.remaining_lessons > 0:
             raise EnrolmentAdvanceException(
                 "Must finish all lessons to advance.",
                 code="lessons_remaining"
