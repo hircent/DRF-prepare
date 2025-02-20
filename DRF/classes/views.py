@@ -19,6 +19,7 @@ from django.db import transaction
 from django.utils import timezone
 from django.http import JsonResponse
 from datetime import date, datetime ,timedelta
+from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 
 from .models import Class,StudentEnrolment,ClassLesson,EnrolmentExtension,ReplacementAttendance,VideoAssignment
@@ -27,10 +28,19 @@ from .serializers import (
     ClassLessonListSerializer,TimeslotListSerializer,StudentEnrolmentDetailsSerializer,EnrolmentLessonListSerializer,
     EnrolmentExtensionSerializer,VideoAssignmentListSerializer,VideoAssignmentDetailsSerializer,
     VideoAssignmentUpdateSerializer,TodayClassLessonSerializer,EnrolmentRescheduleClassSerializer,
-    RescheduleClassListSerializer
+    RescheduleClassListSerializer,EnrolmentAdvanceSerializer,TestLearnSerializer
 )
 
 import json
+
+class TestLearnView(BaseCustomEnrolmentView,RetrieveAPIView):
+    serializer_class = TestLearnSerializer
+    permission_classes = [IsAuthenticated]
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response({"success": True, "data": serializer.data}, status=status.HTTP_200_OK)
 
 '''
 Class Views
@@ -255,8 +265,44 @@ class EnrolmentRescheduleClassView(BaseCustomEnrolmentView,UpdateAPIView):
             "data": updated_serializer.data
         })
         
-class EnrolmentAdvanceView(BaseCustomEnrolmentView,UpdateAPIView):
-    pass
+class EnrolmentAdvanceView(BaseCustomEnrolmentView,CreateAPIView):
+    serializer_class = EnrolmentAdvanceSerializer
+    permission_classes = [IsManagerOrHigher]
+
+    def create(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            data = request.data.copy()
+            data['enrolment_id'] = instance.id
+            serializer = self.get_serializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            new_enrolment = serializer.save()
+
+            updated_serializer = self.get_serializer(new_enrolment)
+
+            return Response({
+                "success": True,
+                "data": updated_serializer.data
+            })
+        except ValidationError as e:
+            error_detail = e.detail
+            if isinstance(error_detail, dict) and "message" in error_detail:
+                # Handle our custom formatted errors
+                return Response({
+                    "success": False,
+                    "message": error_detail["message"]
+                }, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                # Handle other validation errors
+                return Response({
+                    "success": False,
+                    "msg": str(e.detail[0]) if isinstance(e.detail, list) else str(e.detail)
+                }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({
+                "success": False,
+                "msg": "An unexpected error occurred"
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 '''
 Class Lesson Views

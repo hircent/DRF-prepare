@@ -9,6 +9,7 @@ from .models import (
 )
 from category.serializers import ThemeLessonAndNameDetailsSerializer
 from django.db.models import F,Value
+from django.db import transaction
 from django.utils import timezone
 from datetime import timedelta ,  datetime
 from rest_framework import serializers
@@ -185,7 +186,111 @@ class EnrolmentRescheduleClassSerializer(serializers.ModelSerializer):
         super().update(instance, validated_data)
         instance.save()
         return instance
+    
+class EnrolmentAdvanceException(Exception):
+    def __init__(self, message, code='advance_error'):
+        self.message = message
+        self.code = code
+        super().__init__(self.message)
+    
+class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
+    is_early_advance = serializers.BooleanField(write_only=True)
+    enrolment_id = serializers.IntegerField(write_only=True)
 
+    EARLY_ADVANCE_LESSON_THRESHOLD = 12
+
+    class Meta:
+        model = StudentEnrolment
+        fields = ['enrolment_id','classroom','start_date','grade','is_early_advance']
+
+    def validate(self, data):
+        if not data.get('enrolment_id') or not StudentEnrolment.objects.filter(id=data.get('enrolment_id')).exists():
+            raise EnrolmentAdvanceException("Invalid enrolment id.")
+        
+        if not data.get('classroom') or not Class.objects.filter(id=data.get('classroom').id).exists():
+            raise EnrolmentAdvanceException("Invalid classroom id.")
+        
+        if not data.get('start_date'):
+            raise EnrolmentAdvanceException("Invalid start date provided.")
+        
+        if not data.get('grade'):
+            raise EnrolmentAdvanceException("Invalid grade provided.")
+        
+        if 'is_early_advance' not in data:
+            raise EnrolmentAdvanceException("is_early_advance field is required.")
+        return data
+    
+    @transaction.atomic
+    def create(self, validated_data):
+        enrolment_id = validated_data.get('enrolment_id')
+        classroom = validated_data.get('classroom')
+        start_date = validated_data.get('start_date')
+        grade = validated_data.get('grade')
+        is_early_advance = validated_data.get('is_early_advance')
+
+        try:
+            current_enrolment = StudentEnrolment.objects.select_related(
+                'classroom','grade','branch','student'
+            ).get(id=enrolment_id)
+            
+            self._validate_advancement_conditions(
+                current_enrolment, 
+                is_early_advance
+            )
+            
+            new_enrolment = self._advance_new_enrolment(
+                current_enrolment,classroom,start_date,grade
+            )
+
+            self._create_video_assignments_after_advance(new_enrolment)
+
+            self._deactivate_current_enrolment(current_enrolment)
+            
+            return new_enrolment
+        except EnrolmentAdvanceException as e:
+            raise serializers.ValidationError({"message": str(e), "code": e.code})
+        except Exception as e:
+            raise serializers.ValidationError({"message": "An unexpected error occurred", "code": "system_error"})
+        
+    def _advance_new_enrolment(self,current_enrolment_instance,classroom,start_date,grade):
+        return StudentEnrolment.objects.create(
+                student=current_enrolment_instance.student,
+                classroom=classroom,
+                start_date=start_date,
+                grade=grade,
+                branch=current_enrolment_instance.branch,
+            )
+    
+    def _validate_advancement_conditions(self, current_enrolment, is_early_advance):
+        if not current_enrolment.is_active:
+            raise EnrolmentAdvanceException(
+                "Enrollment is not active, cannot advance.",
+                code="inactive_enrollment"
+            )
+        
+        if is_early_advance and current_enrolment.remaining_lessons > self.EARLY_ADVANCE_LESSON_THRESHOLD:
+            raise EnrolmentAdvanceException(
+                "Enrollment has more than 12 lessons remaining, cannot advance.",
+                code="too_many_lessons"
+            )
+        
+        if not is_early_advance and current_enrolment.remaining_lessons > 12:
+            raise EnrolmentAdvanceException(
+                "Must finish all lessons to advance.",
+                code="lessons_remaining"
+            )
+    
+    def _deactivate_current_enrolment(self,enrolment_instance):
+        enrolment_instance.is_active = False
+        enrolment_instance.save()
+
+    def _create_video_assignments_after_advance(self,enrolment_instance):
+
+        va_arr = [
+                VideoAssignment(enrolment=enrolment_instance, video_number=1),
+                VideoAssignment(enrolment=enrolment_instance, video_number=2)
+            ]
+        VideoAssignment.objects.bulk_create(va_arr)
 '''
 Student Attendance Serializer
 '''
@@ -496,3 +601,17 @@ class ReplacementAttendanceListSerializer(serializers.ModelSerializer):
         model = ReplacementAttendance
         fields = ['id','attendances','class_instance','date','status']
 
+
+class TestLearnSerializer(serializers.ModelSerializer):
+    created_at = serializers.DateTimeField(format="%d-%m-%Y")
+    student_name = serializers.CharField(source="student.fullname")
+    class_name = serializers.CharField(source="classroom.label")
+    classroom_details = ClassDetailsSerializer(source="classroom",read_only=True)
+
+    class Meta:
+        model = StudentEnrolment
+        fields = [
+            'id','branch','grade','student','student_name','classroom_details','class_name',
+            'start_date','status','remaining_lessons','is_active','freeze_lessons',
+            'created_at','updated_at'
+        ]
