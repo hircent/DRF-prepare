@@ -25,9 +25,9 @@ class Grade(models.Model):
     ]
 
     CATEGORY_CHOICES = [
-        ('KIDDO', 'Kiddo'),
-        ('KIDS', 'Kids'),
-        ('SUPERKIDS', 'Superkids'),
+        ('KIDDO', 'KIDDO'),
+        ('KIDS', 'KIDS'),
+        ('SUPERKIDS', 'SUPERKIDS'),
     ]
     
     grade_level     = models.IntegerField(choices=GRADE_CHOICES, unique=True)
