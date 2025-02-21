@@ -3,10 +3,7 @@ from django.db import transaction,connection
 from django.utils.timezone import make_aware
 from datetime import datetime
 from csv import DictReader
-from classes.models import Class
-from branches.models import Branch
-from category.models import Category, Grade
-from students.models import Students
+from feeStructure.models import Grade
 
 class Command(CustomBaseCommand):
     help = 'Import grades'

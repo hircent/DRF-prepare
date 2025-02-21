@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Category, Theme, Grade, ThemeLesson
+from .models import Category, Theme, ThemeLesson
+from feeStructure.models import Grade
 
 class ThemeLessonListSerializer(serializers.ModelSerializer):
     class Meta:

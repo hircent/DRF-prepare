@@ -2,11 +2,9 @@ from django.db import models
 
 from accounts.models import User
 from branches.models import Branch
-from category.models import Category,Grade
 from students.models import Students
 from category.models import Theme,ThemeLesson
-from django.utils import timezone
-from datetime import timedelta
+from feeStructure.models import Grade
 
 class Class(models.Model):
     DAY_CHOICES = [

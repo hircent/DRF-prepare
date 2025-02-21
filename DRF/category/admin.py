@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Theme, Grade, ThemeLesson
+from .models import Category, Theme, ThemeLesson
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'label', 'year', 'is_active')
@@ -16,12 +16,6 @@ class ThemeAdmin(admin.ModelAdmin):
     def category_label(self, obj):
         return obj.category.label
 
-class GradeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'grade_level', 'category', 'price')
-    list_filter = ('category',)
-    search_fields = ('grade',)
-    ordering = ('grade_level',)
-
 class ThemeLessonAdmin(admin.ModelAdmin):
     list_display = ('id', 'theme__name', 'name', 'order')
     list_filter = ('name',)
@@ -32,5 +26,4 @@ class ThemeLessonAdmin(admin.ModelAdmin):
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Theme, ThemeAdmin)
-admin.site.register(Grade, GradeAdmin)
 admin.site.register(ThemeLesson, ThemeLessonAdmin)

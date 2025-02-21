@@ -24,10 +24,14 @@ from students.views import (
 )
 
 from category.views import (
-    CategoryListView, ThemeListView, GradeListView, CategoryRetrieveView,
-    CategoryCreateView, ThemeRetrieveView, GradeRetrieveView, CategoryDestroyView,
+    CategoryListView, ThemeListView, CategoryRetrieveView,
+    CategoryCreateView, ThemeRetrieveView, CategoryDestroyView,
     ThemeDestroyView, CategoryUpdateView, ThemeUpdateView, ThemeCreateView,
-    GradeCreateView, GradeUpdateView, GradeDestroyView, CategorySelectionListView
+    CategorySelectionListView
+)
+
+from feeStructure.views import (
+    GradeListView, GradeRetrieveView, GradeCreateView, GradeUpdateView, GradeDestroyView
 )
 
 from classes.views import (

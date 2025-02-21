@@ -4,7 +4,7 @@ from branches.models import Branch ,UserBranchRole
 from .models import Students
 from classes.models import StudentEnrolment,Class, VideoAssignment
 from classes.serializers import StudentEnrolmentDetailsSerializer
-from category.models import Grade
+from feeStructure.models import Grade
 from rest_framework import serializers
 from django.db import transaction
 import json

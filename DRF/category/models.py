@@ -72,33 +72,4 @@ class ThemeLesson(models.Model):
     def __str__(self):
         return self.theme.name + ' ' + self.name + ' ' + str(self.theme.category.year)
 
-class Grade(models.Model):
-    GRADE_CHOICES = [
-        (1, 'Grade 1'),
-        (2, 'Grade 2'),
-        (3, 'Grade 3'),
-        (4, 'Grade 4'),
-        (5, 'Grade 5'),
-        (6, 'Grade 6'),
-    ]
-
-    CATEGORY_CHOICES = [
-        ('KIDDO', 'Kiddo'),
-        ('KIDS', 'Kids'),
-        ('SUPERKIDS', 'Superkids'),
-    ]
-    
-    grade_level     = models.IntegerField(choices=GRADE_CHOICES, unique=True)
-    category        = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
-    price           = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    created_at      = models.DateTimeField(auto_now_add=True)
-    updated_at      = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'grades'
-        verbose_name = 'Grade'
-        verbose_name_plural = 'Grades'
-        
-    def __str__(self):
-        return str(self.grade_level)
     
