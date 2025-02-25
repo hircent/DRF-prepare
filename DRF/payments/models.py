@@ -6,10 +6,9 @@ from datetime import datetime
 
 # Create your models here.
 class InvoiceSequence(models.Model):
-    branch      = models.ForeignKey(Branch, on_delete=models.PROTECT)
+    branch      = models.ForeignKey(Branch, on_delete=models.PROTECT,related_name='sequences')
     number      = models.PositiveIntegerField(default=1)
-    created_at  = models.DateTimeField(auto_now_add=True)
-    updated_at  = models.DateTimeField(auto_now=True)
+    year        = models.PositiveIntegerField(default=datetime.now().year)
 
     class Meta:
         db_table = 'invoice_sequences'
@@ -25,8 +24,8 @@ class InvoiceSequence(models.Model):
         return str(datetime.now().year)[2:]
 
 class Invoice(models.Model):
-    branch              = models.ForeignKey(Branch, on_delete=models.PROTECT)
-    invoice_sequence    = models.ForeignKey(InvoiceSequence, on_delete=models.PROTECT)
+    branch              = models.ForeignKey(Branch, on_delete=models.PROTECT,related_name='invoices')
+    invoice_sequence    = models.OneToOneField(InvoiceSequence, on_delete=models.PROTECT,related_name='sequence')
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
 
