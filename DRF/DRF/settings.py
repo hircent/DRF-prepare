@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'feeStructure',
     'payments',
     'reports',
+    'certificate',
     'rest_framework',
     'rest_framework_simplejwt'
 ]
