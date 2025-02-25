@@ -67,7 +67,7 @@ class Payment(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return 'Payment ' + self.id + ' - ' + self.enrolment.student.fullname
+        return 'Payment ' + str(self.id) + ' - ' + self.enrolment.student.fullname
     
     def save(self, *args, **kwargs):
         if self.paid_amount is None or self.paid_amount == 0:
