@@ -69,11 +69,13 @@ class CustomBaseCommand(BaseCommand):
     def parse_date_to_time(value):
         return datetime.strptime(value, "%Y-%m-%d %H:%M:%S").time()
 
-    def reset_id(self,table):
+    def reset_id(self, table):
         try:
             with connection.cursor() as cursor:
-                cursor.execute(f"SELECT setval(pg_get_serial_sequence('{table}', 'id'), (SELECT MAX(id) FROM {table}))")
+                # This handles empty tables by using COALESCE to default to 1
+                # The third parameter 'false' means the next value will be MAX(id) + 1, not MAX(id)
+                cursor.execute(f"SELECT setval(pg_get_serial_sequence('{table}', 'id'), (SELECT COALESCE(MAX(id), 0) FROM {table}), true)")
                 self.logger.info(f"Pg_get_serial_sequence for {table} success")
         except Exception as e:
-            self.logger.error("Pg_get_serial_sequence error")
+            self.logger.error(f"Pg_get_serial_sequence error: {str(e)}")
 
