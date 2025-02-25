@@ -32,6 +32,9 @@ class Command(CustomBaseCommand):
 
                     for row in reader:
 
+                        if row['payment_invoice_id'] == '0':
+                            continue
+
                         try:
                             StudentEnrolment.objects.get(id=row['payable_id'])
                             Invoice.objects.get(id=row['payment_invoice_id'])
@@ -70,6 +73,7 @@ class Command(CustomBaseCommand):
                             Payment.objects.bulk_create(payment_arr)
                             total_imported += len(payment_arr)
                             self.logger.info(f"Imported {len(payment_arr)} payments. Total: {total_imported}")
+                            payment_arr = []
                     
                     if payment_arr:
                         Payment.objects.bulk_create(payment_arr)

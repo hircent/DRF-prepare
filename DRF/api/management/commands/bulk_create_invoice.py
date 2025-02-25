@@ -55,9 +55,10 @@ class Command(CustomBaseCommand):
                         self.stdout.write(self.style.SUCCESS(f"Invoices with id:{row['id']} at branch: {row['branch_id']} has appended at time {datetime.now()}"))
 
                         if len(invoice_arr)>= batch_size:
-                            Invoice.objects.bulk_create(invoice_arr)
+                            Invoice.objects.bulk_create(invoice_arr,ignore_conflicts=True)
                             total_imported += len(invoice_arr)
                             self.logger.info(f"Imported {len(invoice_arr)} invoices. Total: {total_imported}")
+                            invoice_arr = []
                     
                     if invoice_arr:
                         Invoice.objects.bulk_create(invoice_arr)
