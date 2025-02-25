@@ -7,8 +7,12 @@ class InvoiceSequenceAdmin(admin.ModelAdmin):
 class InvoiceAdmin(admin.ModelAdmin):
     list_display = ('id','branch','invoice_sequence','created_at')
 
+    raw_id_fields = ('invoice_sequence','branch')
+
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ('id','enrolment','invoice','amount','paid_amount','status','description')
+
+    raw_id_fields = ('enrolment','invoice')
 
 admin.site.register(InvoiceSequence,InvoiceSequenceAdmin)
 admin.site.register(Invoice,InvoiceAdmin)    

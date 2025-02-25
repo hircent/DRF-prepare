@@ -19,20 +19,28 @@ class ClassLessonAdmin(admin.ModelAdmin):
     search_fields = ('branch', 'theme_lesson','theme_lesson__theme__name')
     list_filter = ('status','branch',)
 
+    raw_id_fields = ('theme_lesson','teacher','branch')
+
 class StudentAttendanceAdmin(admin.ModelAdmin):
     list_display = ('id', 'enrollment__id','enrollment', 'branch', 'class_lesson','class_lesson__id', 'date', 'start_time', 'has_attended', 'status')
     search_fields = ('enrollment__student__fullname', 'class_lesson__theme_lesson__theme__name')
     list_filter = ('status','branch','enrollment__student__fullname','enrollment__id',)
+
+    raw_id_fields = ('enrollment', 'class_lesson','branch')
 
 class EnrolmentExtensionAdmin(admin.ModelAdmin):
     list_display = ('id', 'enrolment','enrolment__id', 'branch', 'start_date')
     search_fields = ('enrolment__student__fullname',)
     list_filter = ('branch','enrolment__student__fullname',)
 
+    raw_id_fields = ('enrolment','branch')
+
 class VideoAssignmentAdmin(admin.ModelAdmin):
     list_display = ('id', 'enrolment__student__fullname', 'theme', 'video_url', 'video_number', 'submission_date')
     search_fields = ('enrolment__student__fullname',)
     list_filter = ('enrolment__student__fullname','enrolment__branch')
+
+    raw_id_fields = ('enrolment','theme')
 
 class ReplacementAttendanceAdmin(admin.ModelAdmin):
     list_display = ('id', 'attendances', 'class_instance', 'date', 'status')
