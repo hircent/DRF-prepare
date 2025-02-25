@@ -17,7 +17,7 @@ class InvoiceSequence(models.Model):
         ordering = ['-number']
 
     def __str__(self):
-        return  self.branch.display_name + ' - ' + self.number
+        return  self.branch.display_name + ' - ' + str(self.number)
 
     @property
     def get_year_last_two_digits(self):
