@@ -17,7 +17,7 @@ class InvoiceSequence(models.Model):
         ordering = ['-number']
 
     def __str__(self):
-        return  self.branch.display_name + ' - ' + str(self.number)
+        return  f"{self.branch.display_name} - {int(str(self.year)[2:]):04d} - {self.number:04d}"
 
     @property
     def get_year_last_two_digits(self):
@@ -26,6 +26,7 @@ class InvoiceSequence(models.Model):
 class Invoice(models.Model):
     branch              = models.ForeignKey(Branch, on_delete=models.PROTECT,related_name='invoices')
     invoice_sequence    = models.OneToOneField(InvoiceSequence, on_delete=models.PROTECT,related_name='sequence')
+    file_path           = models.URLField(null=True,blank=True)
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
 
@@ -36,7 +37,7 @@ class Invoice(models.Model):
         ordering = ['-updated_at']
 
     def __str__(self):
-        return self.id + ' - ' + str(self.invoice_sequence.number)
+        return f"Invoice {self.id} - {self.invoice_sequence.number:04d}"
 
 class Payment(models.Model):
     STATUS_CHOICES = [
