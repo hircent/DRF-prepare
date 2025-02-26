@@ -150,7 +150,7 @@ class BaseCustomBranchView(GenericViewWithExtractJWTInfo):
         branch_id = self.kwargs.get("branch_id")
 
         self.require_id(branch_id,"branch id")
-        
+
         (is_superadmin,_) = self.branch_accessible(branch_id)
 
         userId = self.extract_jwt_info("user_id")
@@ -173,7 +173,7 @@ class BaseCustomCalendarView(GenericViewWithExtractJWTInfo):
         calendar_id = self.kwargs.get("calendar_id")
         self.require_id(calendar_id,"calendar id")
         branch_id = self.get_branch_id()
-        (is_superadmin,user_branch_roles) = self.branch_accessible(branch_id)
+        (is_superadmin,_) = self.branch_accessible(branch_id)
         userId = self.extract_jwt_info("user_id")
 
         calendar = get_object_or_404(Calendar,id=calendar_id)
