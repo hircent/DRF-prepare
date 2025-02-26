@@ -41,6 +41,11 @@ class GenericViewWithExtractJWTInfo(GenericAPIView):
 
         if not id:
             raise PermissionDenied(f"Missing {label}.")
+        
+    def require_query_param(self,param,label):
+
+        if not param:
+            raise PermissionDenied(f"Missing {label}.")
     
 class BaseCustomListAPIView(GenericViewWithExtractJWTInfo,ListAPIView):
     pagination_class = CustomPagination
