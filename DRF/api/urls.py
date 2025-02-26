@@ -18,20 +18,11 @@ from calendars.views import (
     CalendarThemeLessonListView,GenerateCalendarThemeLessonView
 )
 
-from students.views import (
-    StudentListView ,StudentDetailsView ,StudentCreateView,StudentUpdateView,StudentDeleteView,
-    ExportStudentsCSV
-)
-
 from category.views import (
     CategoryListView, ThemeListView, CategoryRetrieveView,
     CategoryCreateView, ThemeRetrieveView, CategoryDestroyView,
     ThemeDestroyView, CategoryUpdateView, ThemeUpdateView, ThemeCreateView,
     CategorySelectionListView
-)
-
-from feeStructure.views import (
-    GradeListView, GradeRetrieveView, GradeCreateView, GradeUpdateView, GradeDestroyView
 )
 
 from classes.views import (
@@ -41,6 +32,19 @@ from classes.views import (
     EnrolmentLessonListView, EnrolmentExtendView, VideoAssignmentListView, VideoAssignmentDetailsView,
     VideoAssignmentUpdateView, MarkAttendanceView, EnrolmentRescheduleClassView,EnrolmentAdvanceView,
     TestLearnView
+)
+
+from feeStructure.views import (
+    GradeListView, GradeRetrieveView, GradeCreateView, GradeUpdateView, GradeDestroyView
+)
+
+from students.views import (
+    StudentListView ,StudentDetailsView ,StudentCreateView,StudentUpdateView,StudentDeleteView,
+    ExportStudentsCSV
+)
+
+from payments.views import (
+    PaymentListView
 )
 
 from django.urls import path
@@ -138,6 +142,9 @@ urlpatterns = [
     #Attendance
     path('class/attendance/list', ClassLessonListByDateView.as_view(), name='class-lesson-list-by-date'),
     path('class/mark-attendance', MarkAttendanceView.as_view(), name='mark-attendance'),
+
+    #Payment
+    path('payment/list', PaymentListView.as_view(), name='payment-list'),
 
     #Others
     path("branch/principals/branch_grade",CombinedPrincipalsAndBranchGradesView.as_view(),name="principal-branch_grade-for-branch"),
