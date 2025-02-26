@@ -19,7 +19,24 @@ class GenericViewWithExtractJWTInfo(GenericAPIView):
             raise PermissionDenied("Invalid token or missing branch role information")
         
         return jwt_payload.get(info,[])
+    
+    def get_branch_id(self):
+        branch_id = self.request.headers.get('BranchId')
+        
+        if not branch_id:
+            raise PermissionDenied("Missing branch id.")
+        
+        return branch_id
+    
+    def branch_accessible(self,branch_id):
+        user_branch_roles = self.extract_jwt_info("branch_role")
+        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
 
+        if not is_superadmin and not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
+            raise PermissionDenied("You don't have access to this branch or role.")
+        
+        return is_superadmin,user_branch_roles
+    
 class BaseCustomListAPIView(GenericViewWithExtractJWTInfo,ListAPIView):
     pagination_class = CustomPagination
 
