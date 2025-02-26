@@ -529,7 +529,7 @@ class TodayClassLessonSerializer(serializers.ModelSerializer):
         return StudentEnrolmentListForClassSerializer(unmarked_enrollments, many=True).data
     
     def get_replacement_students(self, obj):
-        replacement_students = obj.class_instance.replacement_attendances.all().select_related(
+        replacement_students = obj.class_instance.replacement_attendances.filter(date=datetime.today()).select_related(
             'attendances','attendances__enrollment__student','attendances__enrollment'
         )
         
