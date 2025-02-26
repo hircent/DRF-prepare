@@ -13,9 +13,9 @@ class PaymentListView(BaseCustomListAPIView):
 
     def get_queryset(self):
         branch_id = self.get_branch_id()
-        status = self.request.query_params.get('status', None)
+        self.branch_accessible(branch_id)
         
-        (is_superadmin,user_branch_roles) = self.branch_accessible(branch_id)
+        status = self.request.query_params.get('status', None)
 
         query_set = Payment.objects.filter(enrolment__branch_id=branch_id)
         

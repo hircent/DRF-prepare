@@ -37,6 +37,11 @@ class GenericViewWithExtractJWTInfo(GenericAPIView):
         
         return is_superadmin,user_branch_roles
     
+    def require_id(self,id,label):
+
+        if not id:
+            raise PermissionDenied(f"Missing {label}.")
+    
 class BaseCustomListAPIView(GenericViewWithExtractJWTInfo,ListAPIView):
     pagination_class = CustomPagination
 
@@ -112,19 +117,15 @@ class BaseRoleBasedUserView(GenericViewWithExtractJWTInfo):
 
     def get_object(self):
         user_id = self.kwargs.get('pk')
+        self.require_id(user_id,"user id")
+
         role = self.kwargs.get('role')
-        branch_id = self.request.headers.get('BranchId')
+        self.require_id(role,"role")
 
-        if not branch_id:
-            raise PermissionDenied("Missing branch id.")
-
-        user_branch_roles = self.extract_jwt_info("branch_role")
-        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+        branch_id = self.get_branch_id()
+        self.branch_accessible(branch_id)
 
         queryset = User.objects.filter(id=user_id, users__role__name=role, users__branch_id=branch_id)
-        
-        if not is_superadmin and not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
-            raise PermissionDenied("You don't have access to this branch or role.")
 
         return get_object_or_404(queryset)
     
@@ -133,18 +134,12 @@ class BaseRoleBasedUserDetailsView(GenericViewWithExtractJWTInfo):
 
     def get_object(self):
         user_id = self.kwargs.get('pk')
-        branch_id = self.request.headers.get('BranchId')
+        self.require_id(user_id,"user id")
 
-        if not branch_id:
-            raise PermissionDenied("Missing branch id.")
-
-        user_branch_roles = self.extract_jwt_info("branch_role")
-        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+        branch_id = self.get_branch_id()
+        self.branch_accessible(branch_id)
 
         queryset = User.objects.filter(id=user_id, users__branch_id=branch_id)
-        
-        if not is_superadmin and not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
-            raise PermissionDenied("You don't have access to this branch or role.")
 
         return get_object_or_404(queryset)
     
@@ -154,22 +149,16 @@ class BaseCustomBranchView(GenericViewWithExtractJWTInfo):
 
         branch_id = self.kwargs.get("branch_id")
 
-        if not branch_id:
-            raise PermissionDenied("Missing branch id.")
+        self.require_id(branch_id,"branch id")
         
-        user_branch_roles = self.extract_jwt_info("branch_role")
-        userId = self.extract_jwt_info("user_id")
+        (is_superadmin,_) = self.branch_accessible(branch_id)
 
-        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+        userId = self.extract_jwt_info("user_id")
 
         if is_superadmin:
             # Superadmins can access any user regardless of branch
             return get_object_or_404(Branch,id=branch_id)
         else:
-            # For non-superadmins, check if they have access to the specified branch
-            if not any(ubr['branch_id'] == branch_id for ubr in user_branch_roles):
-                raise PermissionDenied("You don't have access to this branch.")
-
             # Check if the requested user belongs to the specified branch
             user_branch_role = UserBranchRole.objects.filter(user=User.objects.get(id=userId), branch_id=branch_id).first()
             if not user_branch_role:
@@ -181,26 +170,17 @@ class BaseCustomCalendarView(GenericViewWithExtractJWTInfo):
 
     def get_object(self):
 
-        branch_id = self.request.headers.get("BranchId")
         calendar_id = self.kwargs.get("calendar_id")
-
-        if not branch_id:
-            raise PermissionDenied("Missing branch id.")
-        
-        user_branch_roles = self.extract_jwt_info("branch_role")
+        self.require_id(calendar_id,"calendar id")
+        branch_id = self.get_branch_id()
+        (is_superadmin,user_branch_roles) = self.branch_accessible(branch_id)
         userId = self.extract_jwt_info("user_id")
-
-        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
 
         calendar = get_object_or_404(Calendar,id=calendar_id)
         if is_superadmin:
             
             return calendar
         else:
-            # For non-superadmins, check if they have access to the specified branch
-            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
-                raise PermissionDenied("You don't have access to this branch.")
-
             # Check if the requested user belongs to the specified branch
             user_branch_role = UserBranchRole.objects.filter(user=User.objects.get(id=userId), branch_id=branch_id).first()
             if not user_branch_role:
@@ -212,26 +192,19 @@ class BaseCustomClassView(GenericViewWithExtractJWTInfo):
 
     def get_object(self):
 
-        branch_id = self.request.headers.get("BranchId")
         class_id = self.kwargs.get("class_id")
+        self.require_id(class_id,"class id")
 
-        if not branch_id:
-            raise PermissionDenied("Missing branch id.")
-        
-        user_branch_roles = self.extract_jwt_info("branch_role")
+        branch_id = self.get_branch_id()
+        (is_superadmin,_) = self.branch_accessible(branch_id)
+
         userId = self.extract_jwt_info("user_id")
-
-        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
 
         clas = get_object_or_404(Class,id=class_id)
         if is_superadmin:
             
             return clas
         else:
-            # For non-superadmins, check if they have access to the specified branch
-            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
-                raise PermissionDenied("You don't have access to this branch.")
-
             # Check if the requested user belongs to the specified branch
             user_branch_role = UserBranchRole.objects.filter(user=User.objects.get(id=userId), branch_id=branch_id).first()
             if not user_branch_role:
@@ -243,26 +216,19 @@ class BaseCustomParentView(GenericViewWithExtractJWTInfo):
 
     def get_object(self):
 
-        branch_id = self.request.headers.get("BranchId")
         parent_id = self.kwargs.get("parent_id")
 
-        if not branch_id:
-            raise PermissionDenied("Missing branch id.")
+        self.require_id(parent_id,"parent id")
         
-        user_branch_roles = self.extract_jwt_info("branch_role")
+        branch_id = self.get_branch_id()
+        (is_superadmin,_) = self.branch_accessible(branch_id)
         userId = self.extract_jwt_info("user_id")
-
-        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
 
         parent = get_object_or_404(User,id=parent_id)
         if is_superadmin:
             
             return parent
         else:
-            # For non-superadmins, check if they have access to the specified branch
-            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
-                raise PermissionDenied("You don't have access to this branch.")
-
             # Check if the requested user belongs to the specified branch
             user_branch_role = UserBranchRole.objects.filter(user=User.objects.get(id=userId), branch_id=branch_id).first()
             if not user_branch_role:
@@ -274,26 +240,20 @@ class BaseCustomEnrolmentView(GenericViewWithExtractJWTInfo):
 
     def get_object(self):
 
-        branch_id = self.request.headers.get("BranchId")
         enrolment_id = self.kwargs.get("enrolment_id")
 
-        if not branch_id:
-            raise PermissionDenied("Missing branch id.")
+        self.require_id(enrolment_id,"enrolment id")
         
-        user_branch_roles = self.extract_jwt_info("branch_role")
-        userId = self.extract_jwt_info("user_id")
+        branch_id = self.get_branch_id()
+        (is_superadmin,_) = self.branch_accessible(branch_id)
 
-        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+        userId = self.extract_jwt_info("user_id")
 
         enrolment = get_object_or_404(StudentEnrolment,id=enrolment_id)
         if is_superadmin:
             
             return enrolment
         else:
-            # For non-superadmins, check if they have access to the specified branch
-            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
-                raise PermissionDenied("You don't have access to this branch.")
-
             # Check if the requested user belongs to the specified branch
             user_branch_role = UserBranchRole.objects.filter(user=User.objects.get(id=userId), branch_id=branch_id).first()
             if not user_branch_role:
@@ -305,16 +265,14 @@ class BaseVideoAssignmentView(GenericViewWithExtractJWTInfo):
 
     def get_object(self):
 
-        branch_id = self.request.headers.get("BranchId")
         video_id = self.kwargs.get("video_id")
 
-        if not branch_id:
-            raise PermissionDenied("Missing branch id.")
-        
-        user_branch_roles = self.extract_jwt_info("branch_role")
-        userId = self.extract_jwt_info("user_id")
+        self.require_id(video_id,"video id")
 
-        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+        branch_id = self.get_branch_id()
+        (is_superadmin,_) = self.branch_accessible(branch_id)
+
+        userId = self.extract_jwt_info("user_id")
 
         video_assignments = get_object_or_404(VideoAssignment,id=video_id)
         
@@ -322,10 +280,6 @@ class BaseVideoAssignmentView(GenericViewWithExtractJWTInfo):
             
             return video_assignments
         else:
-            # For non-superadmins, check if they have access to the specified branch
-            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
-                raise PermissionDenied("You don't have access to this branch.")
-
             # Check if the requested user belongs to the specified branch
             user_branch_role = UserBranchRole.objects.filter(user=User.objects.get(id=userId), branch_id=branch_id).first()
             if not user_branch_role:

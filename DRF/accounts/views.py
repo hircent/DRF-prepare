@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import User
+from branches.models import UserBranchRole
 from .serializers import (
     UserSerializer,UserDetailSerializer,ParentDetailsSerializer,
     TeachingUserSerializer,SearchParentSerializer
@@ -23,15 +24,10 @@ class RoleBasesUserListView(BaseCustomListAPIView):
     serializer_class = UserSerializer
     def get_queryset(self):    
         role = self.kwargs.get('role')
-        branch_id = self.request.headers.get('BranchId')
         q = self.request.query_params.get('q', None)
         
-        if not branch_id:
-            raise PermissionDenied("Missing branch id.")
-        
-        user_branch_roles = self.extract_jwt_info("branch_role")
-
-        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+        branch_id = self.get_branch_id()
+        (is_superadmin,user_branch_roles) = self.branch_accessible(branch_id)
         
         # query_set = User.objects.filter(users__role__name=role).exclude(id=self.request.user.id)
         query_set = User.objects.filter(users__role__name=role,users__branch_id=branch_id)
@@ -67,16 +63,8 @@ class RoleBasesUserListView(BaseCustomListAPIView):
 class RoleBasedUserCreateView(BaseRoleBasedUserView, CreateAPIView):
     def create(self, request, *args, **kwargs):
         role = self.kwargs.get('role')
-        branch_id = self.request.headers.get('BranchId')
-
-        if not branch_id:
-            raise PermissionDenied("Missing branch id.")
-
-        user_branch_roles = self.extract_jwt_info("branch_role")
-        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
-
-        if not is_superadmin and not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
-            raise PermissionDenied("You don't have access to this branch or role.")
+        branch_id = self.get_branch_id()
+        (is_superadmin,user_branch_roles) = self.branch_accessible(branch_id)
 
         data = request.data.copy()
         data['role'] = role
@@ -170,16 +158,12 @@ class RoleBasedUserDetailsView(BaseRoleBasedUserDetailsView,RetrieveAPIView):
     def get_object(self):
         # Get the user object by ID
         user_id = self.kwargs.get('pk')  # 'pk' corresponds to the user ID in the URL
-        branch_id = self.request.headers.get('BranchId')
-        user = get_object_or_404(User, id=user_id)
-        
+
         # You can add permission checks here based on user roles
-        user_branch_roles = self.extract_jwt_info("branch_role")
-        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+        branch_id = self.get_branch_id()
+        self.branch_accessible(branch_id)
 
-        if not is_superadmin and not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
-            raise PermissionDenied("You don't have access to this branch or role.")
-
+        user = get_object_or_404(User, id=user_id)
         '''
         # Extract user roles from JWT
         user_branch_roles = self.extract_jwt_info("branch_role")
@@ -205,6 +189,10 @@ class RoleBasedUserDetailsView(BaseRoleBasedUserDetailsView,RetrieveAPIView):
 
             return user
         '''
+        user_branch_role = UserBranchRole.objects.filter(user=user, branch_id=branch_id).first()
+        
+        if not user_branch_role:
+            raise PermissionDenied("The requested user does not belong to the specified branch.")
         return user
 
     def get(self, request, *args, **kwargs):
@@ -236,15 +224,10 @@ class ParentListView(BaseCustomListAPIView):
     permission_classes = [IsTeacherOrHigher]
     
     def get_queryset(self):    
-        branch_id = self.request.headers.get('BranchId')
         q = self.request.query_params.get('q', None)
         
-        if not branch_id:
-            raise PermissionDenied("Missing branch id.")
-        
-        user_branch_roles = self.extract_jwt_info("branch_role")
-
-        is_superadmin = any(bu['branch_role'] == 'superadmin' for bu in user_branch_roles)
+        branch_id = self.get_branch_id()
+        self.branch_accessible(branch_id)
         
         # query_set = User.objects.filter(users__role__name=role).exclude(id=self.request.user.id)
         query_set = User.objects.filter(users__role__name='parent',users__branch_id=branch_id)
@@ -253,15 +236,7 @@ class ParentListView(BaseCustomListAPIView):
             query_set = query_set.filter(
                 Q(username__icontains=q)  # Case-insensitive search
             )
-        if is_superadmin:
-            return query_set.distinct()
-        else:
-            
-            if not any(ubr['branch_id'] == int(branch_id) for ubr in user_branch_roles):
-                
-                raise PermissionDenied("You don't have access to this branch or role.")
-            else:
-                return query_set
+        return query_set
             
 class ParentDetailsView(BaseCustomParentView,RetrieveAPIView):
     serializer_class = ParentDetailsSerializer
@@ -277,10 +252,8 @@ class TeachingUserListView(BaseCustomListNoPaginationAPIView):
     permission_classes = [IsTeacherOrHigher]
 
     def get_queryset(self):
-        branch_id = self.request.headers.get('BranchId')
-        
-        if not branch_id:
-            raise PermissionDenied("Missing branch id.")
+        branch_id = self.get_branch_id()
+        self.branch_accessible(branch_id)
         
         query_set = User.objects.filter(
             users__role__name__in=['teacher','manager'],
@@ -294,14 +267,13 @@ class SearchParentListView(BaseCustomListNoPaginationAPIView):
     permission_classes = [IsTeacherOrHigher]
 
     def get_queryset(self):
-        branch_id = self.request.headers.get('BranchId')
         q = self.request.query_params.get('q', None)
         
         if not q:
             raise PermissionDenied("Missing search query.")
         
-        if not branch_id:
-            raise PermissionDenied("Missing branch id.")
+        branch_id = self.get_branch_id()
+        self.branch_accessible(branch_id)
         
         query_set = User.objects.filter(
             users__role__name='parent',
