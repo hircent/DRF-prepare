@@ -3,7 +3,7 @@ from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher,IsManagerOrHigh
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import UpdateAPIView,DestroyAPIView,CreateAPIView
 from rest_framework.exceptions import PermissionDenied
-from .serializers import PaymentListSerializer
+from .serializers import PaymentListSerializer,InvoiceListSerializer
 from .models import InvoiceSequence,Invoice,Payment
 
 # Create your views here.
@@ -23,4 +23,16 @@ class PaymentListView(BaseCustomListAPIView):
             query_set = query_set.filter(status=status)
 
         return query_set
+    
+class InvoiceListView(BaseCustomListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = InvoiceListSerializer
+
+    def get_queryset(self):
+        branch_id = self.get_branch_id()
+        
+        self.branch_accessible(branch_id)
+
+        return Invoice.objects.filter(branch_id=branch_id)
+
 

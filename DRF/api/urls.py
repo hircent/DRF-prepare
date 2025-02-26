@@ -44,7 +44,7 @@ from students.views import (
 )
 
 from payments.views import (
-    PaymentListView
+    PaymentListView, InvoiceListView
 )
 
 from django.urls import path
@@ -145,6 +145,7 @@ urlpatterns = [
 
     #Payment
     path('payment/list', PaymentListView.as_view(), name='payment-list'),
+    path('invoice/list', InvoiceListView.as_view(), name='invoice-list'),
 
     #Others
     path("branch/principals/branch_grade",CombinedPrincipalsAndBranchGradesView.as_view(),name="principal-branch_grade-for-branch"),
