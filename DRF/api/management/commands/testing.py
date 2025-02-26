@@ -8,15 +8,27 @@ from students.models import Students
 from accounts.models import User
 from category.models import Category,ThemeLesson
 from datetime import datetime ,timedelta,date
+from payments.models import InvoiceSequence,Invoice,Payment
 from django.db import connection
 import json
+
+class CustomError(Exception):
+
+    def __init__(self, message :str , code:int):
+        self.message = message
+        self.code = code
+
+    def __str__(self):
+        return f"Error {self.code}: {self.message}"
+
 class Command(BaseCommand):
     help = 'testing function'
 
     def handle(self, *args, **kwargs):
-        sa = StudentAttendance.objects.get(id=236481)
-
-        print(sa.replacement_attendances.all())
+        try:
+            raise CustomError('test',404)
+        except CustomError as e:
+            print(e)
 
     def learn_select_related(self):
         # Without select_related
@@ -50,5 +62,9 @@ class Command(BaseCommand):
         print(student_enrolments.classroom.end_time)
         print(student_enrolments.classroom.day)
 
+        for query in connection.queries:
+            print(query['sql'],end='\n\n')
+
+    def _print_query(self):
         for query in connection.queries:
             print(query['sql'],end='\n\n')
