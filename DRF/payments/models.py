@@ -17,11 +17,11 @@ class InvoiceSequence(models.Model):
         ordering = ['-number']
 
     def __str__(self):
-        return  f"{self.branch.display_name} - {int(str(self.year)[2:]):04d} - {self.number:04d}"
+        return  f"MY{self.branch.id:03d} - {self._get_year_last_two_digits} - {self.number:04d}"
 
     @property
-    def get_year_last_two_digits(self):
-        return str(datetime.now().year)[2:]
+    def _get_year_last_two_digits(self):
+        return int(str(self.year)[2:])
 
 class Invoice(models.Model):
     branch              = models.ForeignKey(Branch, on_delete=models.PROTECT,related_name='invoices')
