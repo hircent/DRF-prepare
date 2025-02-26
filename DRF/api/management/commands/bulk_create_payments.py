@@ -59,7 +59,7 @@ class Command(CustomBaseCommand):
                             discount = row['discount'],
                             paid_amount = row['paid_amount'],
                             start_date = self.parse_date(row['start_date']),
-                            status = row['status'].upper(),
+                            status = self._get_status(row['status']),
                             description = row['description'],
                             created_at = self.parse_datetime(row['created_at']),
                             updated_at = self.parse_datetime(row['updated_at'])
@@ -93,4 +93,10 @@ class Command(CustomBaseCommand):
             self.logger.error(f"Time taken : {time_taken}")
             
             raise
+
+    def _get_status(row:str):
+        if row == 'pending':
+            return 'UNPAID'
+        
+        return row.upper()
     
