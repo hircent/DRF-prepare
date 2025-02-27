@@ -11,7 +11,7 @@ from api.global_customViews import (
     BaseCustomListAPIView, GenericViewWithExtractJWTInfo, BaseCustomClassView, BaseCustomListNoPaginationAPIView,
     BaseCustomEnrolmentView, BaseVideoAssignmentView, BaseAPIView
 )
-from accounts.permission import IsManagerOrHigher
+from accounts.permission import IsManagerOrHigher, IsTeacherOrHigher
 from calendars.models import Calendar
 from classes.models import StudentAttendance
 from django.db.models import Q, F, Case, When, Value
@@ -149,9 +149,32 @@ class RescheduleClassListView(BaseCustomListNoPaginationAPIView):
 Enrolment Views
 '''
 class StudentEnrolmentListView(BaseCustomListAPIView):
-    queryset = StudentEnrolment.objects.all()
     serializer_class = StudentEnrolmentListSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsTeacherOrHigher]
+
+    def get_queryset(self):
+        is_active_param = self.request.query_params.get('is_active', 'true')
+        is_active = is_active_param.lower() == 'true'
+        category = self.request.query_params.get('category', 'KIDS')
+        name = self.request.query_params.get('name', None)
+
+        branch_id = self.get_branch_id()
+        self.branch_accessible(branch_id)
+
+        if name:
+            enrolment = StudentEnrolment.objects.filter(
+                student__fullname__icontains=name
+            ).select_related("student","grade")
+
+            return enrolment
+        
+        enrolment = StudentEnrolment.objects.filter(
+            branch=int(branch_id),
+            is_active=is_active,
+            grade__category=category.upper()
+        ).select_related("student","grade")
+
+        return enrolment
 
 class StudentEnrolmentDetailView(BaseCustomEnrolmentView,RetrieveAPIView):
     serializer_class = StudentEnrolmentDetailsSerializer
