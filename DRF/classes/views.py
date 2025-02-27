@@ -163,6 +163,7 @@ class StudentEnrolmentListView(BaseCustomListAPIView):
 
         if name:
             enrolment = StudentEnrolment.objects.filter(
+                branch=int(branch_id),
                 student__fullname__icontains=name
             ).select_related("student","grade")
 
