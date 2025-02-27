@@ -48,7 +48,7 @@ class Payment(models.Model):
         ('VOIDED', 'VOIDED'),
     ]
 
-    enrolment           = models.ForeignKey(StudentEnrolment, on_delete=models.PROTECT,related_name='payment')
+    enrolment           = models.ForeignKey(StudentEnrolment, on_delete=models.PROTECT,related_name='payments')
     invoice             = models.OneToOneField(Invoice, on_delete=models.PROTECT,related_name='payment')
     parent              = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
     amount              = models.DecimalField(max_digits=10, decimal_places=2)
