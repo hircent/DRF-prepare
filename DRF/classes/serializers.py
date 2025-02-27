@@ -348,7 +348,7 @@ class ClassEnrolmentListSerializer(serializers.ModelSerializer):
     
     def get_replacement_students(self, obj):
         date = self.context.get('date')
-        
+
         replacement_students = obj.replacement_attendances.filter(
             date=datetime.strptime(date, '%Y-%m-%d').date()
         ).select_related(
@@ -539,7 +539,9 @@ class TodayClassLessonSerializer(serializers.ModelSerializer):
     def get_replacement_students(self, obj):
         date = self.context.get('date')
 
-        replacement_students = obj.class_instance.replacement_attendances.filter(date=datetime.strptime(date, '%Y-%m-%d').date()).select_related(
+        replacement_students = obj.class_instance.replacement_attendances.filter(
+            date=datetime.strptime(date, '%Y-%m-%d').date()
+        ).select_related(
             'attendances','attendances__enrollment__student','attendances__enrollment'
         )
         
