@@ -43,7 +43,7 @@ class VideoAssignmentAdmin(admin.ModelAdmin):
     raw_id_fields = ('enrolment','theme')
 
 class ReplacementAttendanceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'attendances', 'class_instance', 'date', 'status')
+    list_display = ('id', 'attendances','attendances_id', 'class_instance', 'date', 'status')
     list_select_related = ('attendances', 'class_instance')  # Reduce database queries
     
     search_fields = ('attendances__enrollment__student__fullname',)

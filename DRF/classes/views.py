@@ -911,6 +911,7 @@ class MarkAttendanceView(BaseAPIView):
                                 'enrolment_id': id,
                                 'replacement_date': enrolment.get('replacement_date'),
                                 'replacement_timeslot_class_id': enrolment.get('replacement_timeslot_class_id'),
+                                'date':date
                             })
 
                     except Exception as model_error:
@@ -1008,6 +1009,7 @@ class MarkAttendanceView(BaseAPIView):
             Each dict should have: enrolment_id, replacement_date, replacement_timeslot_class_id
         """
         replacement_arr = []
+        print("creating replacement attendance...",sep="\n\n")
         
         try:
             # Validate input data
@@ -1020,6 +1022,9 @@ class MarkAttendanceView(BaseAPIView):
                 enrolment_id = replacement.get('enrolment_id')
                 replacement_date_str = replacement.get('replacement_date')
                 replacement_timeslot_class_id = replacement.get('replacement_timeslot_class_id')
+                date = replacement.get('date')
+
+                print(f"Getting replacement for enrolment {enrolment_id} on {replacement_date_str} and timeslot {replacement_timeslot_class_id}",sep="\n\n")
 
                 if not all([enrolment_id, replacement_date_str, replacement_timeslot_class_id]):
                     raise ValueError(f"Missing required fields for replacement: {replacement}")
@@ -1031,7 +1036,7 @@ class MarkAttendanceView(BaseAPIView):
 
                 # Get the student's attendance for the replacement date
                 try:
-                    student_enrolment_attendance = StudentAttendance.objects.filter(enrollment_id=enrolment_id).first()
+                    student_enrolment_attendance = StudentAttendance.objects.filter(enrollment_id=enrolment_id,date=date).first()
                     
                     if not student_enrolment_attendance:
                         raise ValueError(f"No attendance found for student {enrolment_id} on {replacement_date}")
