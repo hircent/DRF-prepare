@@ -384,6 +384,11 @@ class ClassLessonFutureListByDateView(BaseClassLessonView):
     serializer_class = ClassEnrolmentListSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['date'] = self.request.query_params.get('date')
+        return context
+
     def get_queryset(self):
         branch_id = self.get_branch_id()
         self.branch_accessible(branch_id)
@@ -402,6 +407,11 @@ class ClassLessonFutureListByDateView(BaseClassLessonView):
 class ClassLessonPastListByDateView(BaseCustomListNoPaginationAPIView):
     serializer_class = ClassLessonListSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['date'] = self.request.query_params.get('date')
+        return context
 
     def get_queryset(self):
         branch_id = self.get_branch_id()
@@ -430,6 +440,11 @@ class ClassLessonPastListByDateView(BaseCustomListNoPaginationAPIView):
 class ClassLessonTodayListByDateView(BaseClassLessonView):
     serializer_class = TodayClassLessonSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['date'] = self.request.query_params.get('date')
+        return context
 
     def get_queryset(self):
         branch_id = self.get_branch_id()
