@@ -28,7 +28,7 @@ class Command(BaseCommand):
         try:
             raise CustomError('test',404)
         except CustomError as e:
-            print(e)
+            print("e")
 
     def learn_select_related(self):
         # Without select_related
