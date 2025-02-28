@@ -67,7 +67,6 @@ class Command(BaseCommand):
                         except:
                             self.logger.error(f"Branch id {row['branch_id']} not found")
                             raise ValueError(f"Branch id {row['branch_id']} not found")
-                        
                         student = Students(
                             id = row['id'],
                             branch = branch,
@@ -80,7 +79,7 @@ class Command(BaseCommand):
                             deemcee_starting_grade = row['deemcee_starting_grade'],
                             status = 'IN_PROGRESS' if row['status'] == 'EXTENDED' else row['status'],
                             enrolment_date = row['enrolment_date'],
-                            referral_channel = self.mapRefferalChannel(int(row['referral_channel_id'])),
+                            referral_channel = self.mapRefferalChannel(row['referral_channel_id']),
                             referral = row['referral'] if row['referral'] != "N" else None,
                             starter_kits=self.parse_starter_kits(row['starter_kits']),
                             created_at = self.parse_datetime(row['created_at']),
@@ -130,6 +129,10 @@ class Command(BaseCommand):
             self.logger.error("Pg_get_serial_sequence error")
 
     def mapRefferalChannel(self,referral_channel):
+
+        if referral_channel == 'N':
+            return None
+        
         channel = {
             1:'Facebook',
             2:'Google Form',

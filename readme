@@ -53,4 +53,6 @@ python manage.py update_all_branch_enrolments
 python manage.py createsuperuser 
 // Add role to new superuser
 
+
+python manage.py migrate your_app --fake-initial (if any needed....)
 '''

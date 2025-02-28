@@ -5,8 +5,9 @@ from datetime import datetime
 from csv import DictReader
 from classes.models import Class ,StudentEnrolment
 from branches.models import Branch
-from category.models import Category, Grade
+from category.models import Category
 from students.models import Students
+from feeStructure.models import Grade
 
 class Command(CustomBaseCommand):
     help = 'Import enrolments'
