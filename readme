@@ -19,7 +19,7 @@ python manage.py import_branch
 python manage.py bulk_import_branch_addresses
 python manage.py bulk_create_calendar
 
-python manage.py bulk_create_grade
+python manage.py bulk_create_grade_tier
 python manage.py bulk_create_categories_2023
 python manage.py bulk_create_categories_2024
 python manage.py bulk_create_categories_2025
