@@ -50,7 +50,7 @@ class Command(CustomBaseCommand):
                             if isinstance(e, User.DoesNotExist):
                                 self.logger.error(f"User with id {row['parent_id']} does not exist in the database.")
                                 raise ImportError(f"Error while importing payments: {str(e)} {row}")
-                        print(row['status'])
+
                         payment = Payment(
                             enrolment_id = row['payable_id'],
                             invoice_id = row['payment_invoice_id'],
