@@ -1,7 +1,22 @@
 from django.db import models
+from datetime import datetime
+
+class State(models.Model):
+    state_name = models.CharField(max_length=100)
+    state_code = models.CharField(max_length=20)
+
+    class Meta:
+        db_table = 'states'
+        verbose_name = 'State'
+        verbose_name_plural = 'States'
+
+    def __str__(self):
+        return self.state_name
 
 class Tier(models.Model):
+    state           = models.ForeignKey(State, on_delete=models.CASCADE, related_name='tiers')
     tier_level      = models.PositiveIntegerField()
+    year            = models.PositiveIntegerField(default=datetime.now().year)
     name            = models.CharField(max_length=100)
     created_at      = models.DateTimeField(auto_now_add=True)
     updated_at      = models.DateTimeField(auto_now=True)
@@ -29,8 +44,9 @@ class Grade(models.Model):
         ('KIDS', 'KIDS'),
         ('SUPERKIDS', 'SUPERKIDS'),
     ]
-    
-    grade_level     = models.IntegerField(choices=GRADE_CHOICES, unique=True)
+
+    tier            = models.ForeignKey(Tier, on_delete=models.CASCADE, related_name='grades')
+    grade_level     = models.IntegerField(choices=GRADE_CHOICES)
     category        = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     price           = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     created_at      = models.DateTimeField(auto_now_add=True)
@@ -40,21 +56,8 @@ class Grade(models.Model):
         db_table = 'grades'
         verbose_name = 'Grade'
         verbose_name_plural = 'Grades'
+        unique_together = ['tier', 'grade_level','category']
         
     def __str__(self):
         return str(self.grade_level)
-    
-class TierGradeFees(models.Model):
-    tier            = models.ForeignKey(Tier, related_name='fees', on_delete=models.CASCADE)
-    grade           = models.ForeignKey(Grade, related_name='fees', on_delete=models.CASCADE)
-    fee             = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    created_at      = models.DateTimeField(auto_now_add=True)
-    updated_at      = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        db_table = 'tier_grade_fees'
-        verbose_name = 'Tier Grade Fee'
-        verbose_name_plural = 'Tier Grade Fees'
-        
-    def __str__(self):
-        return self.tier.name + ' ' + self.grade.grade_level + ' ' + str(self.fee)
