@@ -33,6 +33,7 @@ class Command(CustomBaseCommand):
                             name = row['name'].capitalize(),
                             label = row['name'].capitalize() + ' 2023',
                             year = 2023,
+                            is_active = False,
                             created_at = self.parse_datetime(row['created_at']),
                             updated_at = self.parse_datetime(row['updated_at'])
                         ) 
