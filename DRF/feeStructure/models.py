@@ -28,7 +28,7 @@ class Tier(models.Model):
         verbose_name_plural = 'Tiers'
     
     def __str__(self):
-        return self.name
+        return self.name + ' ' + str(self.year)
 
 class Grade(models.Model):
     GRADE_CHOICES = [
