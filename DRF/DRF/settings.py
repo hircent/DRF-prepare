@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'calendars',
     'category',
     'classes',
+    'country',
     'feeStructure',
     'payments',
     'reports',
