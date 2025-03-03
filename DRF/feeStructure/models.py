@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime
+from country.models import Country
 
 class State(models.Model):
     state_name = models.CharField(max_length=100)
@@ -14,7 +15,7 @@ class State(models.Model):
         return self.state_name
 
 class Tier(models.Model):
-    state           = models.ForeignKey(State, on_delete=models.CASCADE, related_name='tiers')
+    country         = models.ForeignKey(Country, on_delete=models.CASCADE, related_name='tiers')
     tier_level      = models.PositiveIntegerField()
     year            = models.PositiveIntegerField(default=datetime.now().year)
     name            = models.CharField(max_length=100)
