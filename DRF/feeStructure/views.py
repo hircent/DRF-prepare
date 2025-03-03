@@ -9,14 +9,15 @@ from rest_framework import generics,status
 from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
-class GradeListView(BaseCustomListAPIView):
+class GradeListView(BaseCustomListNoPaginationAPIView):
     serializer_class = GradeListSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        queryset = Grade.objects.all().order_by("grade_level")
+        tier = self.request.query_params.get('tier')
+        self.require_query_param(tier,"tier")
     
-        return queryset
+        return Grade.objects.filter(tier__id=int(tier)).order_by('grade_level')
     
 class GradeRetrieveView(generics.RetrieveAPIView):
     queryset = Grade.objects.all()
@@ -68,8 +69,8 @@ class GradeDestroyView(generics.DestroyAPIView):
         return Response({"success": True, "message": "Grade deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 class TierListView(BaseCustomListNoPaginationAPIView):
-    permission_classes = [IsAuthenticated]
     serializer_class = TierListSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         country = self.request.query_params.get('country')
