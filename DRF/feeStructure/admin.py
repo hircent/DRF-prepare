@@ -3,14 +3,10 @@ from .models import Tier, Grade, State
 # Register your models here.
 
 class GradeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'grade_level', 'get_state', 'get_tier', 'category', 'price')
-    list_filter = ('category', 'tier__state', 'tier')
+    list_display = ('id', 'grade_level', 'get_tier', 'category', 'price')
+    list_filter = ('category', 'tier')
     search_fields = ('grade_level',)
     ordering = ('grade_level',)
-
-    def get_state(self, obj):
-        return obj.tier.state.state_name
-    get_state.short_description = 'State'
     
     def get_tier(self, obj):
         return obj.tier.name
