@@ -1,5 +1,6 @@
 from api.baseCommand import CustomBaseCommand
-from feeStructure.models import Grade,State,Tier
+from feeStructure.models import Grade,Tier
+from country.models import Country
 from datetime import datetime
 from django.db import transaction
 from feeStructure.models import Grade
@@ -19,33 +20,33 @@ class Command(CustomBaseCommand):
         try:
             with transaction.atomic():
                 # Create States
-                states = [
-                    State(id=1,state_name="Malaysia", state_code="MY"),
-                    State(id=2,state_name="Australia", state_code="AUS")
+                countries = [
+                    Country(id=1,name="Malaysia", code="MY", currency="MYR"),
+                    Country(id=2,name="Australia", code="AUS", currency="AUD")
                 ]
-                created_states = State.objects.bulk_create(states)
+                created_countries = Country.objects.bulk_create(countries)
                 
                 # Get state objects
-                malaysia = created_states[0]
-                australia = created_states[1]
+                malaysia = created_countries[0]
+                australia = created_countries[1]
                 
                 # Create Tiers
                 tiers = [
                     # Malaysia Regular Tiers
-                    Tier(id=1,state=malaysia, tier_level=1,year=2023, name="Malaysia Tier 1"),
-                    Tier(id=2,state=malaysia, tier_level=2,year=2023, name="Malaysia Tier 2"),
-                    Tier(id=3,state=malaysia, tier_level=3,year=2023, name="Malaysia Tier 3"),
+                    Tier(id=1,country=malaysia, tier_level=1,year=2023, name="Malaysia Tier 1"),
+                    Tier(id=2,country=malaysia, tier_level=2,year=2023, name="Malaysia Tier 2"),
+                    Tier(id=3,country=malaysia, tier_level=3,year=2023, name="Malaysia Tier 3"),
                     
                     # Malaysia Opening Tiers
-                    Tier(id=4,state=malaysia, tier_level=1,year=2023, name="Malaysia Tier 1 Opening"),
-                    Tier(id=5,state=malaysia, tier_level=2,year=2023, name="Malaysia Tier 2 Opening"),
-                    Tier(id=6,state=malaysia, tier_level=3,year=2023, name="Malaysia Tier 3 Opening"),
+                    Tier(id=4,country=malaysia, tier_level=1,year=2023, name="Malaysia Tier 1 Opening"),
+                    Tier(id=5,country=malaysia, tier_level=2,year=2023, name="Malaysia Tier 2 Opening"),
+                    Tier(id=6,country=malaysia, tier_level=3,year=2023, name="Malaysia Tier 3 Opening"),
                     
                     # Australia Regular Tier
-                    Tier(id=7,state=australia, tier_level=1,year=2025, name="Australia Tier 1"),
+                    Tier(id=7,country=australia, tier_level=1,year=2025, name="Australia Tier 1"),
                     
                     # Australia Opening Tier
-                    Tier(id=8,state=australia, tier_level=1,year=2025, name="Australia Tier 1 Opening"),
+                    Tier(id=8,country=australia, tier_level=1,year=2025, name="Australia Tier 1 Opening"),
                 ]
                 
                 created_tiers = Tier.objects.bulk_create(tiers)
