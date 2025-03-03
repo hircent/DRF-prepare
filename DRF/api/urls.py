@@ -34,6 +34,10 @@ from classes.views import (
     TestLearnView
 )
 
+from country.views import (
+    CountryListView
+)
+
 from feeStructure.views import (
     GradeListView, GradeRetrieveView, GradeCreateView, GradeUpdateView, GradeDestroyView
 )
@@ -63,6 +67,9 @@ urlpatterns = [
     path("users/create/<str:role>",RoleBasedUserCreateView.as_view(),name="create-user"), 
     path("users/update/<str:role>/<int:pk>",RoleBasedUserUpdateView.as_view(),name="update-user"), 
     path("users/delete/<str:role>/<int:pk>",RoleBasedUserDeleteView.as_view(),name="delete-user"), 
+
+    #Country
+    path("country/list",CountryListView.as_view(),name="country-list"),
     
     #Branch
     path("branch/list",BranchListView.as_view(),name="branch-list"),
