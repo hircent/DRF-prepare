@@ -2,9 +2,14 @@ from rest_framework import serializers
 from .models import Tier, Grade
 
 class GradeListSerializer(serializers.ModelSerializer):
+    currency = serializers.SerializerMethodField()
+
     class Meta:
         model = Grade
-        fields = ['id', 'grade_level', 'category', 'price']
+        fields = ['id', 'grade_level', 'category', 'price','currency']
+
+    def get_currency(self, obj):
+        return obj.tier.country.currency
 
 class GradeDetailsSerializer(serializers.ModelSerializer):
     class Meta:
