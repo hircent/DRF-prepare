@@ -36,3 +36,8 @@ class GradeCreateUpdateSerializer(serializers.ModelSerializer):
         instance = super().update(instance, validated_data)
         instance.save()
         return instance 
+    
+class TierListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tier
+        fields = ['id', 'name', 'year']

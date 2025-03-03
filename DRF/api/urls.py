@@ -39,7 +39,8 @@ from country.views import (
 )
 
 from feeStructure.views import (
-    GradeListView, GradeRetrieveView, GradeCreateView, GradeUpdateView, GradeDestroyView
+    GradeListView, GradeRetrieveView, GradeCreateView, GradeUpdateView, GradeDestroyView,
+    TierListView
 )
 
 from students.views import (
@@ -112,17 +113,23 @@ urlpatterns = [
     path('category/update/<int:category_id>', CategoryUpdateView.as_view(), name='update-category'),
     path('category/delete/<int:category_id>', CategoryDestroyView.as_view(), name='delete-category'),
 
+
+    #Structure Theme
     path('theme/list', ThemeListView.as_view(), name='theme-list'),
     path('theme/details/<int:theme_id>', ThemeRetrieveView.as_view(), name='theme-details'),
     path('theme/create', ThemeCreateView.as_view(), name='create-theme'),
     path('theme/delete/<int:theme_id>', ThemeDestroyView.as_view(), name='delete-theme'),
     path('theme/update/<int:theme_id>', ThemeUpdateView.as_view(), name='update-theme'),
 
+    #Structure Grade
     path('grade/list', GradeListView.as_view(), name='grade-list'),
     path('grade/details/<int:grade_id>', GradeRetrieveView.as_view(), name='grade-details'),
     path('grade/create', GradeCreateView.as_view(), name='create-grade'),
     path('grade/update/<int:grade_id>', GradeUpdateView.as_view(), name='update-grade'),
     path('grade/delete/<int:grade_id>', GradeDestroyView.as_view(), name='delete-grade'),
+
+    #Structure Tier
+    path('tier/list', TierListView.as_view(), name='tier-list'),
 
     #Classes
     path('class/list', ClassListView.as_view(), name='class-list'),

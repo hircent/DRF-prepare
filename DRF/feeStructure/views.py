@@ -1,9 +1,10 @@
-from django.shortcuts import render
 from rest_framework.response import Response
 from .models import Tier, Grade
-from .serializers import GradeListSerializer, GradeDetailsSerializer, GradeCreateUpdateSerializer
+from .serializers import (
+    GradeListSerializer, GradeDetailsSerializer, GradeCreateUpdateSerializer, TierListSerializer
+)
 from accounts.permission import IsSuperAdmin
-from api.global_customViews import BaseCustomListAPIView
+from api.global_customViews import BaseCustomListAPIView, BaseCustomListNoPaginationAPIView
 from rest_framework import generics,status
 from rest_framework.permissions import IsAuthenticated
 
@@ -65,3 +66,16 @@ class GradeDestroyView(generics.DestroyAPIView):
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response({"success": True, "message": "Grade deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+class TierListView(BaseCustomListNoPaginationAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = TierListSerializer
+
+    def get_queryset(self):
+        country = self.request.query_params.get('country')
+
+        self.require_query_param(country,"country")
+
+        return Tier.objects.filter(country__name=country)
+
+        
