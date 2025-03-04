@@ -65,6 +65,7 @@ class Students(models.Model):
     school                  = models.CharField(max_length=100)
     deemcee_starting_grade  = models.IntegerField(null=True,blank=True)
     status                  = models.CharField(choices=STATUS,max_length=12,default='IN_PROGRESS')
+    remark                  = models.TextField(null=True,blank=True)
     referral_channel        = models.CharField(max_length=40,null=True,blank=True,choices=REFERRAL_CHOICES)
     referral                = models.CharField(max_length=100,null=True,blank=True)
     starter_kits            = models.JSONField(null=True,blank=True,default=list)

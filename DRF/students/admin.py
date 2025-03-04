@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Students, UserBranchRole
+from .models import Students
 
 class StudentsAdmin(admin.ModelAdmin):
     list_display = ('id', 'fullname', 'first_name', 'branch', 'parent', 'status', 'enrolment_date')
