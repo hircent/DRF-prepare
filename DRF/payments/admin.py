@@ -3,19 +3,19 @@ from .models import InvoiceSequence,Invoice,Payment
 # Register your models here.
 class InvoiceSequenceAdmin(admin.ModelAdmin):
     list_display = ('id','branch','number','year')
-
+    list_filter = ('branch',)
     search_fields = ('branch__name',)
 
 class InvoiceAdmin(admin.ModelAdmin):
     list_display = ('id','branch','invoice_sequence','created_at')
-
+    list_filter = ('branch',)
     raw_id_fields = ('invoice_sequence','branch')
 
     search_fields = ('branch__name',)
 
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ('id','enrolment','enrolment_id','invoice','amount','paid_amount','status','description')
-
+    list_filter = ('enrolment',)
     raw_id_fields = ('enrolment','invoice')
 
     search_fields = ('enrolment__student__fullname',)
