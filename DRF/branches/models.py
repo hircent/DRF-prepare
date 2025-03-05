@@ -1,4 +1,5 @@
 from accounts.models import User ,Role
+from country.models import Country
 from django.db import models
 # Create your models here.
 
@@ -18,6 +19,7 @@ class BranchGrade(models.Model):
     
 class Branch(models.Model):
     branch_grade    = models.ForeignKey(BranchGrade, on_delete=models.SET_NULL,null=True,default=1)
+    country         = models.ForeignKey(Country, on_delete=models.PROTECT,default=1)
     name            = models.CharField(max_length=100,unique=True)
     display_name    = models.CharField(max_length=100,null=True,blank=True)
     business_name   = models.CharField(max_length=100,null=True,blank=True)
