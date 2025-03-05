@@ -10,6 +10,7 @@ from category.models import Category,ThemeLesson
 from datetime import datetime ,timedelta,date
 from payments.models import InvoiceSequence,Invoice,Payment
 from django.db import connection
+from django.db.models import Max
 import json
 
 class CustomError(Exception):
@@ -25,10 +26,7 @@ class Command(BaseCommand):
     help = 'testing function'
 
     def handle(self, *args, **kwargs):
-        try:
-            raise CustomError('test',404)
-        except CustomError as e:
-            print("e")
+        max_number = InvoiceSequence.objects.filter(branch_id=1).aggregate(Max('number'))['number__max']
 
     def learn_select_related(self):
         # Without select_related

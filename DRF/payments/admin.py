@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import InvoiceSequence,Invoice,Payment
+from .models import InvoiceSequence,Invoice,Payment,PromoCode
+
 # Register your models here.
 class InvoiceSequenceAdmin(admin.ModelAdmin):
     list_display = ('id','branch','number','year')
@@ -20,7 +21,13 @@ class PaymentAdmin(admin.ModelAdmin):
 
     search_fields = ('enrolment__student__fullname',)
 
+class PromoCodeAdmin(admin.ModelAdmin):
+    list_display = ('id','code','amount','quantity','used','expired_at')
+    list_filter = ('branch','for_all_branches','promo_type')
+    search_fields = ('code',)
+
 
 admin.site.register(InvoiceSequence,InvoiceSequenceAdmin)
 admin.site.register(Invoice,InvoiceAdmin)    
 admin.site.register(Payment,PaymentAdmin)
+admin.site.register(PromoCode,PromoCodeAdmin)

@@ -5,6 +5,32 @@ from classes.models import StudentEnrolment
 from datetime import datetime
 
 # Create your models here.
+
+class PromoCode(models.Model):
+    PROMO_TYPE_CHOICES = [
+        ('ENROLMENT','ENROLMENT'),
+        ('MERCHANDISE','MERCHANDISE'),
+        ('OTHER','OTHER')
+    ]
+    code             = models.CharField(max_length=100,unique=True)
+    amount           = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity         = models.PositiveIntegerField()
+    used             = models.PositiveIntegerField(default=0)
+    branch           = models.ForeignKey(Branch,on_delete=models.SET_NULL,null=True,related_name='promo_codes')
+    for_all_branches = models.BooleanField(default=False)
+    promo_type       = models.CharField(max_length=100,choices=PROMO_TYPE_CHOICES)
+    expired_at       = models.DateField()
+    created_at       = models.DateTimeField(auto_now_add=True)
+    updated_at       = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'promo_codes'
+        verbose_name = 'Promo Code'
+        verbose_name_plural = 'Promo Codes'
+
+    def __str__(self):
+        return self.code
+
 class InvoiceSequence(models.Model):
     branch      = models.ForeignKey(Branch, on_delete=models.PROTECT,related_name='sequences')
     number      = models.PositiveIntegerField(default=1)
