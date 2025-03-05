@@ -192,7 +192,6 @@ class EnrolmentRescheduleClassSerializer(serializers.ModelSerializer):
         return value
     
     def update(self, instance, validated_data):
-        print(validated_data.get('classroom'))
         super().update(instance, validated_data)
         instance.save()
         return instance
@@ -358,7 +357,6 @@ class ClassEnrolmentListSerializer(serializers.ModelSerializer):
     
     def get_replacement_students(self, obj):
         date = self.context.get('date')
-        print(date)
         replacement_students = obj.replacement_attendances.filter(
             date=datetime.strptime(date, '%Y-%m-%d').date()
         ).select_related(
@@ -368,10 +366,6 @@ class ClassEnrolmentListSerializer(serializers.ModelSerializer):
         serialized_replacement_students = []
         
         for replacement in replacement_students:
-            print({
-                "id":replacement.attendances.id,
-                "date":replacement.attendances.date,
-            })
             serialized_replacement_students.append({
                 "id": replacement.id,
                 "student":{

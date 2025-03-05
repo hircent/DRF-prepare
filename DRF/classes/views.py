@@ -1033,7 +1033,6 @@ class MarkAttendanceView(BaseAPIView):
             Each dict should have: enrolment_id, replacement_date, replacement_timeslot_class_id
         """
         replacement_arr = []
-        print("creating replacement attendance...",sep="\n\n")
         
         try:
             # Validate input data
@@ -1047,8 +1046,6 @@ class MarkAttendanceView(BaseAPIView):
                 replacement_date_str = replacement.get('replacement_date')
                 replacement_timeslot_class_id = replacement.get('replacement_timeslot_class_id')
                 date = replacement.get('date')
-
-                print(f"Getting replacement for enrolment {enrolment_id} on {replacement_date_str} and timeslot {replacement_timeslot_class_id}",sep="\n\n")
 
                 if not all([enrolment_id, replacement_date_str, replacement_timeslot_class_id]):
                     raise ValueError(f"Missing required fields for replacement: {replacement}")

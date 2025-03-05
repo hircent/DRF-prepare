@@ -23,7 +23,7 @@ class CustomJWTAuthentication(JWTAuthentication):
 
         # Check user roles
         user_roles = UserBranchRole.objects.filter(user=user).values('role__name').annotate(role_count=Count('role__name'))
-        print(user_roles)
+
         if user_roles.count() == 1 and user_roles[0]['role__name'] == 'parent' and user_roles[0]['role_count'] == 1:
             raise AuthenticationFailed('User with only parent role cannot log in')
 
