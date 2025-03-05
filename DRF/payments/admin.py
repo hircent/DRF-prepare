@@ -15,12 +15,11 @@ class InvoiceAdmin(admin.ModelAdmin):
 
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ('id','enrolment','enrolment_id','invoice','amount','paid_amount','status','description')
-    list_filter = ('enrolment',)
+    list_filter = ('status',)
     raw_id_fields = ('enrolment','invoice')
 
     search_fields = ('enrolment__student__fullname',)
 
-    list_filter = ('status',)
 
 admin.site.register(InvoiceSequence,InvoiceSequenceAdmin)
 admin.site.register(Invoice,InvoiceAdmin)    
