@@ -4,7 +4,7 @@ from branches.models import Branch ,UserBranchRole
 from .models import Students
 from classes.models import StudentEnrolment,Class, VideoAssignment
 from classes.serializers import StudentEnrolmentDetailsSerializer
-from feeStructure.models import Grade
+from feeStructure.models import Grade,Tier
 from rest_framework import serializers
 from django.db import transaction
 import json
@@ -39,6 +39,7 @@ class StudentDetailsSerializer(serializers.ModelSerializer):
 
 class StudentCreateSerializer(serializers.ModelSerializer):
     timeslot = serializers.CharField(write_only=True)
+    tier = serializers.CharField(write_only=True)
     start_date = serializers.DateField(write_only=True)
     parent_details = serializers.DictField(write_only=True,required=False)
 
@@ -46,9 +47,20 @@ class StudentCreateSerializer(serializers.ModelSerializer):
         model = Students
         fields = [
             'id','first_name','last_name','fullname','gender','dob',
-            'school','deemcee_starting_grade','status','start_date','timeslot','referral_channel','referral','starter_kits',
+            'school','tier','deemcee_starting_grade','status','start_date','timeslot','referral_channel','referral','starter_kits',
             'branch','parent','parent_details','created_at','updated_at'
         ]
+
+    def validate_tier(self, value):
+        """
+        Validate and format tier data
+        """
+        if isinstance(value, str):
+            try:
+                return Tier.objects.get(id=value)
+            except Tier.DoesNotExist:
+                raise serializers.ValidationError("Invalid tier")
+        return value
 
     def validate_starter_kits(self, value):
         """
@@ -121,6 +133,7 @@ class StudentCreateSerializer(serializers.ModelSerializer):
         timeslot = validated_data.pop('timeslot', None)
         start_date = validated_data.pop('start_date')
         parent_details = validated_data.pop('parent_details', None)
+        tier = validated_data.pop('tier', None)
 
         # Create new parent user if parent_details is provided
         if parent_details and not validated_data.get('parent'):
@@ -168,12 +181,13 @@ class StudentCreateSerializer(serializers.ModelSerializer):
         if timeslot:
             try:
                 class_instance = Class.objects.get(id=timeslot)
-                
+                gradeId = tier.grades.filter(grade_level=student.deemcee_starting_grade).first().id
+
                 new_enrolment = StudentEnrolment(
                     student=student,
                     classroom=class_instance,
                     branch=student.branch,
-                    grade=Grade.objects.get(grade_level=student.deemcee_starting_grade),
+                    grade_id=gradeId,
                     start_date=start_date,
                 )
                 new_enrolment.save()
