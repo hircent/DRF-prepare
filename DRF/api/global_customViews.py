@@ -6,6 +6,7 @@ from branches.models import Branch, UserBranchRole
 
 from calendars.models import Calendar
 from classes.models import Class,StudentEnrolment,VideoAssignment
+from certificate.models import StudentCertificate
 
 from django.shortcuts import get_object_or_404
 
@@ -310,6 +311,13 @@ class BasePromoCodeView(GenericViewWithExtractJWTInfo):
         
         return promo_code
         
+class BaseStudentCertificateView(GenericViewWithExtractJWTInfo):
+
+    def get_object(self):
+        cert_id = self.kwargs.get("cert_id")
+        self.require_id(cert_id,"certificate id")
+        return get_object_or_404(StudentCertificate,id=cert_id)
+
 class BaseAPIView(GenericViewWithExtractJWTInfo,APIView):
 
     def check_is_superadmin(self):
