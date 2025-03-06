@@ -1,13 +1,13 @@
 from django.db import models
 from branches.models import Branch
-from feeStructure.models import Grade
 from students.models import Students
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
 class StudentCertificate(models.Model):
-    grade               = models.ForeignKey(Grade, on_delete=models.SET_NULL, null=True)
     student             = models.ForeignKey(Students, on_delete=models.CASCADE, related_name='certificates')
     branch              = models.ForeignKey(Branch, on_delete=models.PROTECT,related_name='certificates')
+    grade               = models.PositiveIntegerField(validators=[MinValueValidator(1),MaxValueValidator(6)])
     start_date          = models.DateField()
     end_date            = models.DateField()
     status              = models.CharField(max_length=100)
@@ -23,4 +23,4 @@ class StudentCertificate(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return 'Certificate ' + str(self.id) + ' - ' + self.student.fullname + 'Grade ' + str(self.grade.grade_level)
+        return 'Certificate ' + str(self.id) + ' - ' + self.student.fullname + 'Grade ' + str(self.grade)

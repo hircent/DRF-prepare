@@ -11,6 +11,7 @@ from datetime import datetime ,timedelta,date
 from payments.models import InvoiceSequence,Invoice,Payment
 from django.db import connection
 from django.db.models import Max
+from certificate.models import StudentCertificate
 import json
 
 class CustomError(Exception):
@@ -26,7 +27,9 @@ class Command(BaseCommand):
     help = 'testing function'
 
     def handle(self, *args, **kwargs):
-        max_number = InvoiceSequence.objects.filter(branch_id=1).aggregate(Max('number'))['number__max']
+        # max_number = InvoiceSequence.objects.filter(branch_id=1).aggregate(Max('number'))['number__max']
+
+        StudentCertificate.objects.all().delete()
 
     def learn_select_related(self):
         # Without select_related
