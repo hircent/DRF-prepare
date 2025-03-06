@@ -22,7 +22,7 @@ class PaymentAdmin(admin.ModelAdmin):
     search_fields = ('enrolment__student__fullname',)
 
 class PromoCodeAdmin(admin.ModelAdmin):
-    list_display = ('id','code','amount','quantity','used','expired_at')
+    list_display = ('id','code','amount','min_purchase_amount','quantity','used','expired_at')
     list_filter = ('branch','for_all_branches','promo_type')
     search_fields = ('code',)
 

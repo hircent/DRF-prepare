@@ -12,16 +12,17 @@ class PromoCode(models.Model):
         ('MERCHANDISE','MERCHANDISE'),
         ('OTHER','OTHER')
     ]
-    code             = models.CharField(max_length=100,unique=True)
-    amount           = models.DecimalField(max_digits=10, decimal_places=2)
-    quantity         = models.PositiveIntegerField()
-    used             = models.PositiveIntegerField(default=0)
-    branch           = models.ForeignKey(Branch,on_delete=models.SET_NULL,null=True,blank=True,related_name='promo_codes')
-    for_all_branches = models.BooleanField(default=False)
-    promo_type       = models.CharField(max_length=100,choices=PROMO_TYPE_CHOICES)
-    expired_at       = models.DateField()
-    created_at       = models.DateTimeField(auto_now_add=True)
-    updated_at       = models.DateTimeField(auto_now=True)
+    code                = models.CharField(max_length=100,unique=True)
+    amount              = models.DecimalField(max_digits=10, decimal_places=2)
+    min_purchase_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity            = models.PositiveIntegerField()
+    used                = models.PositiveIntegerField(default=0)
+    branch              = models.ForeignKey(Branch,on_delete=models.SET_NULL,null=True,blank=True,related_name='promo_codes')
+    for_all_branches    = models.BooleanField(default=False)
+    promo_type          = models.CharField(max_length=100,choices=PROMO_TYPE_CHOICES)
+    expired_at          = models.DateField()
+    created_at          = models.DateTimeField(auto_now_add=True)
+    updated_at          = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'promo_codes'

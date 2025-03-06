@@ -1,10 +1,17 @@
 from api.global_customViews import BaseCustomListNoPaginationAPIView,BaseCustomListAPIView
 from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher,IsManagerOrHigher,IsTeacherOrHigher
+from datetime import datetime
+from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import UpdateAPIView,DestroyAPIView,CreateAPIView
 from rest_framework.exceptions import PermissionDenied
-from .serializers import PaymentListSerializer,InvoiceListSerializer
-from .models import InvoiceSequence,Invoice,Payment
+
+from .serializers import (
+    PaymentListSerializer, InvoiceListSerializer, PromoCodeListSerializer
+)
+from .models import (
+    Invoice,Payment,PromoCode
+)
 
 # Create your views here.
 class PaymentListView(BaseCustomListAPIView):
@@ -35,4 +42,26 @@ class InvoiceListView(BaseCustomListAPIView):
 
         return Invoice.objects.filter(branch_id=branch_id)
 
+class PromoCodeListView(BaseCustomListNoPaginationAPIView):
+    permission_classes = [IsSuperAdmin]
+    serializer_class = PromoCodeListSerializer
 
+    def get_queryset(self):
+        branch_id = self.get_branch_id()
+        purchase_amount = self.request.query_params.get('purchase_amount')
+        self.require_query_param(purchase_amount,'min purchase amount')
+        
+        self.branch_accessible(branch_id)
+
+        return PromoCode.objects.select_related('branch').filter(
+            Q(
+                expired_at__gt=datetime.today(),
+                for_all_branches=True,
+                min_purchase_amount__lte=float(purchase_amount)
+            ) |
+            Q(
+                expired_at__gt=datetime.today(),
+                branch_id=int(branch_id),
+                min_purchase_amount__lte=float(purchase_amount)
+            )
+        )
