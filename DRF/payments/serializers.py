@@ -13,7 +13,13 @@ class InvoiceListSerializer(serializers.ModelSerializer):
         model = Invoice
         exclude = ('created_at', 'updated_at')
 
-class PromoCodeListSerializer(serializers.ModelSerializer):
+class PromoCodeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PromoCode
+        exclude = ('created_at', 'updated_at')
+
+class PromoCodeCreateUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PromoCode
