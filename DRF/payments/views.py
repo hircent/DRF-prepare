@@ -51,6 +51,19 @@ class PromoCodeListView(BaseCustomListNoPaginationAPIView):
     serializer_class = PromoCodeSerializer
 
     def get_queryset(self):
+
+        branch = self.request.query_params.get('branch')
+
+        if branch:
+            return PromoCode.objects.filter(branch_id=int(branch))
+        
+        return PromoCode.objects.all()
+    
+class PromoCodeListForPaymentView(BaseCustomListNoPaginationAPIView):
+    permission_classes = [IsSuperAdmin]
+    serializer_class = PromoCodeSerializer
+
+    def get_queryset(self):
         branch_id = self.get_branch_id()
         purchase_amount = self.request.query_params.get('purchase_amount')
         self.require_query_param(purchase_amount,'min purchase amount')

@@ -50,7 +50,7 @@ from students.views import (
 
 from payments.views import (
     PaymentListView, InvoiceListView, PromoCodeListView, PromoCodeDetailsView,
-    PromoCodeCreateView, PromoCodeUpdateView, PromoCodeDeleteView
+    PromoCodeCreateView, PromoCodeUpdateView, PromoCodeDeleteView, PromoCodeListForPaymentView
 )
 
 from django.urls import path
@@ -164,6 +164,7 @@ urlpatterns = [
 
     #Promo Code
     path('promo-code/list', PromoCodeListView.as_view(), name='promo-code-list'),
+    path('promo-code-payment/list', PromoCodeListForPaymentView.as_view(), name='promo-code-list'),
     path('promo-code/details/<int:promo_code_id>', PromoCodeDetailsView.as_view(), name='promo-code-details'),
     path('promo-code/create', PromoCodeCreateView.as_view(), name='create-promo-code'),
     path('promo-code/update/<int:promo_code_id>', PromoCodeUpdateView.as_view(), name='update-promo-code'),
