@@ -1,10 +1,16 @@
 from accounts.models import User
 from accounts.serializers import UserSerializer
 from api.pagination import CustomPagination
+
 from branches.models import Branch, UserBranchRole
+
 from calendars.models import Calendar
 from classes.models import Class,StudentEnrolment,VideoAssignment
+
 from django.shortcuts import get_object_or_404
+
+from payments.models import PromoCode
+
 from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
@@ -291,6 +297,18 @@ class BaseVideoAssignmentView(GenericViewWithExtractJWTInfo):
                 raise PermissionDenied("The requested user does not belong to the specified branch.")
 
             return video_assignments
+        
+class BasePromoCodeView(GenericViewWithExtractJWTInfo):
+
+    def get_object(self):
+
+        promo_code_id = self.kwargs.get("promo_code_id")
+
+        self.require_id(promo_code_id,"promo code id")
+
+        promo_code = get_object_or_404(PromoCode,id=promo_code_id)
+        
+        return promo_code
         
 class BaseAPIView(GenericViewWithExtractJWTInfo,APIView):
 
