@@ -50,8 +50,6 @@ class PromoCodeListView(BaseCustomListNoPaginationAPIView):
         branch_id = self.get_branch_id()
         purchase_amount = self.request.query_params.get('purchase_amount')
         self.require_query_param(purchase_amount,'min purchase amount')
-        
-        self.branch_accessible(branch_id)
 
         return PromoCode.objects.select_related('branch').filter(
             Q(
