@@ -23,4 +23,4 @@ class StudentCertificate(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return 'Certificate ' + self.id + ' - ' + self.student.fullname + 'Grade ' + str(self.grade.grade_level)
+        return 'Certificate ' + str(self.id) + ' - ' + self.student.fullname + 'Grade ' + str(self.grade.grade_level)
