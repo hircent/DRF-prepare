@@ -38,6 +38,10 @@ from country.views import (
     CountryListView
 )
 
+from certificate.views import (
+    StudentCertificateListView, StudentCertificateUpdatePrintView
+)
+
 from feeStructure.views import (
     GradeListView, GradeRetrieveView, GradeCreateView, GradeUpdateView, GradeDestroyView,
     TierListView
@@ -169,6 +173,10 @@ urlpatterns = [
     path('promo-code/create', PromoCodeCreateView.as_view(), name='create-promo-code'),
     path('promo-code/update/<int:promo_code_id>', PromoCodeUpdateView.as_view(), name='update-promo-code'),
     path('promo-code/delete/<int:promo_code_id>', PromoCodeDeleteView.as_view(), name='delete-promo-code'),
+
+    #Certificates
+    path('certificate/list',StudentCertificateListView.as_view(),name='certificate-list'),
+    path('certificate/<int:cert_id>/print',StudentCertificateUpdatePrintView.as_view(),name='certificate-print'),
 
     #Others
     path("branch/principals/branch_grade",CombinedPrincipalsAndBranchGradesView.as_view(),name="principal-branch_grade-for-branch"),
