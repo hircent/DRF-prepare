@@ -82,10 +82,7 @@ class PromoCodeCreateView(BasePromoCodeView,CreateAPIView):
     serializer_class = PromoCodeCreateUpdateSerializer
 
     def create(self, request, *args, **kwargs):
-        
-        data = request.data.copy()
-
-        serializer = self.get_serializer(data=data)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         self.perform_create(serializer)
@@ -99,9 +96,7 @@ class PromoCodeUpdateView(BasePromoCodeView,UpdateAPIView):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        
-        data = request.data.copy()
-        serializer = self.get_serializer(instance, data=data, partial=partial)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
     
         self.perform_update(serializer)
