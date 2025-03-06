@@ -16,7 +16,7 @@ class PromoCode(models.Model):
     amount           = models.DecimalField(max_digits=10, decimal_places=2)
     quantity         = models.PositiveIntegerField()
     used             = models.PositiveIntegerField(default=0)
-    branch           = models.ForeignKey(Branch,on_delete=models.SET_NULL,null=True,related_name='promo_codes')
+    branch           = models.ForeignKey(Branch,on_delete=models.SET_NULL,null=True,blank=True,related_name='promo_codes')
     for_all_branches = models.BooleanField(default=False)
     promo_type       = models.CharField(max_length=100,choices=PROMO_TYPE_CHOICES)
     expired_at       = models.DateField()
