@@ -5,7 +5,6 @@ from rest_framework.generics import CreateAPIView, UpdateAPIView, RetrieveAPIVie
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework import status
 from api.global_customViews import (
     BaseCustomListAPIView, GenericViewWithExtractJWTInfo, BaseCustomClassView, BaseCustomListNoPaginationAPIView,
