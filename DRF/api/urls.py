@@ -49,7 +49,8 @@ from students.views import (
 )
 
 from payments.views import (
-    PaymentListView, InvoiceListView, PromoCodeListView
+    PaymentListView, InvoiceListView, PromoCodeListView, PromoCodeDetailsView,
+    PromoCodeCreateView, PromoCodeUpdateView, PromoCodeDeleteView
 )
 
 from django.urls import path
@@ -163,6 +164,10 @@ urlpatterns = [
 
     #Promo Code
     path('promo-code/list', PromoCodeListView.as_view(), name='promo-code-list'),
+    path('promo-code/details/<int:promo_code_id>', PromoCodeDetailsView.as_view(), name='promo-code-details'),
+    path('promo-code/create', PromoCodeCreateView.as_view(), name='create-promo-code'),
+    path('promo-code/update/<int:promo_code_id>', PromoCodeUpdateView.as_view(), name='update-promo-code'),
+    path('promo-code/delete/<int:promo_code_id>', PromoCodeDeleteView.as_view(), name='delete-promo-code'),
 
     #Others
     path("branch/principals/branch_grade",CombinedPrincipalsAndBranchGradesView.as_view(),name="principal-branch_grade-for-branch"),
