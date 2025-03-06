@@ -18,7 +18,13 @@ class StudentCertificateListView(BaseCustomListAPIView):
         branch_id = self.get_branch_id()
         self.branch_accessible(branch_id)
 
-        return StudentCertificate.objects.filter(branch_id=branch_id)
+        certs = StudentCertificate.objects.filter(branch_id=branch_id)
+        is_printed = self.request.query_params.get('is_printed')
+        
+        if is_printed and is_printed == '1':
+            return certs.filter(is_printed=is_printed)
+
+        return certs
     
 class StudentCertificateUpdatePrintView(BaseStudentCertificateView,UpdateAPIView):
     permission_classes = [IsSuperAdmin]
