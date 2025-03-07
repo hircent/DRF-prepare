@@ -27,7 +27,7 @@ class BranchListSelectorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Branch
         fields = [
-            'id','name'
+            'id','name','display_name'
         ]
 
 class BranchCreateUpdateSerializer(serializers.ModelSerializer):
