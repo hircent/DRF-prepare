@@ -22,9 +22,9 @@ class StudentCertificateListView(BaseCustomListAPIView):
         is_printed = self.request.query_params.get('is_printed')
         
         if is_printed and is_printed == '1':
-            return certs.filter(is_printed=is_printed)
+            return certs.filter(is_printed=True)
 
-        return certs
+        return certs.filter(is_printed=False)
     
 class StudentCertificateUpdatePrintView(BaseStudentCertificateView,UpdateAPIView):
     permission_classes = [IsSuperAdmin]
