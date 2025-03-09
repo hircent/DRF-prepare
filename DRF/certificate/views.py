@@ -2,6 +2,7 @@ from api.global_customViews import (
     BaseCustomListNoPaginationAPIView, BaseCustomListAPIView, BaseStudentCertificateView
 )
 from accounts.permission import IsSuperAdmin
+from django.db.models import Q
 from rest_framework.generics import UpdateAPIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -20,6 +21,10 @@ class StudentCertificateListView(BaseCustomListAPIView):
 
         certs = StudentCertificate.objects.filter(branch_id=branch_id)
         is_printed = self.request.query_params.get('is_printed')
+
+        q = self.request.query_params.get('q')
+        if q:
+            certs = certs.filter(Q(student__first_name__icontains=q) | Q(student__last_name__icontains=q))
         
         if is_printed and is_printed == '1':
             return certs.filter(is_printed=True)
