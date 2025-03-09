@@ -75,7 +75,7 @@ class Payment(models.Model):
         ('VOIDED', 'VOIDED'),
     ]
 
-    enrolment           = models.ForeignKey(StudentEnrolment, on_delete=models.PROTECT,related_name='payments')
+    enrolment           = models.ForeignKey(StudentEnrolment, on_delete=models.SET_NULL,null=True,related_name='payments')
     invoice             = models.OneToOneField(Invoice, on_delete=models.PROTECT,related_name='payment')
     parent              = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
     amount              = models.DecimalField(max_digits=10, decimal_places=2)
@@ -94,7 +94,7 @@ class Payment(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return 'Payment ' + str(self.id) + ' - ' + self.enrolment.student.fullname
+        return 'Payment ' + str(self.id)
     
     def save(self, *args, **kwargs):
         if self.paid_amount is None or self.paid_amount == 0:
