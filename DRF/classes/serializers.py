@@ -138,6 +138,7 @@ class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSeria
     end_date = serializers.SerializerMethodField()
     video_assignments = VideoAssignmentListSerializer(many=True)
     day = serializers.SerializerMethodField()
+    grade = serializers.SerializerMethodField()
 
     class Meta:
         model = StudentEnrolment
@@ -146,6 +147,9 @@ class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSeria
             'remaining_lessons','is_active','freeze_lessons',
             'grade','video_assignments'
         ]
+    
+    def get_grade(self, obj):
+        return obj.grade.grade_level
     
     def get_day(self, obj):
         return obj.classroom.day
