@@ -14,7 +14,7 @@ from django.utils import timezone
 from datetime import timedelta ,  datetime
 from rest_framework import serializers
 
-from payments.serializers import PaymentListSerializer
+from payments.serializers import PaymentListSerializer,StudentPaymentListSerializer
 
 '''
 Class Serializer
@@ -139,13 +139,14 @@ class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSeria
     video_assignments = VideoAssignmentListSerializer(many=True)
     day = serializers.SerializerMethodField()
     grade = serializers.SerializerMethodField()
+    payments = StudentPaymentListSerializer(many=True)
 
     class Meta:
         model = StudentEnrolment
         fields = [
             'id','start_date','end_date','day','status',
             'remaining_lessons','is_active','freeze_lessons',
-            'grade','video_assignments'
+            'grade','video_assignments','payments'
         ]
     
     def get_grade(self, obj):

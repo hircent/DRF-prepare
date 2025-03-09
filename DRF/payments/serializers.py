@@ -2,6 +2,12 @@ from branches.models import Branch
 from rest_framework import serializers
 from .models import Invoice,Payment,PromoCode
 
+class StudentPaymentListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Payment
+        exclude = ('created_at', 'updated_at','enrolment')
+
 class PaymentListSerializer(serializers.ModelSerializer):
 
     class Meta:
