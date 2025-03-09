@@ -1,14 +1,16 @@
 from accounts.serializers import ParentDetailSerializer
 from accounts.models import User ,Role , UserProfile , UserAddress
 from branches.models import Branch ,UserBranchRole
-from .models import Students
 from classes.models import StudentEnrolment,Class, VideoAssignment
 from classes.serializers import StudentEnrolmentDetailsSerializer
+from datetime import datetime
+from django.db import transaction
 from feeStructure.models import Grade,Tier
 from rest_framework import serializers
-from django.db import transaction
+
+from .models import Students
+from payments.service import PaymentService
 import json
-from datetime import datetime
 
 
 class StudentListSerializer(serializers.ModelSerializer):
@@ -181,16 +183,22 @@ class StudentCreateSerializer(serializers.ModelSerializer):
         if timeslot:
             try:
                 class_instance = Class.objects.get(id=timeslot)
-                gradeId = tier.grades.filter(grade_level=student.deemcee_starting_grade).first().id
-
+                grade = tier.grades.filter(grade_level=student.deemcee_starting_grade).first()
                 new_enrolment = StudentEnrolment(
                     student=student,
                     classroom=class_instance,
                     branch=student.branch,
-                    grade_id=gradeId,
+                    grade_id=grade.id,
                     start_date=start_date,
                 )
                 new_enrolment.save()
+
+                PaymentService.create_payment(
+                    enrolment=new_enrolment,
+                    amount=grade.price,
+                    parent=student.parent,
+                    branch=student.branch
+                )
 
                 self._create_video_assignments(new_enrolment)
                 
