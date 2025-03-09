@@ -21,6 +21,8 @@ from datetime import date, datetime ,timedelta
 from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 
+from payments.service import PaymentService
+
 from .models import Class,StudentEnrolment,ClassLesson,EnrolmentExtension,ReplacementAttendance,VideoAssignment
 from .serializers import (
     ClassListSerializer,StudentEnrolmentListSerializer,ClassCreateUpdateSerializer,ClassEnrolmentListSerializer,
@@ -218,11 +220,18 @@ class StudentEnrolmentUpdateView(BaseCustomEnrolmentView,UpdateAPIView):
 class StudentEnrolmentDeleteView(BaseCustomEnrolmentView,DestroyAPIView):
     permission_classes = [IsManagerOrHigher]
 
+    @transaction.atomic
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        id = instance.id
-        self.perform_destroy(instance)    
-        return Response({"success": True, "message": f"Student Enrolment {id} deleted successfully"})
+        try:
+            instance = self.get_object()
+            id = instance.id
+
+            self.perform_destroy(instance)    
+            PaymentService.delete_payment(enrolment_id=id)
+
+            return Response({"success": True, "message": f"Student Enrolment {id} deleted successfully"})
+        except Exception as e:
+            return Response({"success": False, "message": f"Error deleting student enrolment: {str(e)}"})
 
 class EnrolmentRescheduleClassView(BaseCustomEnrolmentView,UpdateAPIView):
     serializer_class = EnrolmentRescheduleClassSerializer
