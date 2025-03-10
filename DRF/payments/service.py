@@ -15,7 +15,8 @@ class PaymentService:
     def create_payment(enrolment:StudentEnrolment, 
                        amount:float, 
                        parent:User,
-                       branch:Branch
+                       branch:Branch,
+                       description:str
         ):
 
         try:
@@ -25,7 +26,8 @@ class PaymentService:
                 invoice=new_invoice,
                 parent=parent,
                 amount=amount,
-                start_date=enrolment.start_date
+                start_date=enrolment.start_date,
+                description=description
             )
             return new_payment
         except Exception as e:
