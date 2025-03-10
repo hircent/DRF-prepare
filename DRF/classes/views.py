@@ -271,6 +271,13 @@ class EnrolmentAdvanceView(BaseCustomEnrolmentView,CreateAPIView):
     def create(self, request, *args, **kwargs):
         try:
             instance = self.get_object()
+
+            if not self._check_is_payment_paid(instance):
+                return Response({
+                    "success": True,
+                    "msg": "Enrolment is not paid or fully paid, cannot advance."
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
             data = request.data.copy()
             data['enrolment_id'] = instance.id
             serializer = self.get_serializer(data=data)
@@ -302,6 +309,9 @@ class EnrolmentAdvanceView(BaseCustomEnrolmentView,CreateAPIView):
                 "success": False,
                 "msg": "An unexpected error occurred"
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    def _check_is_payment_paid(self,enrolment:StudentEnrolment) -> bool:
+        return enrolment.payments.filter(status='PAID').exists()
 
 '''
 Class Lesson Views
