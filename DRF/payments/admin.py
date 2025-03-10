@@ -15,7 +15,7 @@ class InvoiceAdmin(admin.ModelAdmin):
     search_fields = ('branch__name',)
 
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('id','enrolment','enrolment_id','invoice','amount','paid_amount','status','description')
+    list_display = ('id','enrolment','enrolment_id','invoice','amount','paid_amount','status','enrolment_type')
     list_filter = ('status',)
     raw_id_fields = ('enrolment','invoice')
 

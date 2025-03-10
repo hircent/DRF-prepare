@@ -75,9 +75,17 @@ class Payment(models.Model):
         ('VOIDED', 'VOIDED'),
     ]
 
+    ENROLMENT_TYPE_CHOICES = [
+        ('ENROLMENT','ENROLMENT'),
+        ('ADVANCE','ADVANCE'),
+        ('EARLY_ADVANCE','EARLY_ADVANCE'),
+        ('EXTEND','3 MONTHS COUTINUATION')
+    ]
+
     enrolment           = models.ForeignKey(StudentEnrolment, on_delete=models.SET_NULL,null=True,related_name='payments')
     invoice             = models.OneToOneField(Invoice, on_delete=models.PROTECT,related_name='payment')
     parent              = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
+    enrolment_type      = models.CharField(max_length=100,null=True,blank=True,choices=ENROLMENT_TYPE_CHOICES)
     amount              = models.DecimalField(max_digits=10, decimal_places=2)
     discount            = models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True)
     paid_amount         = models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True)
@@ -91,7 +99,7 @@ class Payment(models.Model):
         db_table = 'payments'
         verbose_name = 'Payment'
         verbose_name_plural = 'Payments'
-        ordering = ['-created_at']
+
 
     def __str__(self):
         return 'Payment ' + str(self.id)

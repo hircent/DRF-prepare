@@ -16,7 +16,8 @@ class PaymentService:
                        amount:float, 
                        parent:User,
                        branch:Branch,
-                       description:str
+                       enrolment_type:str,
+                       description:str=None,
         ):
 
         try:
@@ -27,6 +28,7 @@ class PaymentService:
                 parent=parent,
                 amount=amount,
                 start_date=enrolment.start_date,
+                enrolment_type=enrolment_type,
                 description=description
             )
             return new_payment

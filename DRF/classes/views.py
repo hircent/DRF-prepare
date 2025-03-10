@@ -628,7 +628,7 @@ class EnrolmentExtendView(BaseCustomEnrolmentView,UpdateAPIView):
                     amount=half_price,
                     parent=instance.student.parent,
                     branch=instance.branch,
-                    description="3 Months Continuation"
+                    enrolment_type="EXTEND"
                 )
 
                 return Response({
@@ -1149,3 +1149,35 @@ class MarkAttendanceView(BaseAPIView):
         
         except Exception as e:
             raise Exception(f"Error updating replacement lesson attendance: {str(e)}")
+
+class EnrolmentExtensionRevertView(BaseAPIView):
+    permission_classes = [IsManagerOrHigher]
+    
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        try:
+            branch_id = self.get_branch_id()
+
+            enrolment_id = self.kwargs.get("enrolment_id")
+
+            self.require_id(enrolment_id,"enrolment id")
+
+            enrolment = StudentEnrolment.objects.prefetch_related(
+                "extensions","payments","video_assignments"
+            ).get(id=enrolment_id)
+
+            if not enrolment.exists():
+                raise PermissionDenied("Invalid enrolment id.")
+            
+
+
+            return Response({
+                "success": True,
+                "msg": "Enrolment extension reverted successfully."
+            }, status=status.HTTP_200_OK)
+        
+        except Exception as e:
+            return Response({
+                "success": False,
+                "msg": str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)

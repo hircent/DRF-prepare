@@ -269,7 +269,7 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
                     amount=balance,
                     parent=current_enrolment.student.parent,
                     branch=current_enrolment.branch,
-                    description="Early Advance",
+                    enrolment_type="EARLY_ADVANCE"
                 )
             else:
                 PaymentService.create_payment(
@@ -277,7 +277,7 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
                     amount=new_enrolment.grade.price,
                     parent=current_enrolment.student.parent,
                     branch=current_enrolment.branch,
-                    description="Advance",
+                    enrolment_type="ADVANCE"
                 )
 
             self._create_video_assignments_after_advance(new_enrolment)
@@ -656,7 +656,7 @@ class EnrolmentExtensionSerializer(serializers.ModelSerializer):
                 amount=extend_price,
                 parent=instance.student.parent,
                 branch=instance.branch,
-                description="Extension"
+                enrolment_type="EXTEND"
             )
 
 class ReplacementAttendanceListSerializer(serializers.ModelSerializer):
