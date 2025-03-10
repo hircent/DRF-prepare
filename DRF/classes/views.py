@@ -226,8 +226,11 @@ class StudentEnrolmentDeleteView(BaseCustomEnrolmentView,DestroyAPIView):
             instance = self.get_object()
             id = instance.id
 
+            PaymentService.void_payments(
+                enrolment_ids=[id],
+                description=f"Student {instance.student.fullname}'s enrolment has been deleted at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+            )
             self.perform_destroy(instance)    
-            PaymentService.delete_payment(enrolment_id=id)
 
             return Response({"success": True, "message": f"Student Enrolment {id} deleted successfully"})
         except Exception as e:

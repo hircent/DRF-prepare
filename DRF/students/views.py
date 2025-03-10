@@ -3,14 +3,19 @@ from api.pagination import CustomPagination
 from accounts.permission import IsTeacherOrHigher ,IsManagerOrHigher
 from accounts.models import User
 from branches.models import Branch ,UserBranchRole
+from classes.models import StudentEnrolment
 from datetime import datetime
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.http import HttpResponse
+from django.db import transaction
 from rest_framework import generics,status
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.views import APIView
+from typing import List
+
+from payments.service import PaymentService
 import csv
 
 
@@ -154,11 +159,24 @@ class StudentUpdateView(BasedCustomStudentsView,generics.UpdateAPIView):
 class StudentDeleteView(BasedCustomStudentsView,generics.DestroyAPIView):
     permission_classes = [IsManagerOrHigher]
 
+    @transaction.atomic
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        id = instance.id
-        self.perform_destroy(instance)
-        return Response({"success": True, "message": f"Student {id} deleted successfully"})
+        try:
+            instance = self.get_object()
+
+            enrolment_ids = self._get_student_enrolments(instance.id)
+            PaymentService.void_payments(
+                enrolment_ids=enrolment_ids,
+                description=f"Student {instance.fullname} has been deleted  at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+            )
+
+            self.perform_destroy(instance)
+            return Response({"success": True, "message": f"Student has been deleted."})
+        except Exception as e:
+            return Response({"success": False, "message": f"Error deleting student: {str(e)}"})
+        
+    def _get_student_enrolments(self,student_id:int) -> List[int]:
+        return list(StudentEnrolment.objects.filter(student_id=student_id).values_list('id',flat=True))
 
 class ExportStudentsCSV(APIView):
     def get(self, request):
