@@ -83,7 +83,7 @@ class Payment(models.Model):
     paid_amount         = models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True)
     start_date          = models.DateField()
     status              = models.CharField(max_length=100,default='UNPAID',choices=STATUS_CHOICES)
-    description         = models.CharField(max_length=100,null=True,blank=True)
+    description         = models.CharField(max_length=150,null=True,blank=True)
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
 
