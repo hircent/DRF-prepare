@@ -12,9 +12,11 @@ from django.db.models import F,Value
 from django.db import transaction
 from django.utils import timezone
 from datetime import timedelta ,  datetime
+from feeStructure.models import Grade
 from rest_framework import serializers
 
 from payments.serializers import PaymentListSerializer,StudentPaymentListSerializer
+from payments.service import PaymentService
 
 '''
 Class Serializer
@@ -256,6 +258,22 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
                 current_enrolment,classroom,start_date,grade
             )
 
+            if is_early_advance:
+                balance = self._calculate_bring_forward_balance(current_enrolment,grade)
+                PaymentService.create_payment(
+                    enrolment=new_enrolment,
+                    amount=balance,
+                    parent=current_enrolment.student.parent,
+                    branch=current_enrolment.branch
+                )
+            else:
+                PaymentService.create_payment(
+                    enrolment=new_enrolment,
+                    amount=new_enrolment.grade.price,
+                    parent=current_enrolment.student.parent,
+                    branch=current_enrolment.branch
+                )
+                
             self._create_video_assignments_after_advance(new_enrolment)
 
             self._deactivate_current_enrolment(current_enrolment)
@@ -265,6 +283,10 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"message": str(e), "code": e.code})
         except Exception as e:
             raise serializers.ValidationError({"message": "An unexpected error occurred", "code": "system_error"})
+    
+    def _calculate_bring_forward_balance(self,current_enrolment:StudentEnrolment,new_grade:Grade) -> float:
+        balance = current_enrolment.grade.price / 2
+        return new_grade.price - balance
         
     def _advance_new_enrolment(self,current_enrolment_instance,classroom,start_date,grade):
         return StudentEnrolment.objects.create(
