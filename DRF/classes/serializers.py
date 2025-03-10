@@ -142,14 +142,18 @@ class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSeria
     day = serializers.SerializerMethodField()
     grade = serializers.SerializerMethodField()
     payments = StudentPaymentListSerializer(many=True)
+    extensions = serializers.SerializerMethodField()
 
     class Meta:
         model = StudentEnrolment
         fields = [
             'id','start_date','end_date','day','status',
             'remaining_lessons','is_active','freeze_lessons',
-            'grade','video_assignments','payments'
+            'grade','video_assignments','payments','extensions'
         ]
+
+    def get_extensions(self, obj):
+        return obj.extensions.count()
     
     def get_grade(self, obj):
         return obj.grade.grade_level
