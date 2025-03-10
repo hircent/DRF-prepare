@@ -197,7 +197,8 @@ class StudentCreateSerializer(serializers.ModelSerializer):
                     enrolment=new_enrolment,
                     amount=grade.price,
                     parent=student.parent,
-                    branch=student.branch
+                    branch=student.branch,
+                    description="New Enrolment",
                 )
 
                 self._create_video_assignments(new_enrolment)

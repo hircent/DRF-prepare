@@ -264,16 +264,18 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
                     enrolment=new_enrolment,
                     amount=balance,
                     parent=current_enrolment.student.parent,
-                    branch=current_enrolment.branch
+                    branch=current_enrolment.branch,
+                    description="Early Advance",
                 )
             else:
                 PaymentService.create_payment(
                     enrolment=new_enrolment,
                     amount=new_enrolment.grade.price,
                     parent=current_enrolment.student.parent,
-                    branch=current_enrolment.branch
+                    branch=current_enrolment.branch,
+                    description="Advance",
                 )
-                
+
             self._create_video_assignments_after_advance(new_enrolment)
 
             self._deactivate_current_enrolment(current_enrolment)
@@ -631,7 +633,7 @@ class EnrolmentExtensionSerializer(serializers.ModelSerializer):
         model = StudentEnrolment
         fields = ['id','remaining_lessons']
 
-    def update(self, instance, validated_data):
+    def update(self, instance:StudentEnrolment, validated_data):
 
         enrolmentExt,created = EnrolmentExtension.objects.get_or_create(
             enrolment=instance, 
@@ -642,6 +644,16 @@ class EnrolmentExtensionSerializer(serializers.ModelSerializer):
         if created:
             instance.remaining_lessons += 12
             instance.save()
+
+            extend_price = instance.grade.price / 2
+
+            PaymentService.create_payment(
+                enrolment=instance,
+                amount=extend_price,
+                parent=instance.student.parent,
+                branch=instance.branch,
+                description="Extension"
+            )
 
 class ReplacementAttendanceListSerializer(serializers.ModelSerializer):
     class Meta:
