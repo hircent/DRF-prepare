@@ -272,7 +272,7 @@ class EnrolmentAdvanceView(BaseCustomEnrolmentView,CreateAPIView):
         try:
             instance = self.get_object()
 
-            if not self._check_is_payment_paid(instance):
+            if not self._check_is_payment_paid():
                 return Response({
                     "success": True,
                     "msg": "Enrolment is not paid or fully paid, cannot advance."
@@ -309,9 +309,6 @@ class EnrolmentAdvanceView(BaseCustomEnrolmentView,CreateAPIView):
                 "success": False,
                 "msg": "An unexpected error occurred"
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-    def _check_is_payment_paid(self,enrolment:StudentEnrolment) -> bool:
-        return enrolment.payments.filter(status='PAID').exists()
 
 '''
 Class Lesson Views
@@ -599,6 +596,12 @@ class EnrolmentExtendView(BaseCustomEnrolmentView,UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
+
+        if not self._check_is_payment_paid():
+            return Response({
+                "success": True,
+                "msg": "Enrolment is not paid or fully paid, cannot extend."
+            }, status=status.HTTP_400_BAD_REQUEST)
         
         if not instance.is_active:
             return Response({
@@ -618,6 +621,16 @@ class EnrolmentExtendView(BaseCustomEnrolmentView,UpdateAPIView):
                 instance.save()
 
                 self._create_video_assignments_after_extend_enrolment(instance)
+
+                half_price = instance.grade.price / 2
+                PaymentService.create_payment(
+                    enrolment=instance,
+                    amount=half_price,
+                    parent=instance.student.parent,
+                    branch=instance.branch,
+                    description="3 Months Continuation"
+                )
+
                 return Response({
                     "success": True,
                     "msg": "Enrolment extended successfully.",

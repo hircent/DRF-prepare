@@ -272,6 +272,10 @@ class BaseCustomEnrolmentView(GenericViewWithExtractJWTInfo):
                 raise PermissionDenied("The requested user does not belong to the specified branch.")
 
             return enrolment
+        
+    def _check_is_payment_paid(self) -> bool:
+        enrolment = self.get_object()
+        return not enrolment.payments.filter(status__in=["UNPAID","PARTIALLY_PAID"]).exists()
 
 class BaseVideoAssignmentView(GenericViewWithExtractJWTInfo):
 
