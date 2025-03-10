@@ -1,17 +1,23 @@
+from accounts.models import User
+from branches.models import Branch
+from calendars.models import CalendarThemeLesson,Calendar
+from classes.models import (
+    Class,StudentEnrolment,ClassLesson,StudentAttendance,
+    EnrolmentExtension,ReplacementAttendance,VideoAssignment
+)
+from category.models import Category,ThemeLesson
+from certificate.models import StudentCertificate
+from feeStructure.models import Grade
+from students.models import Students
+from payments.models import InvoiceSequence,Invoice,Payment
+
+from datetime import datetime ,timedelta,date
+from django.db import connection
+from django.db.models import Max
 from django.core.management.base import BaseCommand
 from django.db.models import Q,F ,Value
 from django.db import connection
-from branches.models import Branch
-from calendars.models import CalendarThemeLesson,Calendar
-from classes.models import Class,StudentEnrolment,ClassLesson,StudentAttendance,EnrolmentExtension,ReplacementAttendance,VideoAssignment
-from students.models import Students
-from accounts.models import User
-from category.models import Category,ThemeLesson
-from datetime import datetime ,timedelta,date
-from payments.models import InvoiceSequence,Invoice,Payment
-from django.db import connection
-from django.db.models import Max
-from certificate.models import StudentCertificate
+
 import json
 
 class CustomError(Exception):
@@ -29,7 +35,11 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # max_number = InvoiceSequence.objects.filter(branch_id=1).aggregate(Max('number'))['number__max']
 
-        StudentCertificate.objects.all().delete()
+        grade = Grade.objects.get(id=2)
+
+        balance = grade.price / 2
+        print(grade.price)
+        print(balance)
 
     def learn_select_related(self):
         # Without select_related
