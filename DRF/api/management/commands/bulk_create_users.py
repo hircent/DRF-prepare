@@ -49,6 +49,11 @@ class Command(BaseCommand):
         start_time = datetime.now()
         self.logger.info(f"Starting user import from {file_path}")
         default_hashed_password = make_password('password')
+        default_superadmin_password = make_password('password')
+        default_principal_password = make_password('principal')
+        default_manager_password = make_password('manager')
+        default_teacher_password = make_password('teacher')
+        default_parent_password = make_password('parent')
 
         try:
             with transaction.atomic():
