@@ -140,6 +140,7 @@ class Command(CustomBaseCommand):
             self.reset_id("grades")
             self.reset_id("tiers")
             self.reset_id("states")
+            self.reset_id("countries")
         except Exception as e:
             end_time = datetime.now()
             time_taken = end_time - start_time
