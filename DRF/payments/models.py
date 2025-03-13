@@ -31,6 +31,51 @@ class PromoCode(models.Model):
 
     def __str__(self):
         return self.code
+    
+class ReceiptSequence(models.Model):
+    branch      = models.ForeignKey(Branch, on_delete=models.PROTECT,related_name='receipt_sequences')
+    number      = models.PositiveIntegerField(default=1)
+    year        = models.PositiveIntegerField(default=datetime.now().year)
+
+    class Meta:
+        db_table = 'receipt_sequences'
+        verbose_name = 'Receipt Sequence'
+        verbose_name_plural = 'Receipt Sequences'
+        constraints = [
+            models.UniqueConstraint(fields=['branch','number','year'], name='unique_receipt_sequence')
+        ]
+        ordering = ['-number']
+
+    def __str__(self):
+        return  f"{self.branch.country.code.upper()} {self.branch.id:03d} - {self._get_year_last_two_digits} - OR{self.number:04d}"
+
+    @property
+    def _get_year_last_two_digits(self) -> str:
+        return str(self.year % 100) 
+    
+class Receipt(models.Model):
+    PAYMENT_METHOD_CHOICES = [
+        ('CASH','CASH'),
+        ('CARD','CARD'),
+        ('ONLINE','ONLINE'),
+        ('OTHER','OTHER')
+    ]
+
+    receipt_sequence = models.OneToOneField(ReceiptSequence, on_delete=models.PROTECT,related_name='receipts')
+    branch           = models.ForeignKey(Branch, on_delete=models.PROTECT,related_name='receipts')
+    paid_amount      = models.DecimalField(max_digits=10, decimal_places=2)
+    paid_at          = models.DateField(auto_now_add=True)
+    payment_method   = models.CharField(max_length=100,choices=PAYMENT_METHOD_CHOICES)
+    created_at       = models.DateTimeField(auto_now_add=True)
+    updated_at       = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'receipts'
+        verbose_name = 'Receipt'
+        verbose_name_plural = 'Receipts'
+
+    def __str__(self):
+        return f"Receipt {self.id} - {self.receipt_sequence.number:04d}"
 
 class InvoiceSequence(models.Model):
     branch      = models.ForeignKey(Branch, on_delete=models.PROTECT,related_name='sequences')
@@ -44,7 +89,7 @@ class InvoiceSequence(models.Model):
         ordering = ['-number']
 
     def __str__(self):
-        return  f"MY{self.branch.id:03d} - {self._get_year_last_two_digits} - {self.number:04d}"
+        return  f"{self.branch.country.code.upper()} {self.branch.id:03d} - {self._get_year_last_two_digits} - {self.number:04d}"
 
     @property
     def _get_year_last_two_digits(self):
@@ -53,6 +98,7 @@ class InvoiceSequence(models.Model):
 class Invoice(models.Model):
     branch              = models.ForeignKey(Branch, on_delete=models.PROTECT,related_name='invoices')
     invoice_sequence    = models.OneToOneField(InvoiceSequence, on_delete=models.PROTECT,related_name='sequence')
+    receipt             = models.ForeignKey(Receipt, on_delete=models.SET_NULL,null=True,blank=True,related_name='invoice')
     file_path           = models.URLField(null=True,blank=True)
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
@@ -83,12 +129,15 @@ class Payment(models.Model):
     ]
 
     enrolment           = models.ForeignKey(StudentEnrolment, on_delete=models.SET_NULL,null=True,related_name='payments')
-    invoice             = models.OneToOneField(Invoice, on_delete=models.PROTECT,related_name='payment')
+    invoice             = models.ForeignKey(Invoice, on_delete=models.PROTECT,related_name='payments')
     parent              = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
     enrolment_type      = models.CharField(max_length=100,null=True,blank=True,choices=ENROLMENT_TYPE_CHOICES)
     amount              = models.DecimalField(max_digits=10, decimal_places=2)
+    promo_code          = models.ForeignKey(PromoCode, on_delete=models.SET_NULL,null=True,blank=True,related_name='payments')
     discount            = models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True)
     paid_amount         = models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True)
+    pre_oustanding      = models.DecimalField(max_digits=10, decimal_places=2,default=0)
+    post_oustanding     = models.DecimalField(max_digits=10, decimal_places=2,default=0)
     start_date          = models.DateField()
     status              = models.CharField(max_length=100,default='UNPAID',choices=STATUS_CHOICES)
     description         = models.CharField(max_length=150,null=True,blank=True)
