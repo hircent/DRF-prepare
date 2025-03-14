@@ -48,12 +48,12 @@ class Command(BaseCommand):
 
         start_time = datetime.now()
         self.logger.info(f"Starting user import from {file_path}")
-        default_hashed_password = make_password('password')
-        default_superadmin_password = make_password('password')
-        default_principal_password = make_password('principal')
-        default_manager_password = make_password('manager')
-        default_teacher_password = make_password('teacher')
-        default_parent_password = make_password('parent')
+        password_map = {
+            'default': make_password('futurenewpass123'),
+            'superadmin': make_password('newsuperadminpass456'),
+            'admin': make_password('newadminpass789'),
+            'principal': make_password('newprincipalpass147'),
+        }
 
         try:
             with transaction.atomic():
@@ -66,7 +66,7 @@ class Command(BaseCommand):
                         user = User(
                             id=row['id'],
                             first_name=row['first_name'],
-                            password=default_hashed_password,
+                            password=self.get_password(row['email'],password_map),
                             email=row['email'],
                             username=row['username'],
                             last_name=row['last_name'],
@@ -124,3 +124,14 @@ class Command(BaseCommand):
     @staticmethod
     def parse_datetime(value):
         return make_aware(datetime.strptime(value, "%Y-%m-%d %H:%M:%S"))
+    
+    def get_password(self, email, password_map):
+        match email:
+            case email if email.startswith('superadmin'):
+                return password_map['superadmin']
+            case email if email.startswith('admin'):
+                return password_map['admin']
+            case email if email.startswith('principal'):
+                return password_map['principal']
+            case _:
+                return password_map['default']
