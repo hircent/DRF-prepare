@@ -14,23 +14,26 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser: CommandParser) -> None:
         #python manage.py generate_ctls --branchId=1 --year=2024
-        parser.add_argument('--branchId', type=int, help='Branch ID')
+        # parser.add_argument('--branchId', type=int, help='Branch ID')
         parser.add_argument('--year', type=int, help='Year')
 
     @transaction.atomic
     def handle(self, *args, **kwargs):
-        branch_id = kwargs['branchId']
+        # branch_id = kwargs['branchId']
         year = kwargs['year']
 
-        if not branch_id or not year:
-            raise CommandError("Branch ID and Year are required")
+        # if not branch_id or not year:
+        #     raise CommandError("Branch ID and Year are required")
         
         all_themes = self.get_cat_themes(year)
         
-        for theme in all_themes:
-            self.generate_theme_lessons(theme,year,branch_id)
+        branches_id = list(Branch.objects.all().values_list('id',flat=True))
 
-        print(f"Theme lessons generated for branch {branch_id} and year {year}")
+        for id in branches_id:
+            for theme in all_themes:
+                self.generate_theme_lessons(theme,year,id)
+
+                print(f"Theme lessons generated for branch {id} and year {year}")
 
     def generate_theme_lessons(self, themes, year, branch_id):
         """
