@@ -60,9 +60,11 @@ class Command(CustomBaseCommand):
                             paid_amount = row['paid_amount'],
                             start_date = self.parse_date(row['start_date']),
                             status = self._get_status(row['status']),
-                            description = row['description'],
+                            enrolment_type = self._get_enrolment_type(row['description']),
                             created_at = self.parse_datetime(row['created_at']),
-                            updated_at = self.parse_datetime(row['updated_at'])
+                            updated_at = self.parse_datetime(row['updated_at']),
+                            pre_outstanding = row['pre_outstanding'],
+                            post_outstanding = row['post_outstanding']
                         )
 
                         payment_arr.append(payment)
@@ -99,4 +101,15 @@ class Command(CustomBaseCommand):
             return 'UNPAID'
         
         return row.upper()
+    
+    def _get_enrolment_type(self,row:str):
+        ENROLMENT_TYPE = {
+            'Enrolment':'ENROLMENT',
+            'Advance':'ADVANCE',
+            'Early_advance':'EARLY_ADVANCE',
+            'Extend':'EXTEND',
+            '3 Months Continuation':'EXTEND',
+        }
+
+        return ENROLMENT_TYPE[row]
     
