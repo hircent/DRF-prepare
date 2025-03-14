@@ -70,7 +70,7 @@ class Command(BaseCommand):
                         student = Students(
                             id = row['id'],
                             branch = branch,
-                            parent = User.objects.get(id=row['parent_id']),
+                            parent_id = row['parent_id'],
                             first_name = row['first_name'],
                             fullname = row['first_name'],
                             gender = row['gender'],
