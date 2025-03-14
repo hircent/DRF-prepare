@@ -1,0 +1,38 @@
+"id","branch_grade_id","country_id","name","display_name","business_name","business_reg_no","description","principal_id","operation_date","is_headquarters","created_at","updated_at","terminated_at"
+"1","1","1","hq","HQ","DEEMCEE SDN BHD","1265543-P",\N,"3","2020-10-20","1","2020-10-19 17:08:50","2021-01-31 18:17:11",\N
+"2","1","1","deemcee-bandar-sri-damansara","Deemcee Bandar Sri Damansara","HM EDU ENTERPRISE","003576187-K",\N,"11","2017-01-01","0","2020-10-20 06:17:22","2024-03-08 20:28:04",\N
+"3","1","1","deemcee-sri-petaling","Deemcee Sri Petaling","SPROUTING EUPHORIA ENTERPRISE","202303309666",\N,"679","2018-01-06","0","2020-10-20 06:19:12","2024-03-09 15:24:55",\N
+"4","2","1","deemcee-kota-kemuning","Deemcee Kota Kemuning","EXPLORER ACADEMY PLT","LLP0037318-LGN",\N,"13","2018-01-05","0","2020-10-20 06:20:12","2024-11-18 08:00:46",\N
+"5","2","1","deemcee-aman-suria-pj","Deemcee Aman Suria, PJ","DMC LIVELY PLT","LLP0034341-LGN",\N,"14","2018-01-04","0","2020-10-20 06:21:14","2023-10-12 15:18:18",\N
+"6","1","1","deemcee-len-seng-cheras","Deemcee Len Seng, Cheras","DEEMCEE SDN BHD","1265543-P",\N,"15","2019-01-02","0","2020-10-20 06:22:40","2023-10-12 15:20:27",\N
+"7","2","1","deemcee-bandar-puteri-puchong","Deemcee Bandar Puteri, Puchong","MAIKU KIDZ STUDIO","CA0361405-M",\N,"16","2019-08-03","0","2020-10-20 06:23:44","2023-11-08 22:22:45",\N
+"8","1","1","deemcee-sibu-sarawak","Deemcee Sibu, Sarawak","Canaan Land Company","SA20181200",\N,"66","2019-01-04","0","2020-11-22 14:46:54","2023-09-12 22:14:31",\N
+"9","1","1","deemcee-kepong-baru","Deemcee Kepong Baru","Happytots Learning Centre PLT","LLP0013663-LGN",\N,"72","2019-01-05","0","2020-11-30 23:51:43","2023-09-12 22:14:39",\N
+"10","1","1","deemcee-ipoh","De'Emcee Ipoh",\N,\N,\N,"73","2019-11-02","0","2020-11-30 23:53:15","2020-11-30 23:58:55",\N
+"11","2","1","deemcee-saradise-kuching","Deemcee Saradise, Kuching","EE Classics Company","114386",\N,"74","2020-07-04","0","2020-11-30 23:55:34","2024-12-18 14:17:17",\N
+"12","1","1","deemcee-seremban","De'Emcee Seremban","Speech Master PLT","RN29111918257",\N,"75","2020-03-07","0","2020-11-30 23:56:47","2021-01-31 18:14:45",\N
+"13","1","1","deemcee-c180-cheras","Deemcee C180, Cheras","DE ONLYEO ENTERPRISE","202003339844",\N,"585","2021-04-05","0","2021-03-14 14:51:47","2023-09-12 22:13:13",\N
+"14","1","1","deemcee-bayan-lepas-penang","Deemcee Bayan Lepas, Penang","Starfish Vision Marketing","202203147488",\N,"1102","2022-09-27","0","2022-09-24 21:20:20","2023-09-12 22:13:00",\N
+"15","1","1","deemcee-demo","Deemcee Demo","Deemcee Test Sdn Bhd","1234567",\N,"855","2022-09-27","0","2022-09-24 21:30:58","2022-09-24 21:30:58",\N
+"16","1","1","deemcee-usj-taipan","Deemcee USJ Taipan","Prov Edumaster Enterprise","MA0292967-K",\N,"1255","2023-03-01","0","2023-02-13 16:30:09","2023-02-13 16:30:09",\N
+"17","1","1","deemcee-setia-alam-selangor","Deemcee Setia Alam, Selangor","Vocal Space Center","JM0983714-D",\N,"1458","2023-08-01","0","2023-07-20 21:00:45","2023-09-12 22:15:14",\N
+"18","1","1","deemcee-eco-majestic-semenyih","Deemcee Eco Majestic, Semenyih","Semenyih Deemcee Solution","IP0587977-X",\N,"1459","2023-09-26","0","2023-07-20 21:04:40","2023-10-12 15:19:48",\N
+"19","1","1","deemcee-sungai-abong-muar","Deemcee Sungai Abong, Muar","Happy Talks Centre","JR0149435-D",\N,"1533","2023-09-26","0","2023-09-12 22:10:54","2023-10-12 15:18:39",\N
+"20","1","1","deemcee-simpang-ampat-penang","Deemcee Simpang Ampat, Penang","THRIVEIGHT CREATIVE LEARNING","003524339-M",\N,"1590","2023-10-24","0","2023-10-12 15:26:15","2023-10-12 15:26:15",\N
+"21","1","1","deemcee-bukit-mertajam-penang","Deemcee Bukit Mertajam, Penang","THRIVEIGHT CREATIVE LEARNING","003524339-M",\N,"1590","2023-10-24","0","2023-10-12 15:28:11","2025-02-10 10:26:07",\N
+"22","1","1","deemcee-bandar-botanic","Deemcee Bandar Botanic","Toast The Talk Academy","SA0601405-K",\N,"1691","2024-01-02","0","2023-12-09 22:11:36","2023-12-09 22:11:36",\N
+"23","1","1","deemcee-seremban-2","Deemcee Seremban 2","De Kaizen Academy","003530918-H",\N,"1692","2024-01-02","0","2023-12-09 22:13:10","2023-12-09 22:13:10",\N
+"24","1","1","deemcee-mount-austin","Deemcee Mount Austin","We Enrichment Centre","PG0547625-D",\N,"1693","2024-01-02","0","2023-12-09 22:17:23","2023-12-09 22:17:23",\N
+"25","1","1","deemcee-taman-sutera-skudai","Deemcee Taman Sutera Skudai","YOUNGTALK ACADEMY PLT","LLP0037080-LGN",\N,"1874","2024-04-01","0","2024-03-18 21:42:08","2024-03-18 21:42:08",\N
+"26","1","1","x-deemcee-pine-square","[X] Deemcee Pine Square","De Kaixuan Journey Enterprise","xx",\N,"1875","2024-04-01","0","2024-03-18 21:44:37","2024-08-13 09:46:06",\N
+"27","1","1","deemcee-pine-square-kuching","Deemcee Pine Square, Kuching","De Kaixuan Journey Enterprise","1389131991",\N,"1924","2024-04-01","0","2024-04-05 21:10:34","2024-08-13 09:46:21",\N
+"28","1","1","deemcee-taman-danau-kota-setapak","Deemcee Taman Danau Kota, Setapak","AT CONFIDENT SPEAKER ACADEMY","202403110219 (003596643-P)",\N,"2070","2024-07-02","0","2024-06-12 14:36:57","2024-06-12 14:36:57",\N
+"29","1","1","deemcee-bandar-kinrara-puchong","Deemcee Bandar Kinrara, Puchong","VOICE POWER CENTER","202403118773",\N,"2194","2024-08-02","0","2024-08-01 09:55:27","2024-08-01 09:55:27",\N
+"30","1","1","deemcee-miri-sarawak","Deemcee Miri, Sarawak","WELLSUN PLT","202404001695 (LLP0039187-LGN)",\N,"2245","2024-08-27","0","2024-08-12 21:10:20","2024-08-13 09:45:46",\N
+"31","1","1","deemcee-cyberjaya","Deemcee Cyberjaya","ALPHAGEN ACADEMY SDN BHD","202401018640 (1564489-U)",\N,"2319","2024-09-23","0","2024-09-07 13:10:03","2024-09-07 13:10:03",\N
+"32","1","1","deemcee-horizon-hills","Deemcee Horizon Hills","Dreams Horizon Academy","202403146657 (PG0557025-P)",\N,"2356","2024-09-24","0","2024-09-17 09:14:14","2024-09-17 09:14:14",\N
+"33","1","1","deemcee-bintulu-sarawak","Deemcee Bintulu, Sarawak","MY WONDERLAND ACADEMY","BTU/BNR/715/2024",\N,"2507","2024-11-25","0","2024-11-18 08:03:40","2024-11-18 10:10:10",\N
+"34","1","1","deemcee-jade-hills-kajang","Deemcee Jade Hills, Kajang","VICTORIA ART","201903092124 (002953787-M)",\N,"2654","2025-02-22","0","2025-01-23 14:33:17","2025-01-23 14:33:17",\N
+"35","1","2","deemcee-eight-mile-plains","Deemcee Eight Mile Plains","Deemcee Qld Pty Ltd","680472459",\N,"2660","2025-01-27","0","2025-01-28 12:35:51","2025-01-28 12:35:51",\N
+"36","1","1","deemcee-kota-damansara","Deemcee Kota Damansara","YOUNG VOICES PLT","202404003315 (LLP0040821-LGN))",\N,"2709","2025-02-17","0","2025-02-17 17:03:28","2025-02-17 17:03:28",\N
+"37","1","1","deemcee-kuala-terengganu","Deemcee Kuala Terengganu","DEEMCEE INSPIRING VOICE STUDIO","202403308161 (IP0602627-U)",\N,"2728","2025-03-03","0","2025-02-22 17:52:38","2025-02-22 17:52:38",\N
