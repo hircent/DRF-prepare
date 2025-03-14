@@ -37,10 +37,14 @@ class Command(CustomBaseCommand):
                         
                         try:
                             branch = Branch.objects.get(id=row['branch_id'])
-                            student = Students.objects.get(id=row['student_id'])
                             classroom = Class.objects.get(id=row['class_id'])
                             grade = Grade.objects.get(id=row['grade_id'])
                         
+                            try:
+                                student = Students.objects.get(id=row['student_id'])
+                            except Students.DoesNotExist:
+                                self.logger.error(f"Student with id {row['student_id']} does not exist in the database.")
+                                continue
                             enrolment = StudentEnrolment(
                                 id          = row['id'],
                                 student     = student,
