@@ -166,7 +166,7 @@ class EnrolmentExtension(models.Model):
 class VideoAssignment(models.Model):
     enrolment       = models.ForeignKey(StudentEnrolment, on_delete=models.CASCADE,related_name='video_assignments')
     theme           = models.ForeignKey(Theme, on_delete=models.SET_NULL, null=True)
-    video_url       = models.URLField(null=True,blank=True)
+    video_url       = models.URLField(max_length=300,null=True,blank=True)
     video_number    = models.PositiveIntegerField(blank=True)
     submission_date = models.DateField(null=True,blank=True)
     created_at      = models.DateTimeField(auto_now_add=True)
