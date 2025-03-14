@@ -2,16 +2,16 @@
 ### Step by Step when migrations
 '''
 
-python manage.py clean_calendar.py
-python manage.py clean_classes.py
-python manage.py clean_students.py
+python manage.py clean_calendar
+python manage.py clean_classes
+python manage.py clean_students
 
 replace all ("") with (')
 
-python manage.py clean_user_address.py
-python manage.py clean_user_profile.py
-python manage.py clean_users.py
-python manage.py clean_video.py
+python manage.py clean_user_address
+python manage.py clean_user_profile
+python manage.py clean_users
+python manage.py clean_video
 
 python manage.py bulk_create_grade_tier
 python manage.py create_role
