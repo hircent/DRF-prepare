@@ -28,6 +28,8 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
                 has_lessons = self._is_class_lesson_exists(date,branch_id)
 
                 if not has_lessons:
+                    self.stdout.write(self.style.WARNING(f"No class lessons found for date {date} and branch {branch_id},creating class lesson..."))
+                    self.logger.warning(f"No class lessons found for date {date} and branch {branch_id},creating class lesson...")
                     self._create_class_lesson(date,branch_id)
 
                 class_lessons = self._get_class_lessons(date,branch_id)
@@ -45,29 +47,32 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
                     if replacement_students:
                         self._update_replacement(replacement_students,branch_id)
 
-                else:
-                    self.stdout.write(self.style.WARNING(f"No class lessons found for date {date} and branch {branch_id}"))
-                    self.logger.warning(f"No class lessons found for date {date} and branch {branch_id}")
         except Exception as e:
             self.stderr.write(self.style.ERROR(f"Error during attendance marking: {str(e)}"))
             self.logger.error(f"Error during attendance marking: {str(e)}")
 
     def _create_class_lesson(self,date:date,branch_id:int):
 
-        class_instances = self._get_class_instance_by_day(date,branch_id)
+        has_event = self._has_event(date,branch_id)
 
-        class_lessons_arr = []
+        if not has_event:
 
-        for ci in class_instances:
-            class_lesson = ClassLesson(
-                branch_id=branch_id,
-                date=date,
-                class_instance=ci
-            )
-            class_lessons_arr.append(class_lesson)
+            class_instances = self._get_class_instance_by_day(date,branch_id)
+            class_lessons_arr = []
 
-        if class_lessons_arr:
-            ClassLesson.objects.bulk_create(class_lessons_arr)
+            for ci in class_instances:
+                class_lesson = ClassLesson(
+                    branch_id=branch_id,
+                    date=date,
+                    class_instance=ci
+                )
+                class_lessons_arr.append(class_lesson)
+
+            if class_lessons_arr:
+                ClassLesson.objects.bulk_create(class_lessons_arr)
+
+    def _get_class_instance_by_day(self,date:date,branch_id:int) -> List[Class]:
+        return Class.objects.filter(branch_id=branch_id,day=date.strftime("%A"))
 
     def _is_class_lesson_exists(self,date:date,branch_id:int) -> bool:
         return ClassLesson.objects.filter(branch_id=branch_id,date=date).exists()
