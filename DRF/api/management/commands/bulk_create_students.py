@@ -78,7 +78,7 @@ class Command(BaseCommand):
                             school = 'SMK',
                             deemcee_starting_grade = row['deemcee_starting_grade'],
                             status = 'IN_PROGRESS' if row['status'] == 'EXTENDED' else row['status'],
-                            enrolment_date = row['enrolment_date'],
+                            enrolment_date = self.parse_date(row['enrolment_date']),
                             referral_channel = self.mapRefferalChannel(row['referral_channel_id']),
                             referral = row['referral'] if row['referral'] != "N" else None,
                             starter_kits=self.parse_starter_kits(row['starter_kits']),
@@ -119,6 +119,10 @@ class Command(BaseCommand):
     @staticmethod
     def parse_datetime(value):
         return make_aware(datetime.strptime(value, "%Y-%m-%d %H:%M:%S"))
+    
+    @staticmethod
+    def parse_date(value):
+        return make_aware(datetime.strptime(value, "%Y-%m-%d"))
     
     def reset_id(self):
         try:
