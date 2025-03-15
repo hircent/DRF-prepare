@@ -33,19 +33,21 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
                     self._create_class_lesson(date,branch_id)
 
                 class_lessons = self._get_class_lessons(date,branch_id)
-                for cl in class_lessons:
-                    class_instance = cl.class_instance
-                    enrolments = cl.class_instance.enrolments.filter(is_active=True)
-                    replacement_students = cl.class_instance.replacement_attendances.filter(
-                        date=date
-                    ).select_related(
-                        'attendances','attendances__enrollment__student','attendances__enrollment'
-                    )
 
-                    self._create_attendances(date,branch_id,enrolments,class_instance,cl.id)
-                    
-                    if replacement_students:
-                        self._update_replacement(replacement_students,branch_id)
+                if class_lessons:
+                    for cl in class_lessons:
+                        class_instance = cl.class_instance
+                        enrolments = cl.class_instance.enrolments.filter(is_active=True)
+                        replacement_students = cl.class_instance.replacement_attendances.filter(
+                            date=date
+                        ).select_related(
+                            'attendances','attendances__enrollment__student','attendances__enrollment'
+                        )
+
+                        self._create_attendances(date,branch_id,enrolments,class_instance,cl.id)
+                        
+                        if replacement_students:
+                            self._update_replacement(replacement_students,branch_id)
 
         except Exception as e:
             self.stderr.write(self.style.ERROR(f"Error during attendance marking: {str(e)}"))
