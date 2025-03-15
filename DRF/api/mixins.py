@@ -1,5 +1,6 @@
 from calendars.models import Calendar
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, date
+from typing import Set
 
 class BlockedDatesMixin:
     def __init__(self, *args, **kwargs):
@@ -38,3 +39,33 @@ class BlockedDatesMixin:
                 weeks_remaining = 46
 
         return weeks_remaining
+    
+    def _get_blocked_date(self, branch_id: int, year: int) -> Set[date]:
+        events = Calendar.objects.filter(
+            branch_id=branch_id,
+            year=year,
+            entry_type='centre holiday'
+        ).values_list('start_datetime', 'end_datetime')
+        
+        blocked_dates = set()
+        
+        for start_datetime, end_datetime in events:
+            start_date = start_datetime.date()
+            end_date = end_datetime.date()
+            
+            # If single day event
+            if start_date == end_date:
+                blocked_dates.add(start_date)
+            else:
+                # Add all dates in range
+                current_date = start_date
+                while current_date <= end_date:
+                    blocked_dates.add(current_date)
+                    current_date += timedelta(days=1)
+                    
+        return blocked_dates
+    
+    def _has_event(self,date,branch_id):
+        blockedDate = self._get_blocked_date(branch_id=branch_id,year=date.year)
+        
+        return date in blockedDate
