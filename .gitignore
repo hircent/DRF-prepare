@@ -10,3 +10,7 @@ venv/
 *.sqlite3
 
 *.log
+
+.env
+
+settings.py
