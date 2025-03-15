@@ -49,6 +49,9 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
                         if replacement_students:
                             self._update_replacement(replacement_students,branch_id)
 
+                        cl.status = "COMPLETED"
+                        cl.save()
+
         except Exception as e:
             self.stderr.write(self.style.ERROR(f"Error during attendance marking: {str(e)}"))
             self.logger.error(f"Error during attendance marking: {str(e)}")
