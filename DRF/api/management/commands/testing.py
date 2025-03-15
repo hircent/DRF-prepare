@@ -18,6 +18,8 @@ from django.core.management.base import BaseCommand
 from django.db.models import Q,F ,Value
 from django.db import connection
 
+from typing import List
+
 import json
 
 class CustomError(Exception):
@@ -34,12 +36,87 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # max_number = InvoiceSequence.objects.filter(branch_id=1).aggregate(Max('number'))['number__max']
+        yesterday = datetime.now() - timedelta(days=1)
+        day = yesterday.strftime("%A")
+        
+        all_branches = list(Branch.objects.all().values_list('id',flat=True))
+        branch_id = 2
+        # for branch_id in all_branches:
+        has_lessons = self._is_class_lesson_exists(yesterday,branch_id)
+        
+        print(f"Branch ID: {branch_id} has lessons: {has_lessons}")
 
-        grade = Grade.objects.get(id=2)
+        if has_lessons:
+            class_lessons = self._get_class_lessons(yesterday,branch_id)
 
-        balance = grade.price / 2
-        print(grade.price)
-        print(balance)
+            for cl in class_lessons:
+                class_instance = cl.class_instance
+                enrolments = cl.class_instance.enrolments.filter(is_active=True)
+                replacement_students = cl.class_instance.replacement_attendances.filter(
+                    date=yesterday
+                ).select_related(
+                    'attendances','attendances__enrollment__student','attendances__enrollment'
+        )
+                print("==================================")
+                print(f"Total enrolments: {enrolments.count()}")
+                print(f"Lesson Time: {cl.class_instance.start_time} - {cl.class_instance.end_time}")
+                self._create_attendances(yesterday,branch_id,enrolments,class_instance)
+
+                if replacement_students:
+                    self._update_replacement(replacement_students,branch_id)
+
+    def _update_replacement(self,replacement_students:List[ReplacementAttendance],branch_id:int):
+
+        for replacement in replacement_students:
+            replacement.status = "ATTENDED"
+            replacement.attendances.enrollment.remaining_lessons -= 1
+            replacement.attendances.enrollment.save()
+        ReplacementAttendance.objects.bulk_update(replacement_students,["status"])
+        self.stdout.write(self.style.SUCCESS(f"Replacement attendances has been updated for branch id {branch_id}"))
+
+
+    def _is_class_lesson_exists(self,date:date,branch_id:int) -> bool:
+        return ClassLesson.objects.filter(branch_id=branch_id,date=date).exists()
+    
+    def _get_class_lessons(self,date:date,branch_id:int) -> List[ClassLesson]:
+        return ClassLesson.objects.filter(branch_id=branch_id,date=date).select_related(
+            "class_instance")
+    
+    def _create_attendances(self,date:date,branch_id:int,enrolments:List[StudentEnrolment],class_instance:Class):
+        att_arr = []
+        for en in enrolments:
+            enrolment_id = en.id
+            print("........................................")
+            print(f"Remaining lessons: {en.remaining_lessons}")
+            print(f"Student: {en.student.fullname}")
+            print(f"Class: {class_instance.name}")
+            print(f"Date: {date}")
+            print(f"Day: {date.strftime('%A')}")
+
+            is_attendance_exists = self._is_attendance_exists(date,branch_id,enrolment_id)
+
+            if not is_attendance_exists:
+                print("Attendance does not exist")
+                st = StudentAttendance(
+                    enrollment_id=enrolment_id,
+                    branch_id=branch_id,
+                    class_lesson_id=1,
+                    date=date,
+                    day=date.strftime("%A"),
+                    start_time=class_instance.start_time,
+                    end_time=class_instance.end_time,
+                    has_attended=True,
+                    status="ATTENDED"
+                )
+                att_arr.append(st)
+                en.remaining_lessons -= 1
+                en.save()
+
+        if att_arr:
+            StudentAttendance.objects.bulk_create(att_arr)
+    
+    def _is_attendance_exists(self,date:date,branch_id:int,enrollment_id:int) -> bool:
+        return StudentAttendance.objects.filter(branch_id=branch_id,date=date,enrollment_id=enrollment_id).exists()
 
     def learn_select_related(self):
         # Without select_related
