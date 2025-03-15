@@ -1,6 +1,7 @@
 from accounts.models import User
 from branches.models import Branch ,UserBranchRole
 from django.db import models
+from django.utils.timezone import now
 
 '''
     - Student
@@ -70,7 +71,7 @@ class Students(models.Model):
     referral                = models.CharField(max_length=100,null=True,blank=True)
     starter_kits            = models.JSONField(null=True,blank=True,default=list)
 
-    enrolment_date          = models.DateField(auto_now_add=True)
+    enrolment_date          = models.DateField(default=now)
     created_at              = models.DateTimeField(auto_now_add=True)
     updated_at              = models.DateTimeField(auto_now=True)
 
