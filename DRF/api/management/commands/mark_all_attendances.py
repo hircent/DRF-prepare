@@ -26,22 +26,24 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
 
             for branch_id in all_branches:
                 has_lessons = self._is_class_lesson_exists(date,branch_id)
-                
-                if has_lessons:
-                    class_lessons = self._get_class_lessons(date,branch_id)
-                    for cl in class_lessons:
-                        class_instance = cl.class_instance
-                        enrolments = cl.class_instance.enrolments.filter(is_active=True)
-                        replacement_students = cl.class_instance.replacement_attendances.filter(
-                            date=date
-                        ).select_related(
-                            'attendances','attendances__enrollment__student','attendances__enrollment'
-                        )
 
-                        self._create_attendances(date,branch_id,enrolments,class_instance,cl.id)
-                        
-                        if replacement_students:
-                            self._update_replacement(replacement_students,branch_id)
+                if not has_lessons:
+                    self._create_class_lesson(date,branch_id)
+
+                class_lessons = self._get_class_lessons(date,branch_id)
+                for cl in class_lessons:
+                    class_instance = cl.class_instance
+                    enrolments = cl.class_instance.enrolments.filter(is_active=True)
+                    replacement_students = cl.class_instance.replacement_attendances.filter(
+                        date=date
+                    ).select_related(
+                        'attendances','attendances__enrollment__student','attendances__enrollment'
+                    )
+
+                    self._create_attendances(date,branch_id,enrolments,class_instance,cl.id)
+                    
+                    if replacement_students:
+                        self._update_replacement(replacement_students,branch_id)
 
                 else:
                     self.stdout.write(self.style.WARNING(f"No class lessons found for date {date} and branch {branch_id}"))
@@ -49,6 +51,23 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
         except Exception as e:
             self.stderr.write(self.style.ERROR(f"Error during attendance marking: {str(e)}"))
             self.logger.error(f"Error during attendance marking: {str(e)}")
+
+    def _create_class_lesson(self,date:date,branch_id:int):
+
+        class_instances = self._get_class_instance_by_day(date,branch_id)
+
+        class_lessons_arr = []
+
+        for ci in class_instances:
+            class_lesson = ClassLesson(
+                branch_id=branch_id,
+                date=date,
+                class_instance=ci
+            )
+            class_lessons_arr.append(class_lesson)
+
+        if class_lessons_arr:
+            ClassLesson.objects.bulk_create(class_lessons_arr)
 
     def _is_class_lesson_exists(self,date:date,branch_id:int) -> bool:
         return ClassLesson.objects.filter(branch_id=branch_id,date=date).exists()

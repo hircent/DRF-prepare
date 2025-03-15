@@ -40,34 +40,61 @@ class Command(BaseCommand):
         day = yesterday.strftime("%A")
         
         all_branches = list(Branch.objects.all().values_list('id',flat=True))
-        branch_id = 2
+        branch_id = 3
         # for branch_id in all_branches:
         has_lessons = self._is_class_lesson_exists(yesterday,branch_id)
         
         print(f"Branch ID: {branch_id} has lessons: {has_lessons}")
 
-        if has_lessons:
-            class_lessons = self._get_class_lessons(yesterday,branch_id)
+        if not has_lessons:
+            self._create_class_lesson(yesterday,branch_id)
 
-            for cl in class_lessons:
-                class_instance = cl.class_instance
-                enrolments = cl.class_instance.enrolments.filter(is_active=True)
-                replacement_students = cl.class_instance.replacement_attendances.filter(
-                    date=yesterday
-                ).select_related(
-                    'attendances','attendances__enrollment__student','attendances__enrollment'
-        )
-                print("==================================")
-                print(f"Total enrolments: {enrolments.count()}")
-                print(f"Lesson Time: {cl.class_instance.start_time} - {cl.class_instance.end_time}")
-                self._create_attendances(yesterday,branch_id,enrolments,class_instance)
+  
+        class_lessons = self._get_class_lessons(yesterday,branch_id)
 
-                if replacement_students:
-                    self._update_replacement(replacement_students,branch_id)
+        for cl in class_lessons:
+            class_instance = cl.class_instance
+            enrolments = cl.class_instance.enrolments.filter(is_active=True)
+            replacement_students = cl.class_instance.replacement_attendances.filter(
+                date=yesterday
+            ).select_related(
+                'attendances','attendances__enrollment__student','attendances__enrollment'
+            )
+            print("==================================")
+            print(f"Total enrolments: {enrolments.count()}")
+            print(f"Lesson Time: {cl.class_instance.start_time} - {cl.class_instance.end_time}")
+            self._create_attendances(yesterday,branch_id,enrolments,class_instance,cl.id)
+
+            if replacement_students:
+                self._update_replacement(replacement_students,branch_id)
+
+    def _create_class_lesson(self,date:date,branch_id:int):
+
+        class_instances = self._get_class_instance_by_day(date,branch_id)
+
+        class_lessons_arr = []
+
+        for ci in class_instances:
+            class_lesson = ClassLesson(
+                branch_id=branch_id,
+                date=date,
+                class_instance=ci
+            )
+            class_lessons_arr.append(class_lesson)
+
+        if class_lessons_arr:
+            ClassLesson.objects.bulk_create(class_lessons_arr)
+
+
+    def _get_class_instance_by_day(self,date:date,branch_id:int) -> List[Class]:
+        return Class.objects.filter(branch_id=branch_id,day=date.strftime("%A"))
 
     def _update_replacement(self,replacement_students:List[ReplacementAttendance],branch_id:int):
 
         for replacement in replacement_students:
+            print("...........................")
+            print(f"Id: {replacement.id}")
+            print(f"Status: {replacement.status}")
             replacement.status = "ATTENDED"
             replacement.attendances.enrollment.remaining_lessons -= 1
             replacement.attendances.enrollment.save()
@@ -82,7 +109,7 @@ class Command(BaseCommand):
         return ClassLesson.objects.filter(branch_id=branch_id,date=date).select_related(
             "class_instance")
     
-    def _create_attendances(self,date:date,branch_id:int,enrolments:List[StudentEnrolment],class_instance:Class):
+    def _create_attendances(self,date:date,branch_id:int,enrolments:List[StudentEnrolment],class_instance:Class,class_lesson_id:int):
         att_arr = []
         for en in enrolments:
             enrolment_id = en.id
@@ -100,7 +127,7 @@ class Command(BaseCommand):
                 st = StudentAttendance(
                     enrollment_id=enrolment_id,
                     branch_id=branch_id,
-                    class_lesson_id=1,
+                    class_lesson_id=class_lesson_id,
                     date=date,
                     day=date.strftime("%A"),
                     start_time=class_instance.start_time,
