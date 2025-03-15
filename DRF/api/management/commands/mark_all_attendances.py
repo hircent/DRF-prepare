@@ -73,8 +73,8 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
             if class_lessons_arr:
                 ClassLesson.objects.bulk_create(class_lessons_arr)
         else:
-            self.stdout.write(self.style.WARNING(f"Stopped create class lesson on {date} for branch {branch_id}"))
-            self.logger.warning(f"Stopped create class lesson on {date} for branch {branch_id}")
+            self.stdout.write(self.style.WARNING(f"Is an event! Stopped create class lesson on {date} for branch {branch_id}"))
+            self.logger.warning(f"Is an event! Stopped create class lesson on {date} for branch {branch_id}")
 
     def _get_class_instance_by_day(self,date:date,branch_id:int) -> List[Class]:
         return Class.objects.filter(branch_id=branch_id,day=date.strftime("%A"))
@@ -128,4 +128,5 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
             replacement.attendances.enrollment.save()
         ReplacementAttendance.objects.bulk_update(replacement_students,["status"])
         self.stdout.write(self.style.SUCCESS(f"Replacement attendances has been updated for branch id {branch_id}"))
+        self.logger.info(f"Replacement attendances has been updated for branch id {branch_id}")
         
