@@ -115,7 +115,7 @@ class StudentEnrolmentListForParentSerializer(serializers.ModelSerializer):
 class StudentEnrolmentListSerializer(serializers.ModelSerializer):
     video_assignments = VideoAssignmentListSerializer(many=True)
     student = serializers.SerializerMethodField()
-    payments = PaymentListSerializer(many=True)
+    payments = serializers.SerializerMethodField()
 
     class Meta:
         model = StudentEnrolment
@@ -123,7 +123,15 @@ class StudentEnrolmentListSerializer(serializers.ModelSerializer):
 
     def get_student(self, obj):
         return { "id": obj.student.id, "fullname": obj.student.fullname }
+    
+    def get_payments(self, obj):
 
+        pending_payments = obj.payments.filter(status='PENDING')
+
+        if pending_payments.exists():
+            return PaymentListSerializer(pending_payments.last()).data
+
+        return PaymentListSerializer(obj.payments.last()).data
 
 class StudentEnrolmentListForClassSerializer(serializers.ModelSerializer):
     student = serializers.SerializerMethodField()
