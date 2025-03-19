@@ -14,6 +14,12 @@ class PaymentListSerializer(serializers.ModelSerializer):
         model = Payment
         fields = ['id','status']
 
+class PaymentDetailsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Payment
+        exclude = ('created_at', 'updated_at')
+
 class InvoiceListSerializer(serializers.ModelSerializer):
 
     class Meta:
