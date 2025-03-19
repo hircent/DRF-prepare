@@ -70,7 +70,7 @@ class Payment(models.Model):
     STATUS_CHOICES = [
         ('PAID', 'PAID'),
         ('PARTIALLY_PAID', 'PARTIALLY_PAID'),
-        ('UNPAID', 'UNPAID'),
+        ('PENDING', 'PENDING'),
         ('REFUNDED', 'REFUNDED'),
         ('VOIDED', 'VOIDED'),
     ]
