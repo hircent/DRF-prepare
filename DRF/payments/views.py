@@ -1,5 +1,5 @@
 from api.global_customViews import (
-    BaseCustomListNoPaginationAPIView, BaseCustomListAPIView, BasePromoCodeView
+    BaseCustomListNoPaginationAPIView, BaseCustomListAPIView, BasePromoCodeView, BasePaymentView
 )
 from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher,IsManagerOrHigher,IsTeacherOrHigher
 from datetime import datetime
@@ -11,7 +11,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .serializers import (
-    PaymentListSerializer, InvoiceListSerializer, PromoCodeSerializer, PromoCodeCreateUpdateSerializer
+    PaymentListSerializer, InvoiceListSerializer, PromoCodeSerializer, PromoCodeCreateUpdateSerializer,
+    PaymentDetailsSerializer
 )
 from .models import (
     Invoice,Payment,PromoCode
@@ -34,6 +35,15 @@ class PaymentListView(BaseCustomListAPIView):
             query_set = query_set.filter(status=status)
 
         return query_set
+    
+class PaymentDetailsView(BasePaymentView,RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = PaymentDetailsSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response({"success": True, "data": serializer.data}, status=status.HTTP_200_OK)
     
 class InvoiceListView(BaseCustomListAPIView):
     permission_classes = [IsAuthenticated]
