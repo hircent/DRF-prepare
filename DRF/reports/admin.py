@@ -3,6 +3,6 @@ from .models import PaymentReport
 # Register your models here.
 
 class PaymentReportAdmin(admin.ModelAdmin):
-    list_display = ('branch','payment','action','action_datetime')
+    list_display = ('branch','action','action_datetime')
 
 admin.site.register(PaymentReport,PaymentReportAdmin)

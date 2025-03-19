@@ -6,7 +6,7 @@ from payments.models import Payment
 # Create your models here.
 class PaymentReport(models.Model):
     branch              = models.ForeignKey(Branch, on_delete=models.PROTECT,related_name='payment_reports')
-    payment             = models.ForeignKey(Payment, on_delete=models.PROTECT,null=True,blank=True,related_name='payment_reports')
+    # payment             = models.ForeignKey(Payment, on_delete=models.PROTECT,null=True,blank=True,related_name='payment_reports')
     action              = models.CharField(max_length=100)
     action_datetime     = models.DateTimeField()
     created_at          = models.DateTimeField(auto_now_add=True)
