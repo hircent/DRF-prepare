@@ -16,12 +16,13 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
 
     def add_arguments(self, parser):
         yesterday = datetime.now() - timedelta(days=1)
-        parser.add_argument('--date', type=date, default=yesterday, help='Date to mark attendances')
+        parser.add_argument('--date', type=str, default=yesterday.strftime("%Y-%m-%d"), help='Date to mark attendances')
     
     @transaction.atomic
     def handle(self, *args, **kwargs):
         try:
-            date = kwargs['date']
+            request_date = kwargs['date']
+            date = datetime.strptime(request_date, '%Y-%m-%d').date()
             all_branches = list(Branch.objects.all().values_list('id',flat=True))
 
             for branch_id in all_branches:
