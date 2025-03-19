@@ -32,28 +32,22 @@ class Command(CustomBaseCommand):
 
                     for row in reader:
 
-                        if row['payment_invoice_id'] == '0':
-                            continue
-
                         try:
                             StudentEnrolment.objects.get(id=row['payable_id'])
-                            Invoice.objects.get(id=row['payment_invoice_id'])
                             User.objects.get(id=row['parent_id'])
 
                         except (StudentEnrolment.DoesNotExist,Invoice.DoesNotExist,User.DoesNotExist) as e:
                             if isinstance(e, StudentEnrolment.DoesNotExist):
                                 self.logger.error(f"Student enrolment with id {row['payable_id']} does not exist in the database.")
                                 continue
-                            if isinstance(e, Invoice.DoesNotExist):
-                                self.logger.error(f"Invoice with id {row['payment_invoice_id']} does not exist in the database.")
-                                raise ImportError(f"Error while importing payments: {str(e)} {row}")
                             if isinstance(e, User.DoesNotExist):
                                 self.logger.error(f"User with id {row['parent_id']} does not exist in the database.")
                                 raise ImportError(f"Error while importing payments: {str(e)} {row}")
 
                         payment = Payment(
+                            id=row['id'],
                             enrolment_id = row['payable_id'],
-                            invoice_id = row['payment_invoice_id'],
+                            invoice_id = row['payment_invoice_id'] if row['payment_invoice_id'] != '0' else None,
                             parent_id = row['parent_id'],
                             amount = row['amount'],
                             discount = row['discount'],
