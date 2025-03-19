@@ -627,7 +627,6 @@ class EnrolmentExtendView(BaseCustomEnrolmentView,UpdateAPIView):
                     enrolment=instance,
                     amount=half_price,
                     parent=instance.student.parent,
-                    branch=instance.branch,
                     enrolment_type="EXTEND"
                 )
 

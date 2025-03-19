@@ -93,7 +93,7 @@ class Payment(models.Model):
     pre_outstanding      = models.DecimalField(max_digits=10, decimal_places=2,default=0)
     post_outstanding    = models.DecimalField(max_digits=10, decimal_places=2,default=0)
     start_date          = models.DateField()
-    status              = models.CharField(max_length=100,default='UNPAID',choices=STATUS_CHOICES)
+    status              = models.CharField(max_length=100,default='PENDING',choices=STATUS_CHOICES)
     description         = models.CharField(max_length=150,null=True,blank=True)
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
@@ -109,7 +109,7 @@ class Payment(models.Model):
     
     def save(self, *args, **kwargs):
         if self.paid_amount is None or self.paid_amount == 0:
-            self.status = 'UNPAID'
+            self.status = 'PENDING'
         elif self.paid_amount >= self.amount:
             self.status = 'PAID'
         else:

@@ -197,7 +197,6 @@ class StudentCreateSerializer(serializers.ModelSerializer):
                     enrolment=new_enrolment,
                     amount=grade.price,
                     parent=student.parent,
-                    branch=student.branch,
                     enrolment_type="ENROLMENT"
                 )
 

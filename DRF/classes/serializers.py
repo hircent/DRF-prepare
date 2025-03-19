@@ -268,7 +268,6 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
                     enrolment=new_enrolment,
                     amount=balance,
                     parent=current_enrolment.student.parent,
-                    branch=current_enrolment.branch,
                     enrolment_type="EARLY_ADVANCE"
                 )
             else:
@@ -276,7 +275,6 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
                     enrolment=new_enrolment,
                     amount=new_enrolment.grade.price,
                     parent=current_enrolment.student.parent,
-                    branch=current_enrolment.branch,
                     enrolment_type="ADVANCE"
                 )
 
@@ -655,7 +653,6 @@ class EnrolmentExtensionSerializer(serializers.ModelSerializer):
                 enrolment=instance,
                 amount=extend_price,
                 parent=instance.student.parent,
-                branch=instance.branch,
                 enrolment_type="EXTEND"
             )
 

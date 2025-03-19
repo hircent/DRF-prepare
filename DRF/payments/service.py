@@ -15,16 +15,13 @@ class PaymentService:
     def create_payment(enrolment:StudentEnrolment, 
                        amount:float, 
                        parent:User,
-                       branch:Branch,
                        enrolment_type:str,
                        description:str=None,
         ):
 
         try:
-            new_invoice = PaymentService._create_invoice(branch)
             new_payment = Payment.objects.create(
                 enrolment=enrolment,
-                invoice=new_invoice,
                 parent=parent,
                 amount=amount,
                 start_date=enrolment.start_date,
