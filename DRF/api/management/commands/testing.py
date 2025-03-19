@@ -35,8 +35,12 @@ class CustomError(Exception):
 class Command(BaseCommand,BlockedDatesMixin):
     help = 'testing function'
 
+    def handle(self, *args, **options):
+        Payment.objects.all().delete()
+
+
     @transaction.atomic
-    def handle(self, *args, **kwargs):
+    def mark_all_attendances(self, *args, **kwargs):
         try:
             # date = datetime.today().date() - timedelta(days=1)
             date = datetime.strptime('2025-03-14', '%Y-%m-%d').date()
