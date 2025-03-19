@@ -18,6 +18,7 @@ from django.core.management.base import BaseCommand
 from django.db.models import Q,F ,Value
 from django.db import connection , transaction
 from api.mixins import BlockedDatesMixin
+from django.db.models.query import QuerySet
 
 from typing import List
 
@@ -36,7 +37,22 @@ class Command(BaseCommand,BlockedDatesMixin):
     help = 'testing function'
 
     def handle(self, *args, **options):
-        Payment.objects.all().delete()
+        # Payment.objects.all().delete()
+        en = StudentEnrolment.objects.prefetch_related("payments").get(id=5262)
+        
+        payment:QuerySet[Payment] = en.payments.all()
+        for p in payment:
+            print("===============================")
+            print(f"Id: {p.id}")
+            print(f"Enrolment Id: {p.enrolment.id}")
+            print(f"Status: {p.status}")
+            print(f"Amount: {p.amount}")
+            print(f"Discount: {p.discount}")
+            print(f"Paid Amount: {p.paid_amount}")
+            print(f"Pre Outstanding: {p.pre_outstanding}")
+            print(f"Post Outstanding: {p.post_outstanding}")
+            print(f"Start Date: {p.start_date}")
+            print(f"Description: {p.description}")
 
 
     @transaction.atomic
