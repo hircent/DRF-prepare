@@ -10,7 +10,7 @@ from certificate.models import StudentCertificate
 
 from django.shortcuts import get_object_or_404
 
-from payments.models import PromoCode
+from payments.models import PromoCode,Payment
 
 from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework.response import Response
@@ -321,6 +321,13 @@ class BaseStudentCertificateView(GenericViewWithExtractJWTInfo):
         cert_id = self.kwargs.get("cert_id")
         self.require_id(cert_id,"certificate id")
         return get_object_or_404(StudentCertificate,id=cert_id)
+    
+class BasePaymentView(GenericViewWithExtractJWTInfo):
+
+    def get_object(self):
+        payment_id = self.kwargs.get("payment_id")
+        self.require_id(payment_id,"payment id")
+        return get_object_or_404(Payment,id=payment_id)
 
 class BaseAPIView(GenericViewWithExtractJWTInfo,APIView):
 
