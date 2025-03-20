@@ -76,18 +76,18 @@ class PromoCodeListForPaymentView(BaseCustomListNoPaginationAPIView):
     def get_queryset(self):
         branch_id = self.get_branch_id()
         purchase_amount = self.request.query_params.get('purchase_amount')
-        self.require_query_param(purchase_amount,'min purchase amount')
+        # self.require_query_param(purchase_amount,'min purchase amount')
 
         return PromoCode.objects.select_related('branch').filter(
             Q(
                 expired_at__gt=datetime.today(),
                 for_all_branches=True,
-                min_purchase_amount__lte=float(purchase_amount)
+                # min_purchase_amount__lte=float(purchase_amount)
             ) |
             Q(
                 expired_at__gt=datetime.today(),
                 branch_id=int(branch_id),
-                min_purchase_amount__lte=float(purchase_amount)
+                # min_purchase_amount__lte=float(purchase_amount)
             )
         )
     
