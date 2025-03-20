@@ -15,10 +15,18 @@ class PaymentListSerializer(serializers.ModelSerializer):
         fields = ['id','status']
 
 class PaymentDetailsSerializer(serializers.ModelSerializer):
+    grade = serializers.SerializerMethodField()
+    student = serializers.SerializerMethodField()
 
     class Meta:
         model = Payment
-        exclude = ('created_at', 'updated_at')
+        fields = ['id','status','amount','discount','paid_amount','pre_outstanding','post_outstanding','start_date','grade','student']
+        
+    def get_grade(self, obj):
+        return obj.enrolment.grade.grade_level
+    
+    def get_student(self, obj):
+        return obj.enrolment.student.fullname
 
 class InvoiceListSerializer(serializers.ModelSerializer):
 
