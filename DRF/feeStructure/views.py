@@ -5,6 +5,7 @@ from .serializers import (
 )
 from accounts.permission import IsSuperAdmin
 from api.global_customViews import BaseCustomListAPIView, BaseCustomListNoPaginationAPIView
+from branches.models import Branch
 from rest_framework import generics,status
 from rest_framework.permissions import IsAuthenticated
 
@@ -73,10 +74,10 @@ class TierListView(BaseCustomListNoPaginationAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        country = self.request.query_params.get('country')
+        branchId = self.get_branch_id()
 
-        self.require_query_param(country,"country")
+        branch = Branch.objects.get(id=branchId)
 
-        return Tier.objects.filter(country__name=country)
+        return Tier.objects.filter(country__name=branch.country.name)
 
         
