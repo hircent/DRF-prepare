@@ -13,7 +13,7 @@ from payments.models import InvoiceSequence,Invoice,Payment
 
 from datetime import datetime ,timedelta,date
 from django.db import connection
-from django.db.models import Max
+from django.db.models import Max, Count, Sum
 from django.core.management.base import BaseCommand
 from django.db.models import Q,F ,Value
 from django.db import connection , transaction
@@ -37,23 +37,15 @@ class Command(BaseCommand,BlockedDatesMixin):
     help = 'testing function'
 
     def handle(self, *args, **options):
-        # Payment.objects.all().delete()
-        en = StudentEnrolment.objects.prefetch_related("payments").get(id=5262)
-        
-        payment:QuerySet[Payment] = en.payments.all()
-        for p in payment:
-            print("===============================")
-            print(f"Id: {p.id}")
-            print(f"Enrolment Id: {p.enrolment.id}")
-            print(f"Status: {p.status}")
-            print(f"Amount: {p.amount}")
-            print(f"Discount: {p.discount}")
-            print(f"Paid Amount: {p.paid_amount}")
-            print(f"Pre Outstanding: {p.pre_outstanding}")
-            print(f"Post Outstanding: {p.post_outstanding}")
-            print(f"Start Date: {p.start_date}")
-            print(f"Description: {p.description}")
+        pass
 
+    def annotate_learning(self, *args, **options):
+        # Payment.objects.all().delete()
+        branches_with_student_count = Branch.objects.annotate(
+            student_count=Count('students',filter=Q(students__status='GRADUATED'))
+        )
+        for branch in branches_with_student_count:
+            print(f"Branch: {branch.name}, Students: {branch.student_count}")
 
     @transaction.atomic
     def mark_all_attendances(self, *args, **kwargs):
