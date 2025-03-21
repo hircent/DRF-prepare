@@ -3,6 +3,7 @@ from api.global_customViews import (
 )
 from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher,IsManagerOrHigher,IsTeacherOrHigher
 from branches.models import Branch
+from classes.models import StudentAttendance
 from datetime import datetime
 from django.db.models import Q,Count,Sum
 from rest_framework.permissions import IsAuthenticated
@@ -77,11 +78,20 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView):
             graduated=Count('id', filter=Q(status='GRADUATED'))
         )
 
+        attendances = StudentAttendance.objects.filter(
+            branch_id=branch_id,date__year=year,date__month=month
+        ).aggregate(
+            absent=Count('id', filter=Q(status='ABSENT')),
+            freeze=Count('id', filter=Q(status='FREEZED')),
+            sfreezed=Count('id', filter=Q(status='SFREEZED')),
+            replacement=Count('id', filter=Q(status='REPLACEMENT'))
+        )
+
         branch:Branch = Branch.objects.select_related('branch_grade','country').get(id=branch_id)
 
         total_paid_amount = Payment.objects.filter(
             start_date__year=year,start_date__month=month,enrolment__branch_id=branch_id
-        ).aggregate(total=Sum('paid_amount'))['total'] or 0
+        ).aggregate(total=Sum('amount') - Sum('discount'))['total'] or 0
 
         payment_serializer = self.get_serializer(queryset, many=True)
         percentage = branch.branch_grade.percentage
@@ -92,6 +102,7 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView):
         return Response({
             "success": True,
             "data": {
+                "total_payments": len(payment_serializer.data),
                 "payments": payment_serializer.data,
                 "student_info":students,
                 "branch_info": {
@@ -99,6 +110,7 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView):
                     'branch_percentage': percentage,
                     'country_code': branch.country.code 
                 },
+                "attendances":attendances,
                 "total_paid_amount":paid_amount_formatted,
                 "loyalty_fees":loyalty_fees
             }

@@ -18,6 +18,7 @@ class PaymentReportListSerializer(serializers.ModelSerializer):
     student = serializers.SerializerMethodField()
     grade = serializers.SerializerMethodField()
     paid_at = serializers.SerializerMethodField()
+    amount = serializers.SerializerMethodField()
 
     class Meta:
         model = Payment
@@ -33,6 +34,9 @@ class PaymentReportListSerializer(serializers.ModelSerializer):
         if not obj.invoice:
             return None
         return obj.invoice.created_at.strftime("%Y-%m-%d")
+    
+    def get_amount(self, obj:Payment):
+        return "{:.2f}".format(float(obj.amount - obj.discount))
 
 class PaymentDetailsSerializer(serializers.ModelSerializer):
     grade = serializers.SerializerMethodField()
