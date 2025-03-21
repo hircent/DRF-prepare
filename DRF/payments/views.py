@@ -12,7 +12,7 @@ from rest_framework import status
 
 from .serializers import (
     PaymentListSerializer, InvoiceListSerializer, PromoCodeSerializer, PromoCodeCreateUpdateSerializer,
-    PaymentDetailsSerializer
+    PaymentDetailsSerializer, PaymentReportListSerializer
 )
 from .models import (
     Invoice,Payment,PromoCode
@@ -30,9 +30,36 @@ class PaymentListView(BaseCustomListAPIView):
         status = self.request.query_params.get('status', None)
 
         query_set = Payment.objects.filter(enrolment__branch_id=branch_id)
+        query_set = Payment.objects.filter(start_date__year=2025,start_date__month=1,enrolment__branch_id=branch_id).select_related('enrolment','enrolment__student','enrolment__grade')
         
         if status:
             query_set = query_set.filter(status=status)
+
+        return query_set
+    
+class PaymentReportListView(BaseCustomListNoPaginationAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = PaymentReportListSerializer
+
+    def get_queryset(self):
+        month = self.request.query_params.get('month', None)
+        year = self.request.query_params.get('year', None)
+        today = datetime.today()
+
+        if not month:
+            month = today.month
+
+        if not year:
+            year = today.year
+
+        branch_id = self.get_branch_id()
+        self.branch_accessible(branch_id)
+        
+        query_set = Payment.objects.filter(
+            start_date__year=year,start_date__month=month,enrolment__branch_id=branch_id
+        ).select_related(
+            'enrolment','enrolment__student','enrolment__grade'
+        )
 
         return query_set
     
