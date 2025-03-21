@@ -2,13 +2,15 @@ from api.global_customViews import (
     BaseCustomListNoPaginationAPIView, BaseCustomListAPIView, BasePromoCodeView, BasePaymentView
 )
 from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher,IsManagerOrHigher,IsTeacherOrHigher
+from branches.models import Branch
 from datetime import datetime
-from django.db.models import Q
+from django.db.models import Q,Count,Sum
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import UpdateAPIView,DestroyAPIView,CreateAPIView,RetrieveAPIView
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework import status
+from students.models import Students
 
 from .serializers import (
     PaymentListSerializer, InvoiceListSerializer, PromoCodeSerializer, PromoCodeCreateUpdateSerializer,
@@ -41,17 +43,7 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = PaymentReportListSerializer
 
-    def get_queryset(self):
-        month = self.request.query_params.get('month', None)
-        year = self.request.query_params.get('year', None)
-        today = datetime.today()
-
-        if not month:
-            month = today.month
-
-        if not year:
-            year = today.year
-
+    def get_queryset(self,year,month):
         branch_id = self.get_branch_id()
         self.branch_accessible(branch_id)
         
@@ -62,6 +54,55 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView):
         )
 
         return query_set
+    
+    def list(self, request, *args, **kwargs):
+        month = self.request.query_params.get('month', None)
+        year = self.request.query_params.get('year', None)
+        today = datetime.today()
+
+        if not month:
+            month = today.month
+
+        if not year:
+            year = today.year
+
+        queryset = self.get_queryset(year,month)
+
+        branch_id = self.get_branch_id()
+
+        students = Students.objects.filter(branch_id=branch_id).aggregate(
+            total=Count('id'),
+            in_progress=Count('id', filter=Q(status='IN_PROGRESS')),
+            dropped_out=Count('id', filter=Q(status='DROPPED_OUT')),
+            graduated=Count('id', filter=Q(status='GRADUATED'))
+        )
+
+        branch:Branch = Branch.objects.select_related('branch_grade','country').get(id=branch_id)
+
+        total_paid_amount = Payment.objects.filter(
+            start_date__year=year,start_date__month=month,enrolment__branch_id=branch_id
+        ).aggregate(total=Sum('paid_amount'))['total'] or 0
+
+        payment_serializer = self.get_serializer(queryset, many=True)
+        percentage = branch.branch_grade.percentage
+
+        paid_amount_formatted = "{:.2f}".format(float(total_paid_amount))
+        loyalty_fees = "{:.2f}".format(float(total_paid_amount) * (percentage / 100))
+
+        return Response({
+            "success": True,
+            "data": {
+                "payments": payment_serializer.data,
+                "student_info":students,
+                "branch_info": {
+                    'branch_grade': branch.branch_grade.name,
+                    'branch_percentage': percentage,
+                    'country_code': branch.country.code 
+                },
+                "total_paid_amount":paid_amount_formatted,
+                "loyalty_fees":loyalty_fees
+            }
+        })
     
 class PaymentDetailsView(BasePaymentView,RetrieveAPIView):
     permission_classes = [IsAuthenticated]
