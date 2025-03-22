@@ -45,6 +45,10 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView):
     serializer_class = PaymentReportListSerializer
 
     def get_queryset(self,year,month):
+        print({
+            "year":year,
+            "month":month
+        })
         branch_id = self.get_branch_id()
         self.branch_accessible(branch_id)
         
@@ -59,6 +63,10 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView):
     def list(self, request, *args, **kwargs):
         month = self.request.query_params.get('month', None)
         year = self.request.query_params.get('year', None)
+        print({
+            "month":month,
+            "year":year
+        })
         today = datetime.today()
 
         if not month:
@@ -108,7 +116,7 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView):
                 "branch_info": {
                     'branch_grade': branch.branch_grade.name,
                     'branch_percentage': percentage,
-                    'country_code': branch.country.code 
+                    'currency': branch.country.currency 
                 },
                 "attendances":attendances,
                 "total_paid_amount":paid_amount_formatted,
