@@ -69,10 +69,10 @@ class StudentEnrolment(models.Model):
     def __str__(self):
         return self.student.fullname + "'s enrolment " + str(self.start_date.year)
 
-    def save(self, *args, **kwargs):
-        if self.remaining_lessons <= 0:
-            self.is_active = False
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if self.remaining_lessons <= 0:
+    #         self.is_active = False
+    #     super().save(*args, **kwargs)
 
 class ClassLesson(models.Model):
     LESSON_STATUS_CHOICES = [
