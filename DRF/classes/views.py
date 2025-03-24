@@ -1153,22 +1153,27 @@ class EnrolmentExtensionRevertView(BaseAPIView):
     permission_classes = [IsManagerOrHigher]
     
     @transaction.atomic
-    def post(self, request, *args, **kwargs):
+    def put(self, request, *args, **kwargs):
         try:
             branch_id = self.get_branch_id()
 
             enrolment_id = self.kwargs.get("enrolment_id")
 
             self.require_id(enrolment_id,"enrolment id")
-
+            print(enrolment_id)
             enrolment = StudentEnrolment.objects.prefetch_related(
                 "extensions","payments","video_assignments"
             ).get(id=enrolment_id)
 
-            if not enrolment.exists():
+            if not enrolment:
                 raise PermissionDenied("Invalid enrolment id.")
             
-
+            enrolment.extensions.last().delete()
+            enrolment.video_assignments.last().delete()
+            enrolment.payments.filter(enrolment_type='EXTEND').last().delete()
+            
+            enrolment.remaining_lessons -= 12
+            enrolment.save()
 
             return Response({
                 "success": True,
