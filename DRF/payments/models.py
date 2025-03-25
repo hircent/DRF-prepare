@@ -69,7 +69,6 @@ class Invoice(models.Model):
 class Payment(models.Model):
     STATUS_CHOICES = [
         ('PAID', 'PAID'),
-        ('PARTIALLY_PAID', 'PARTIALLY_PAID'),
         ('PENDING', 'PENDING'),
         ('REFUNDED', 'REFUNDED'),
         ('VOIDED', 'VOIDED'),
@@ -108,12 +107,10 @@ class Payment(models.Model):
         return 'Payment ' + str(self.id)
     
     def save(self, *args, **kwargs):
-        if self.paid_amount is None or self.paid_amount == 0:
+        if self.paid_amount == 0 and self.post_outstanding == 0:
             self.status = 'PENDING'
-        elif self.paid_amount >= self.amount:
+        elif self.paid_amount >= self.amount or self.post_outstanding > 0:
             self.status = 'PAID'
-        else:
-            self.status = 'PARTIALLY_PAID'
 
         if not self.parent and self.enrolment:
             self.parent = self.enrolment.student.parent
