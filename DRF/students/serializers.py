@@ -43,7 +43,7 @@ class StudentDetailsSerializer(serializers.ModelSerializer):
 
     def get_payments(self, obj):
 
-        payments = Payment.objects.filter(enrolment__student_id=obj.id)
+        payments = Payment.objects.filter(enrolment__student_id=obj.id).order_by("-start_date")
 
         return StudentPaymentListSerializer(payments, many=True).data
 
