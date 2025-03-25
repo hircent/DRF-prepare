@@ -15,7 +15,7 @@ from datetime import timedelta ,  datetime
 from feeStructure.models import Grade
 from rest_framework import serializers
 
-from payments.serializers import PaymentListSerializer,StudentPaymentListSerializer
+from payments.serializers import PaymentListSerializer
 from payments.service import PaymentService
 
 '''
@@ -149,7 +149,6 @@ class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSeria
     video_assignments = VideoAssignmentListSerializer(many=True)
     day = serializers.SerializerMethodField()
     grade = serializers.SerializerMethodField()
-    payments = StudentPaymentListSerializer(many=True)
     extensions = serializers.SerializerMethodField()
 
     class Meta:
@@ -157,7 +156,7 @@ class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSeria
         fields = [
             'id','start_date','end_date','day','status',
             'remaining_lessons','is_active','freeze_lessons',
-            'grade','video_assignments','payments','extensions'
+            'grade','video_assignments','extensions'
         ]
 
     def get_extensions(self, obj):

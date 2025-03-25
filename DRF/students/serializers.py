@@ -3,13 +3,14 @@ from accounts.models import User ,Role , UserProfile , UserAddress
 from branches.models import Branch ,UserBranchRole
 from classes.models import StudentEnrolment,Class, VideoAssignment
 from classes.serializers import StudentEnrolmentDetailsSerializer
-from datetime import datetime
 from django.db import transaction
-from feeStructure.models import Grade,Tier
+from feeStructure.models import Tier
 from rest_framework import serializers
 
 from .models import Students
 from payments.service import PaymentService
+from payments.models import Payment
+from payments.serializers import StudentPaymentListSerializer
 import json
 
 
@@ -26,18 +27,25 @@ class StudentListSerializer(serializers.ModelSerializer):
 class StudentDetailsSerializer(serializers.ModelSerializer):
     parent = ParentDetailSerializer()
     enrolments = StudentEnrolmentDetailsSerializer(many=True)
+    payments = serializers.SerializerMethodField()
     branch = serializers.SerializerMethodField()
     class Meta:
         model = Students
         fields = [
             'id','first_name','last_name','fullname','gender','dob',
             'school','deemcee_starting_grade','status','enrolment_date',
-            'branch','parent','enrolments','referral_channel','referral','starter_kits'
+            'branch','parent','enrolments','payments','referral_channel','referral','starter_kits'
         ]
 
     def get_branch(self, obj):
         return obj.branch.display_name
         # read_only_fields = ['branch', 'parent']
+
+    def get_payments(self, obj):
+
+        payments = Payment.objects.filter(enrolment__student_id=obj.id)
+
+        return StudentPaymentListSerializer(payments, many=True).data
 
 class StudentCreateSerializer(serializers.ModelSerializer):
     timeslot = serializers.CharField(write_only=True)
