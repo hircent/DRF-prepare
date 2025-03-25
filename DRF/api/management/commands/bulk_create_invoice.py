@@ -45,7 +45,7 @@ class Command(CustomBaseCommand):
                             id = row['id'],
                             branch_id = row['branch_id'],
                             invoice_sequence_id = row['invoice_sequence_id'],
-                            file_path = row['file_path'],
+                            paid_at = self.parse_date(row['paid_at']) if row['paid_at'] != '\\N' else None,
                             created_at = self.parse_datetime(row['created_at']),
                             updated_at = self.parse_datetime(row['updated_at'])
                         )

@@ -53,7 +53,7 @@ class InvoiceSequence(models.Model):
 class Invoice(models.Model):
     branch              = models.ForeignKey(Branch, on_delete=models.PROTECT,related_name='invoices')
     invoice_sequence    = models.OneToOneField(InvoiceSequence, on_delete=models.PROTECT,related_name='sequence')
-    file_path           = models.URLField(null=True,blank=True)
+    paid_at             = models.DateField(null=True,blank=True)
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
 

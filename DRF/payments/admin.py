@@ -8,7 +8,7 @@ class InvoiceSequenceAdmin(admin.ModelAdmin):
     search_fields = ('branch__name',)
 
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ('id','branch','invoice_sequence','created_at')
+    list_display = ('id','branch','invoice_sequence','paid_at')
     list_filter = ('branch',)
     raw_id_fields = ('invoice_sequence','branch')
 
@@ -20,6 +20,7 @@ class PaymentAdmin(admin.ModelAdmin):
     raw_id_fields = ('enrolment','invoice')
 
     search_fields = ('enrolment__student__fullname',)
+    readonly_fields = ('id','created_at','updated_at')
 
 class PromoCodeAdmin(admin.ModelAdmin):
     list_display = ('id','code','amount','min_purchase_amount','quantity','used','expired_at')
