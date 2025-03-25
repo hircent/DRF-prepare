@@ -3,10 +3,14 @@ from rest_framework import serializers
 from .models import Invoice,Payment,PromoCode
 
 class StudentPaymentListSerializer(serializers.ModelSerializer):
-
+    grade = serializers.SerializerMethodField()
+    
     class Meta:
         model = Payment
-        exclude = ('created_at', 'updated_at','enrolment')
+        fields = ['id','status','amount','discount','paid_amount','pre_outstanding','post_outstanding','start_date','grade','enrolment_type']
+        
+    def get_grade(self, obj):
+        return obj.enrolment.grade.grade_level
 
 class PaymentListSerializer(serializers.ModelSerializer):
 
@@ -33,7 +37,7 @@ class PaymentReportListSerializer(serializers.ModelSerializer):
     def get_paid_at(self, obj):
         if not obj.invoice:
             return None
-        return obj.invoice.created_at.strftime("%Y-%m-%d")
+        return obj.invoice.paid_at.strftime("%Y-%m-%d")
     
     def get_amount(self, obj:Payment):
         return "{:.2f}".format(float(obj.amount - obj.discount))
