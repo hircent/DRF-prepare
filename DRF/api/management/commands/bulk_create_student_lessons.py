@@ -83,6 +83,10 @@ class Command(CustomBaseCommand):
                         StudentAttendance.objects.bulk_create(student_attendances_arr)
                         total_imported += len(student_attendances_arr)
                         self.logger.info(f"Imported final batch of {len(student_attendances_arr)} student_attendances. Total: {total_imported}")
+
+                    if class_lesson_arr:
+                        ClassLesson.objects.bulk_update(class_lesson_arr,['theme_lesson'])
+                        self.logger.info(f"Update {len(class_lesson_arr)} theme lesson for class lesson. Total: {len(class_lesson_arr)}")
                 
                 self.reset_id("student_attendances")
                 end_time = datetime.now()
@@ -105,7 +109,7 @@ class Command(CustomBaseCommand):
             class_lesson.theme_lesson = tl.theme_lesson
             return class_lesson
         else:
-            raise Exception(f"Theme lesson not found for {class_lesson.class_instance.name} on {date}")
+            return class_lesson
 
     def get_status(self,status):
         if status == '\\N':
