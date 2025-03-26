@@ -15,6 +15,7 @@ class PaymentService:
     @transaction.atomic
     def create_payment(enrolment:StudentEnrolment, 
                        amount:float, 
+                       pre_outstanding:float, 
                        parent:User,
                        enrolment_type:str,
                        description:str=None,
@@ -25,6 +26,7 @@ class PaymentService:
                 enrolment=enrolment,
                 parent=parent,
                 amount=amount,
+                pre_outstanding=pre_outstanding,
                 start_date=enrolment.start_date,
                 enrolment_type=enrolment_type,
                 description=description
@@ -32,6 +34,13 @@ class PaymentService:
             return new_payment
         except Exception as e:
             raise ValidationError(f"Error creating payment: {str(e)}")
+
+    @staticmethod
+    def get_pre_outstanding(enrolment:StudentEnrolment) -> float:
+        return Payment.objects.filter(
+            enrolment=enrolment,
+            status='PAID'
+        ).last().post_outstanding
 
     @staticmethod
     def create_invoice(branch:Branch) -> Invoice:

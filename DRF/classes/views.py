@@ -625,9 +625,11 @@ class EnrolmentExtendView(BaseCustomEnrolmentView,UpdateAPIView):
                 self._create_video_assignments_after_extend_enrolment(instance)
 
                 half_price = instance.grade.price / 2
+                pre_outstanding = PaymentService.get_pre_outstanding(instance)
                 PaymentService.create_payment(
                     enrolment=instance,
                     amount=half_price,
+                    pre_outstanding=pre_outstanding,
                     parent=instance.student.parent,
                     enrolment_type="EXTEND"
                 )

@@ -269,11 +269,14 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
                 current_enrolment,classroom,start_date,grade
             )
 
+            pre_outstanding = PaymentListSerializer.get_pre_outstanding(current_enrolment)
+
             if is_early_advance:
                 balance = self._calculate_bring_forward_balance(current_enrolment,grade)
                 PaymentService.create_payment(
                     enrolment=new_enrolment,
                     amount=balance,
+                    pre_outstanding=pre_outstanding,
                     parent=current_enrolment.student.parent,
                     enrolment_type="EARLY_ADVANCE"
                 )
@@ -281,6 +284,7 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
                 PaymentService.create_payment(
                     enrolment=new_enrolment,
                     amount=new_enrolment.grade.price,
+                    pre_outstanding=pre_outstanding,
                     parent=current_enrolment.student.parent,
                     enrolment_type="ADVANCE"
                 )
@@ -654,14 +658,7 @@ class EnrolmentExtensionSerializer(serializers.ModelSerializer):
             instance.remaining_lessons += 12
             instance.save()
 
-            extend_price = instance.grade.price / 2
-
-            PaymentService.create_payment(
-                enrolment=instance,
-                amount=extend_price,
-                parent=instance.student.parent,
-                enrolment_type="EXTEND"
-            )
+        return instance
 
 class ReplacementAttendanceListSerializer(serializers.ModelSerializer):
     class Meta:

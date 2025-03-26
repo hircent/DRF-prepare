@@ -204,6 +204,7 @@ class StudentCreateSerializer(serializers.ModelSerializer):
                 PaymentService.create_payment(
                     enrolment=new_enrolment,
                     amount=grade.price,
+                    pre_outstanding=0,
                     parent=student.parent,
                     enrolment_type="ENROLMENT"
                 )
