@@ -1,5 +1,6 @@
 from api.baseCommand import CustomBaseCommand
 from classes.models import StudentAttendance,StudentEnrolment,ClassLesson
+from calendars.models import CalendarThemeLesson
 from branches.models import Branch
 from django.db import transaction
 from csv import DictReader
@@ -57,6 +58,12 @@ class Command(CustomBaseCommand):
                             created_at = self.parse_datetime(row['created_at']),
                             updated_at = self.parse_datetime(row['updated_at'])
                         ) 
+
+                        self._update_class_theme_lesson(
+                            class_lesson,
+                            self.parse_datetime_to_date(row['start_datetime']),
+                            int(row['branch_id'])
+                        )
                         
                         student_attendances_arr.append(student_att)
                         self.stdout.write(self.style.SUCCESS(f"Student_attendance with id:{row['id']} at branch: {row['branch_id']} has appended at time {datetime.now()}"))
@@ -85,6 +92,15 @@ class Command(CustomBaseCommand):
             self.logger.error(f"Time taken : {time_taken}")
             
             raise
+
+    def _update_class_theme_lesson(self,class_lesson:ClassLesson,date:str,branch_id:int):
+        tl = CalendarThemeLesson.objects.filter(branch_id=branch_id,lesson_date=date,theme__category__name=class_lesson.class_instance.name).first()
+
+        if tl:
+            class_lesson.theme_lesson = tl.theme_lesson
+            class_lesson.save()
+        else:
+            raise Exception(f"Theme lesson not found for {class_lesson.class_instance.name} on {date}")
 
     def get_status(self,status):
         if status == '\\N':
