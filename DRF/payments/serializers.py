@@ -45,16 +45,20 @@ class PaymentReportListSerializer(serializers.ModelSerializer):
 class PaymentDetailsSerializer(serializers.ModelSerializer):
     grade = serializers.SerializerMethodField()
     student = serializers.SerializerMethodField()
+    currency = serializers.SerializerMethodField()
 
     class Meta:
         model = Payment
-        fields = ['id','status','amount','discount','paid_amount','pre_outstanding','post_outstanding','start_date','grade','student']
+        fields = ['id','status','amount','discount','paid_amount','pre_outstanding','post_outstanding','start_date','grade','student','currency']
         
-    def get_grade(self, obj):
+    def get_grade(self, obj:Payment):
         return obj.enrolment.grade.grade_level
     
-    def get_student(self, obj):
+    def get_student(self, obj:Payment):
         return obj.enrolment.student.fullname
+    
+    def get_currency(self,obj:Payment):
+        return obj.enrolment.branch.country.currency
 
 class InvoiceListSerializer(serializers.ModelSerializer):
 
