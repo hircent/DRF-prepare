@@ -1,6 +1,7 @@
 from branches.models import Branch
 from rest_framework import serializers
 from .models import Invoice,Payment,PromoCode
+from .service import PaymentService
 
 class StudentPaymentListSerializer(serializers.ModelSerializer):
     grade = serializers.SerializerMethodField()
@@ -95,4 +96,52 @@ class PromoCodeCreateUpdateSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)
+    
+class MakePaymentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Payment
+        fields = ['amount','promo_code','paid_amount']
+
+    def update(self, instance:Payment, validated_data):
+        promo_discount = validated_data.get('promo_code',None)
+        discounted_amount = validated_data.get('amount')
+        paid_amount = validated_data.get('paid_amount')
+
+        if promo_discount:
+            discounted_amount = validated_data.get('amount') - promo_discount.amount
+        
+        amount_to_pay = self._get_amount_to_pay(instance,discounted_amount) 
+
+        if not self._validate_amount_to_pay(paid_amount,amount_to_pay):
+            raise serializers.ValidationError(f"Amount to pay: {amount_to_pay}")
+        
+        after_payment_remaining = self._after_payment(paid_amount,amount_to_pay)
+        
+        instance.post_outstanding += after_payment_remaining
+        instance.discount = promo_discount.amount if promo_discount else 0
+        instance.paid_amount = paid_amount
+        instance.promo_code = promo_discount
+        invoice = PaymentService.create_invoice(instance.enrolment.branch)
+        instance.invoice = invoice
+        instance.save()
+
+        return instance
+    
+    def _get_amount_to_pay(self,payment:Payment,discount_amount:float):
+        if payment.pre_outstanding >= discount_amount:
+            payment.pre_outstanding -= discount_amount
+            return 0
+        else:
+            return discount_amount - payment.pre_outstanding
+        
+    def _validate_amount_to_pay(self,paid_amount:float,amount_to_pay:float):
+
+        if paid_amount >= amount_to_pay:
+            return True
+        return False
+    
+    def _after_payment(self,paid_amount:float,amount_to_pay:float):
+        return paid_amount - amount_to_pay
+
     

@@ -1,21 +1,23 @@
 from api.global_customViews import (
     BaseCustomListNoPaginationAPIView, BaseCustomListAPIView, BasePromoCodeView, BasePaymentView
 )
-from accounts.permission import IsSuperAdmin,IsPrincipalOrHigher,IsManagerOrHigher,IsTeacherOrHigher
+from accounts.permission import IsSuperAdmin,IsManagerOrHigher
 from branches.models import Branch
 from classes.models import StudentAttendance
 from datetime import datetime
 from django.db.models import Q,Count,Sum
+from django.db import transaction
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import UpdateAPIView,DestroyAPIView,CreateAPIView,RetrieveAPIView
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.request import Request
+from rest_framework.exceptions import ValidationError
 from students.models import Students
 
 from .serializers import (
     PaymentListSerializer, InvoiceListSerializer, PromoCodeSerializer, PromoCodeCreateUpdateSerializer,
-    PaymentDetailsSerializer, PaymentReportListSerializer
+    PaymentDetailsSerializer, PaymentReportListSerializer, MakePaymentSerializer
 )
 from .models import (
     Invoice,Payment,PromoCode
@@ -229,3 +231,41 @@ class PromoCodeDeleteView(BasePromoCodeView,DestroyAPIView):
         self.perform_destroy(instance)    
         return Response({"success": True, "message": f"Promo Code {id} deleted successfully"})
     
+class MakePaymentView(BasePaymentView,UpdateAPIView):
+    permission_classes = [IsManagerOrHigher]
+    serializer_class = MakePaymentSerializer
+
+    @transaction.atomic
+    def update(self, request:Request, *args, **kwargs):
+        try:
+        
+            instance = self.get_object()
+            serializer = self.get_serializer(instance, data=request.data)
+            serializer.is_valid()
+        
+            self.perform_update(serializer)
+            return Response({
+                "success": True,
+                "msg": "Payment made successfully."
+            }, status=status.HTTP_204_NO_CONTENT)
+    
+        except ValidationError as e:
+            # Handle both list and dictionary error messages
+            if isinstance(e.detail, list):
+                error_message = e.detail[0]  # Extract the first error message
+            elif isinstance(e.detail, dict):
+                first_error = next(iter(e.detail.values()))  # Get the first field's errors
+                error_message = first_error[0] if isinstance(first_error, list) else str(first_error)
+            else:
+                error_message = str(e.detail)
+
+            return Response({
+                "success": False,
+                "msg": error_message
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e:
+            return Response({
+                "success": False,
+                "msg": str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)

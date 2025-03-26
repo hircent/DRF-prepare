@@ -1162,7 +1162,7 @@ class EnrolmentExtensionRevertView(BaseAPIView):
             enrolment_id = self.kwargs.get("enrolment_id")
 
             self.require_id(enrolment_id,"enrolment id")
-            print(enrolment_id)
+  
             enrolment = StudentEnrolment.objects.prefetch_related(
                 "extensions","payments","video_assignments"
             ).get(id=enrolment_id)
