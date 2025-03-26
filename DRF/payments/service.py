@@ -7,6 +7,7 @@ from accounts.models import User
 from branches.models import Branch
 from classes.models import StudentEnrolment
 from typing import List
+from datetime import datetime
 
 class PaymentService:
 
@@ -33,9 +34,13 @@ class PaymentService:
             raise ValidationError(f"Error creating payment: {str(e)}")
 
     @staticmethod
-    def _create_invoice(branch:Branch) -> Invoice:
+    def create_invoice(branch:Branch) -> Invoice:
         invoice_sequence = PaymentService._create_invoice_sequence(branch)
-        new_invoice = Invoice.objects.create(invoice_sequence=invoice_sequence,branch=branch)
+        new_invoice = Invoice.objects.create(
+            invoice_sequence=invoice_sequence,
+            branch=branch,
+            paid_at=datetime.today().date()
+        )
         return new_invoice
 
     @staticmethod
