@@ -26,6 +26,7 @@ class Command(CustomBaseCommand):
                 with open(filepath,'r',encoding='utf-8') as file:
                     reader = DictReader(file)
                     student_attendances_arr = []
+                    class_lesson_arr = []
                     total_imported = 0
                     
                     for row in reader:
@@ -59,11 +60,11 @@ class Command(CustomBaseCommand):
                             updated_at = self.parse_datetime(row['updated_at'])
                         ) 
 
-                        self._update_class_theme_lesson(
+                        class_lesson_arr.append(self._update_class_theme_lesson(
                             class_lesson,
                             self.parse_datetime_to_date(row['start_datetime']),
                             int(row['branch_id'])
-                        )
+                        ))
                         
                         student_attendances_arr.append(student_att)
                         self.stdout.write(self.style.SUCCESS(f"Student_attendance with id:{row['id']} at branch: {row['branch_id']} has appended at time {datetime.now()}"))
@@ -72,6 +73,10 @@ class Command(CustomBaseCommand):
                             StudentAttendance.objects.bulk_create(student_attendances_arr)
                             total_imported += len(student_attendances_arr)
                             self.logger.info(f"Imported {len(student_attendances_arr)} student_attendances. Total: {total_imported}")
+
+                            ClassLesson.objects.bulk_update(class_lesson_arr,['theme_lesson'])
+                            self.logger.info(f"Update {len(student_attendances_arr)} theme lesson for class lesson. Total: {len(class_lesson_arr)}")
+                            class_lesson_arr = []
                             student_attendances_arr = []
                             
                     if student_attendances_arr:
@@ -98,7 +103,7 @@ class Command(CustomBaseCommand):
 
         if tl:
             class_lesson.theme_lesson = tl.theme_lesson
-            class_lesson.save()
+            return class_lesson
         else:
             raise Exception(f"Theme lesson not found for {class_lesson.class_instance.name} on {date}")
 
