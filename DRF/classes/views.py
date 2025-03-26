@@ -156,7 +156,7 @@ class StudentEnrolmentListView(BaseCustomListAPIView):
     def get_queryset(self):
         is_active_param = self.request.query_params.get('is_active', 'true')
         is_active = is_active_param.lower() == 'true'
-        category = self.request.query_params.get('category', 'KIDS')
+        category = self.request.query_params.get('category', None)
         name = self.request.query_params.get('name', None)
 
         branch_id = self.get_branch_id()
@@ -172,9 +172,11 @@ class StudentEnrolmentListView(BaseCustomListAPIView):
         
         enrolment = StudentEnrolment.objects.filter(
             branch=int(branch_id),
-            is_active=is_active,
-            grade__category=category.upper()
+            is_active=is_active
         ).select_related("student","grade")
+
+        if category:
+            enrolment.filter(grade__category=category.upper())
 
         return enrolment
 
