@@ -240,9 +240,16 @@ class MakePaymentView(BasePaymentView,UpdateAPIView):
         try:
         
             instance = self.get_object()
+
+            if instance.status == 'PAID' and instance.invoice:
+                return Response({
+                    "success": False,
+                    "msg": "Invoice already paid."
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
             serializer = self.get_serializer(instance, data=request.data)
             serializer.is_valid()
-        
+
             self.perform_update(serializer)
             return Response({
                 "success": True,
