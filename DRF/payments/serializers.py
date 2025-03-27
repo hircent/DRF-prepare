@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from branches.models import Branch
 from rest_framework import serializers
 from .models import Invoice,Payment,PromoCode
@@ -98,21 +99,21 @@ class PromoCodeCreateUpdateSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
     
 class MakePaymentSerializer(serializers.ModelSerializer):
-    promo_code = serializers.PrimaryKeyRelatedField(
-        queryset=PromoCode.objects.all(),
-        error_messages={
-            'does_not_exist': 'Invalid Promo Code.',
-        }
-    )
+    promo_code = serializers.IntegerField()
 
     class Meta:
         model = Payment
         fields = ['promo_code','paid_amount']
 
     def validate_promo_code(self, value):
-        if value:
+        if value != 0:
             branchId = self.context.get('request').headers.get('branchId')
-            pm = PromoCode.objects.get(id=value.id)
+
+            promo_code = PromoCode.objects.filter(id=value)
+
+            if not promo_code.exists():
+                raise serializers.ValidationError("Promo code does not exist")
+            pm = promo_code.first()
 
             if not pm.for_all_branches:
                 if not pm.branch:
@@ -125,13 +126,22 @@ class MakePaymentSerializer(serializers.ModelSerializer):
         return value
 
     def update(self, instance:Payment, validated_data):
-        promo_discount = validated_data.get('promo_code',None)
+        promo_code = validated_data.get('promo_code')
         paid_amount = validated_data.get('paid_amount')
         discounted_amount = instance.amount
 
-        if promo_discount:
-            discounted_amount = instance.amount - promo_discount.amount
+        promo_discount = 0
+        if promo_code != 0:
+            promo_code = PromoCode.objects.filter(id=promo_code)
+
+            if not promo_code.exists():
+                raise serializers.ValidationError("Promo code does not exist")
+
+            promo_discount = promo_code.first().amount
+
+        discounted_amount = instance.amount - promo_discount 
         
+    
         amount_to_pay = self._get_amount_to_pay(instance,discounted_amount) 
 
         if not self._validate_amount_to_pay(paid_amount,amount_to_pay):
