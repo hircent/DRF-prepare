@@ -37,10 +37,13 @@ class PaymentService:
 
     @staticmethod
     def get_pre_outstanding(enrolment:StudentEnrolment) -> float:
-        return Payment.objects.filter(
-            enrolment=enrolment,
-            status='PAID'
-        ).last().post_outstanding
+
+        payment = Payment.objects.filter(enrolment=enrolment,status='PAID')
+
+        if payment.exists():
+            return payment.last().post_outstanding
+        
+        return 0
 
     @staticmethod
     def create_invoice(branch:Branch) -> Invoice:
