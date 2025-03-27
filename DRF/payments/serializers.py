@@ -98,10 +98,31 @@ class PromoCodeCreateUpdateSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
     
 class MakePaymentSerializer(serializers.ModelSerializer):
+    promo_code = serializers.PrimaryKeyRelatedField(
+        queryset=PromoCode.objects.all(),
+        error_messages={
+            'does_not_exist': 'Invalid Promo Code.',
+        }
+    )
 
     class Meta:
         model = Payment
         fields = ['promo_code','paid_amount']
+
+    def validate_promo_code(self, value):
+        if value:
+            branchId = self.context.get('request').headers.get('branchId')
+            pm = PromoCode.objects.get(id=value.id)
+
+            if not pm.for_all_branches:
+                if not pm.branch:
+                    raise serializers.ValidationError("Promo code is not configured for any branch")
+                
+                # Branch must match the request branch
+                if pm.branch.id != branchId:
+                    raise serializers.ValidationError("Promo code is not valid for this branch")
+            
+        return value
 
     def update(self, instance:Payment, validated_data):
         promo_discount = validated_data.get('promo_code',None)

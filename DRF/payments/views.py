@@ -248,7 +248,7 @@ class MakePaymentView(BasePaymentView,UpdateAPIView):
                 }, status=status.HTTP_400_BAD_REQUEST)
             
             serializer = self.get_serializer(instance, data=request.data)
-            serializer.is_valid()
+            serializer.is_valid(raise_exception=True)
 
             self.perform_update(serializer)
             return Response({
