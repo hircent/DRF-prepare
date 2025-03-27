@@ -275,7 +275,8 @@ class BaseCustomEnrolmentView(GenericViewWithExtractJWTInfo):
         
     def _check_is_payment_paid(self) -> bool:
         enrolment = self.get_object()
-        return not enrolment.payments.filter(status__in=["UNPAID","PARTIALLY_PAID"]).exists()
+        payment = Payment.objects.filter(enrolment=enrolment).first()
+        return payment.status == 'PAID'
 
 class BaseVideoAssignmentView(GenericViewWithExtractJWTInfo):
 
