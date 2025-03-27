@@ -120,7 +120,7 @@ class MakePaymentSerializer(serializers.ModelSerializer):
                     raise serializers.ValidationError("Promo code is not configured for any branch")
                 
                 # Branch must match the request branch
-                if pm.branch.id != branchId:
+                if pm.branch.id != int(branchId):
                     raise serializers.ValidationError("Promo code is not valid for this branch")
             
         return value
@@ -138,6 +138,7 @@ class MakePaymentSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Promo code does not exist")
 
             promo_discount = promo_code.first().amount
+            instance.promo_code = promo_code.first()
 
         discounted_amount = instance.amount - promo_discount 
         
@@ -150,9 +151,8 @@ class MakePaymentSerializer(serializers.ModelSerializer):
         after_payment_remaining = self._after_payment(paid_amount,amount_to_pay)
         
         instance.post_outstanding += after_payment_remaining
-        instance.discount = promo_discount.amount if promo_discount else 0
+        instance.discount = promo_discount
         instance.paid_amount = paid_amount
-        instance.promo_code = promo_discount
         invoice = PaymentService.create_invoice(instance.enrolment.branch)
         instance.invoice = invoice
         instance.save()
