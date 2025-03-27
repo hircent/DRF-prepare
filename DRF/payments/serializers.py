@@ -101,15 +101,15 @@ class MakePaymentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Payment
-        fields = ['amount','promo_code','paid_amount']
+        fields = ['promo_code','paid_amount']
 
     def update(self, instance:Payment, validated_data):
         promo_discount = validated_data.get('promo_code',None)
-        discounted_amount = validated_data.get('amount')
         paid_amount = validated_data.get('paid_amount')
+        discounted_amount = instance.amount
 
         if promo_discount:
-            discounted_amount = validated_data.get('amount') - promo_discount.amount
+            discounted_amount = instance.amount - promo_discount.amount
         
         amount_to_pay = self._get_amount_to_pay(instance,discounted_amount) 
 
