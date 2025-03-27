@@ -269,7 +269,7 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
                 current_enrolment,classroom,start_date,grade
             )
 
-            pre_outstanding = PaymentListSerializer.get_pre_outstanding(current_enrolment)
+            pre_outstanding = PaymentService.get_pre_outstanding(current_enrolment)
 
             if is_early_advance:
                 balance = self._calculate_bring_forward_balance(current_enrolment,grade)
@@ -297,7 +297,7 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
         except EnrolmentAdvanceException as e:
             raise serializers.ValidationError({"message": str(e), "code": e.code})
         except Exception as e:
-            raise serializers.ValidationError({"message": "An unexpected error occurred", "code": "system_error"})
+            raise serializers.ValidationError({"message": str(e), "code": "system_error"})
     
     def _calculate_bring_forward_balance(self,current_enrolment:StudentEnrolment,new_grade:Grade) -> float:
         balance = current_enrolment.grade.price / 2
