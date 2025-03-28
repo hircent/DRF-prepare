@@ -274,6 +274,12 @@ class EnrolmentAdvanceView(BaseCustomEnrolmentView,CreateAPIView):
         try:
             instance = self.get_object()
 
+            if instance.grade.grade_level == 6:
+                return Response({
+                    "success":False,
+                    "msg":"This is last grade of enrolment, unable to further advance"
+                })
+
             if not self._check_is_payment_paid():
                 return Response({
                     "success": True,
