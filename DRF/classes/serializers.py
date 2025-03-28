@@ -272,11 +272,11 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
             pre_outstanding = PaymentService.get_pre_outstanding(current_enrolment)
 
             if is_early_advance:
-                balance = self._calculate_bring_forward_balance(current_enrolment,grade)
+                balance = self._calculate_bring_forward_balance(current_enrolment)
                 PaymentService.create_payment(
                     enrolment=new_enrolment,
-                    amount=balance,
-                    pre_outstanding=pre_outstanding,
+                    amount=new_enrolment.grade.price,
+                    pre_outstanding=pre_outstanding + balance,
                     parent=current_enrolment.student.parent,
                     enrolment_type="EARLY_ADVANCE"
                 )
@@ -299,16 +299,16 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
         except Exception as e:
             raise serializers.ValidationError({"message": str(e), "code": "system_error"})
     
-    def _calculate_bring_forward_balance(self,current_enrolment:StudentEnrolment,new_grade:Grade) -> float:
-        balance = current_enrolment.grade.price / 2
-        return new_grade.price - balance
+    def _calculate_bring_forward_balance(self,current_enrolment:StudentEnrolment) -> float:
+        return current_enrolment.grade.price / 2
         
     def _advance_new_enrolment(self,current_enrolment_instance,classroom,start_date,grade):
+        current_grade_id = current_enrolment_instance.grade.id
         return StudentEnrolment.objects.create(
                 student=current_enrolment_instance.student,
                 classroom=classroom,
                 start_date=start_date,
-                grade=grade,
+                grade_id=current_grade_id+1,
                 branch=current_enrolment_instance.branch,
             )
     
@@ -333,6 +333,7 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
     
     def _deactivate_current_enrolment(self,enrolment_instance):
         enrolment_instance.is_active = False
+        enrolment_instance.status = 'COMPLETED'
         enrolment_instance.save()
 
     def _create_video_assignments_after_advance(self,enrolment_instance):
