@@ -109,7 +109,12 @@ class Payment(models.Model):
     def save(self, *args, **kwargs):
         if self.paid_amount == 0 and self.post_outstanding == 0:
             self.status = 'PENDING'
-        elif self.paid_amount >= self.amount or self.post_outstanding > 0 or self.discount + self.paid_amount >= self.amount:
+        elif (
+            self.paid_amount >= self.amount
+            or self.post_outstanding > 0
+            or self.discount + self.paid_amount >= self.amount
+            or self.paid_amount + self.pre_outstanding >= self.amount
+        ):
             self.status = 'PAID'
 
         if not self.parent and self.enrolment:
