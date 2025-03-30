@@ -69,3 +69,11 @@ class BlockedDatesMixin:
         blockedDate = self._get_blocked_date(branch_id=branch_id,year=date.year)
         
         return date in blockedDate
+    
+
+class UtilsMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def format_decimal_points(self, value, precision=2) -> str:
+        return f"{float(value):.{precision}f}"
