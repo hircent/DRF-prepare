@@ -30,6 +30,13 @@ class BranchListSelectorSerializer(serializers.ModelSerializer):
             'id','name','display_name'
         ]
 
+class BranchListReportSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='display_name', read_only=True)
+    
+    class Meta:
+        model = Branch
+        fields = ['id','name']
+
 class BranchCreateUpdateSerializer(serializers.ModelSerializer):
     address = BranchAddressSerializer(source="branch_address", required=False)
 
