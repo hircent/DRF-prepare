@@ -3,6 +3,7 @@ from api.global_customViews import (
 )
 from accounts.permission import IsSuperAdmin,IsManagerOrHigher
 from branches.models import Branch
+from branches.serializers import BranchListSelectorSerializer
 from classes.models import StudentAttendance
 from datetime import datetime
 from django.db.models import Q,Count,Sum
@@ -47,10 +48,6 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView):
     serializer_class = PaymentReportListSerializer
 
     def get_queryset(self,year,month):
-        print({
-            "year":year,
-            "month":month
-        })
         branch_id = self.get_branch_id()
         self.branch_accessible(branch_id)
         
@@ -65,10 +62,6 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView):
     def list(self, request, *args, **kwargs):
         month = self.request.query_params.get('month', None)
         year = self.request.query_params.get('year', None)
-        print({
-            "month":month,
-            "year":year
-        })
         today = datetime.today()
 
         if not month:
@@ -125,6 +118,56 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView):
                 "loyalty_fees":loyalty_fees
             }
         })
+    
+class AllBranchPaymentReportListView(BaseCustomListNoPaginationAPIView):
+    permission_classes = [IsSuperAdmin]
+    serializer_class = BranchListSelectorSerializer
+
+    def get_queryset(self,country):
+        branch_id = self.get_branch_id()
+        self.branch_accessible(branch_id)
+
+        branches = Branch.objects.filter(country__name=country)
+
+        return branches
+
+    def list(self, request, *args, **kwargs):
+        month = self.request.query_params.get('month')
+        self.require_query_param(month,'month')
+        year = self.request.query_params.get('year')
+        self.require_query_param(year,'year')
+        country = self.request.query_params.get('country')
+        self.require_query_param(country,'country')
+        
+        branches = self.get_queryset(country)
+
+        response_data = []
+
+        for branch in branches:
+            # Get all payments for enrolments in this branch within the date range
+            branch_payments = Payment.objects.filter(
+                enrolment__branch=branch,
+                start_date__year=year,
+                start_date__month=month
+            )
+
+            total_amount = branch_payments.aggregate(total=Sum('amount'))['total'] or 0
+
+            serializer = self.get_serializer(branch)
+            branch_data = serializer.data
+            
+            # Add payment data to the branch data
+            branch_data['total_payment'] = total_amount
+            branch_data['payment_count'] = branch_payments.count()
+            
+            response_data.append(branch_data)
+
+
+        return Response({
+            "success": True,
+            "data": response_data
+        })
+
     
 class PaymentDetailsView(BasePaymentView,RetrieveAPIView):
     permission_classes = [IsAuthenticated]
