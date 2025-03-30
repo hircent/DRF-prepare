@@ -1,9 +1,10 @@
 from api.global_customViews import (
     BaseCustomListNoPaginationAPIView, BaseCustomListAPIView, BasePromoCodeView, BasePaymentView
 )
+from api.mixins import UtilsMixin
 from accounts.permission import IsSuperAdmin,IsManagerOrHigher
 from branches.models import Branch
-from branches.serializers import BranchListSelectorSerializer
+from branches.serializers import BranchListReportSerializer
 from classes.models import StudentAttendance
 from datetime import datetime
 from django.db.models import Q,Count,Sum
@@ -14,6 +15,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.exceptions import ValidationError
+from reports.service import PaymentReportService
 from students.models import Students
 
 from .serializers import (
@@ -43,7 +45,7 @@ class PaymentListView(BaseCustomListAPIView):
 
         return query_set
     
-class PaymentReportListView(BaseCustomListNoPaginationAPIView):
+class PaymentReportListView(BaseCustomListNoPaginationAPIView,UtilsMixin):
     permission_classes = [IsAuthenticated]
     serializer_class = PaymentReportListSerializer
 
@@ -60,47 +62,29 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView):
         return query_set
     
     def list(self, request, *args, **kwargs):
-        month = self.request.query_params.get('month', None)
-        year = self.request.query_params.get('year', None)
-        today = datetime.today()
-
-        if not month:
-            month = today.month
-
-        if not year:
-            year = today.year
+        month = self.request.query_params.get('month')
+        self.require_query_param(month,'month')
+        year = self.request.query_params.get('year')
+        self.require_query_param(year,'year')
 
         queryset = self.get_queryset(year,month)
 
         branch_id = self.get_branch_id()
 
-        students = Students.objects.filter(branch_id=branch_id).aggregate(
-            total=Count('id'),
-            in_progress=Count('id', filter=Q(status='IN_PROGRESS')),
-            dropped_out=Count('id', filter=Q(status='DROPPED_OUT')),
-            graduated=Count('id', filter=Q(status='GRADUATED'))
-        )
+        students = PaymentReportService.get_student_statuses(branch_id)
+        attendances = PaymentReportService.get_attendance_statuses(branch_id,year,month)
 
-        attendances = StudentAttendance.objects.filter(
-            branch_id=branch_id,date__year=year,date__month=month
-        ).aggregate(
-            absent=Count('id', filter=Q(status='ABSENT')),
-            freeze=Count('id', filter=Q(status='FREEZED')),
-            sfreezed=Count('id', filter=Q(status='SFREEZED')),
-            replacement=Count('id', filter=Q(status='REPLACEMENT'))
-        )
+        (total_amount,total_discount,total_paid_amount) = PaymentReportService.get_total_amount_of_the_month(
+                branch_id,year,month
+            )
 
         branch:Branch = Branch.objects.select_related('branch_grade','country').get(id=branch_id)
-
-        total_paid_amount = Payment.objects.filter(
-            start_date__year=year,start_date__month=month,enrolment__branch_id=branch_id
-        ).aggregate(total=Sum('amount') - Sum('discount'))['total'] or 0
 
         payment_serializer = self.get_serializer(queryset, many=True)
         percentage = branch.branch_grade.percentage
 
-        paid_amount_formatted = "{:.2f}".format(float(total_paid_amount))
-        loyalty_fees = "{:.2f}".format(float(total_paid_amount) * (percentage / 100))
+        paid_amount_formatted = self.format_decimal_points(total_paid_amount)
+        loyalty_fees = self.format_decimal_points(float(total_paid_amount) * (percentage / 100))
 
         return Response({
             "success": True,
@@ -114,14 +98,16 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView):
                     'currency': branch.country.currency 
                 },
                 "attendances":attendances,
+                "total_amount":self.format_decimal_points(total_amount),
+                "total_discount":self.format_decimal_points(total_discount),
                 "total_paid_amount":paid_amount_formatted,
                 "loyalty_fees":loyalty_fees
             }
         })
     
-class AllBranchPaymentReportListView(BaseCustomListNoPaginationAPIView):
+class AllBranchPaymentReportListView(BaseCustomListNoPaginationAPIView,UtilsMixin):
     permission_classes = [IsSuperAdmin]
-    serializer_class = BranchListSelectorSerializer
+    serializer_class = BranchListReportSerializer
 
     def get_queryset(self,country):
         branch_id = self.get_branch_id()
@@ -144,21 +130,17 @@ class AllBranchPaymentReportListView(BaseCustomListNoPaginationAPIView):
         response_data = []
 
         for branch in branches:
-            # Get all payments for enrolments in this branch within the date range
-            branch_payments = Payment.objects.filter(
-                enrolment__branch=branch,
-                start_date__year=year,
-                start_date__month=month
+            (total_amount,total_discount,discounted_amount) = PaymentReportService.get_total_amount_of_the_month(
+                branch.id,year,month
             )
-
-            total_amount = branch_payments.aggregate(total=Sum('amount'))['total'] or 0
-
+  
             serializer = self.get_serializer(branch)
             branch_data = serializer.data
             
             # Add payment data to the branch data
-            branch_data['total_payment'] = total_amount
-            branch_data['payment_count'] = branch_payments.count()
+            branch_data['total_amount'] = self.format_decimal_points(total_amount or 0)
+            branch_data['total_discount'] = self.format_decimal_points(total_discount or 0)
+            branch_data['discounted_amount'] = self.format_decimal_points(discounted_amount or 0)
             
             response_data.append(branch_data)
 
