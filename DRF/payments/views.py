@@ -37,7 +37,11 @@ class PaymentListView(BaseCustomListAPIView):
         status = self.request.query_params.get('status', None)
 
         query_set = Payment.objects.filter(enrolment__branch_id=branch_id)
-        query_set = Payment.objects.filter(start_date__year=2025,start_date__month=1,enrolment__branch_id=branch_id).select_related('enrolment','enrolment__student','enrolment__grade')
+        query_set = Payment.objects.filter(
+            start_date__year=2025,
+            start_date__month=1,
+            enrolment__branch_id=branch_id
+        ).select_related('enrolment','enrolment__student','enrolment__grade')
         
         if status:
             query_set = query_set.filter(status=status)
@@ -72,6 +76,12 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView,UtilsMixin):
 
         students = PaymentReportService.get_student_statuses(branch_id)
         attendances = PaymentReportService.get_attendance_statuses(year,month,branch_id)
+        status_from_payment = PaymentReportService.get_status_from_payment(year,month,branch_id=branch_id)
+
+        attendances['enrolment'] = status_from_payment['total_enrolment']
+        attendances['advance'] = status_from_payment['total_advance']
+        attendances['early_advance'] = status_from_payment['total_early_advance']
+        attendances['extend'] = status_from_payment['total_extend']
 
         (total_amount,total_discount,discounted_amount) = PaymentReportService.get_total_amount_of_the_month(
                 branch_id,year,month
@@ -161,7 +171,17 @@ class AllBranchPaymentReportListView(BaseCustomListNoPaginationAPIView,UtilsMixi
             response_data.append(branch_data)
 
         attendances = PaymentReportService.get_attendance_statuses(year,month,country=country)
+        students = PaymentReportService.get_student_statuses()
+        status_from_payment = PaymentReportService.get_status_from_payment(year,month,country=country)
 
+        attendances['enrolment'] = status_from_payment['total_enrolment']
+        attendances['advance'] = status_from_payment['total_advance']
+        attendances['early_advance'] = status_from_payment['total_early_advance']
+        attendances['extend'] = status_from_payment['total_extend']
+
+        print({
+            "data":attendances
+        })
         currency = Country.objects.get(name=country).currency
 
         return Response({
@@ -169,6 +189,7 @@ class AllBranchPaymentReportListView(BaseCustomListNoPaginationAPIView,UtilsMixi
             "data": {
                 "attendances":attendances,
                 "payments": response_data,
+                "student_info":students,
                 "total_amount": self.format_decimal_points(sum_total_amount),
                 "total_discount": self.format_decimal_points(sum_total_discount),
                 "discounted_amount": self.format_decimal_points(sum_discounted_amount),

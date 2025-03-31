@@ -16,8 +16,16 @@ class PaymentReportService:
 
 
     @staticmethod
-    def get_student_statuses(branch_id:int) -> QuerySet[Students]:
-        return Students.objects.filter(branch_id=branch_id).aggregate(
+    def get_student_statuses(branch_id:int | None = None) -> QuerySet[Students]:
+        if branch_id:
+            return Students.objects.filter(branch_id=branch_id).aggregate(
+                total=Count('id'),
+                in_progress=Count('id', filter=Q(status='IN_PROGRESS')),
+                dropped_out=Count('id', filter=Q(status='DROPPED_OUT')),
+                graduated=Count('id', filter=Q(status='GRADUATED'))
+            )
+        
+        return Students.objects.all().aggregate(
             total=Count('id'),
             in_progress=Count('id', filter=Q(status='IN_PROGRESS')),
             dropped_out=Count('id', filter=Q(status='DROPPED_OUT')),
@@ -44,6 +52,27 @@ class PaymentReportService:
                 freeze=Count('id', filter=Q(status='FREEZED')),
                 sfreezed=Count('id', filter=Q(status='SFREEZED')),
                 replacement=Count('id', filter=Q(status='REPLACEMENT'))
+            )
+    
+    @staticmethod
+    def get_status_from_payment(year: str, month: str, branch_id: int | None = None,country:str | None = None):
+        if branch_id:
+            return Payment.objects.filter(
+                start_date__year=year,start_date__month=month,enrolment__branch_id=branch_id
+            ).aggregate(
+                total_enrolment=Count('id', filter=Q(enrolment_type='ENROLMENT')),
+                total_advance=Count('id', filter=Q(enrolment_type='ADVANCE')),
+                total_early_advance=Count('id', filter=Q(enrolment_type='EARLY_ADVANCE')),
+                total_extend=Count('id', filter=Q(enrolment_type='EXTEND')),
+            )
+        
+        return Payment.objects.filter(
+                start_date__year=year,start_date__month=month,enrolment__branch__country__name=country
+            ).aggregate(
+                total_enrolment=Count('id', filter=Q(enrolment_type='ENROLMENT')),
+                total_advance=Count('id', filter=Q(enrolment_type='ADVANCE')),
+                total_early_advance=Count('id', filter=Q(enrolment_type='EARLY_ADVANCE')),
+                total_extend=Count('id', filter=Q(enrolment_type='EXTEND')),
             )
 
     @staticmethod
