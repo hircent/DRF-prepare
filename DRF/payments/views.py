@@ -5,9 +5,9 @@ from api.mixins import UtilsMixin
 from accounts.permission import IsSuperAdmin,IsManagerOrHigher
 from branches.models import Branch
 from branches.serializers import BranchListReportSerializer
-from classes.models import StudentAttendance
+from country.models import Country
 from datetime import datetime
-from django.db.models import Q,Count,Sum
+from django.db.models import Q
 from django.db import transaction
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import UpdateAPIView,DestroyAPIView,CreateAPIView,RetrieveAPIView
@@ -16,7 +16,6 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.exceptions import ValidationError
 from reports.service import PaymentReportService
-from students.models import Students
 
 from .serializers import (
     PaymentListSerializer, InvoiceListSerializer, PromoCodeSerializer, PromoCodeCreateUpdateSerializer,
@@ -72,19 +71,16 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView,UtilsMixin):
         branch_id = self.get_branch_id()
 
         students = PaymentReportService.get_student_statuses(branch_id)
-        attendances = PaymentReportService.get_attendance_statuses(branch_id,year,month)
+        attendances = PaymentReportService.get_attendance_statuses(year,month,branch_id)
 
-        (total_amount,total_discount,total_paid_amount) = PaymentReportService.get_total_amount_of_the_month(
+        (total_amount,total_discount,discounted_amount) = PaymentReportService.get_total_amount_of_the_month(
                 branch_id,year,month
             )
 
         branch:Branch = Branch.objects.select_related('branch_grade','country').get(id=branch_id)
 
         payment_serializer = self.get_serializer(queryset, many=True)
-        percentage = branch.branch_grade.percentage
-
-        paid_amount_formatted = self.format_decimal_points(total_paid_amount)
-        loyalty_fees = self.format_decimal_points(float(total_paid_amount) * (percentage / 100))
+        loyalty_fees = PaymentReportService.get_royalty_fees(discounted_amount,branch)
 
         return Response({
             "success": True,
@@ -94,14 +90,14 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView,UtilsMixin):
                 "student_info":students,
                 "branch_info": {
                     'branch_grade': branch.branch_grade.name,
-                    'branch_percentage': percentage,
+                    'branch_percentage': branch.branch_grade.percentage,
                     'currency': branch.country.currency 
                 },
                 "attendances":attendances,
                 "total_amount":self.format_decimal_points(total_amount),
                 "total_discount":self.format_decimal_points(total_discount),
-                "total_paid_amount":paid_amount_formatted,
-                "loyalty_fees":loyalty_fees
+                "total_paid_amount":self.format_decimal_points(discounted_amount),
+                "loyalty_fees":self.format_decimal_points(loyalty_fees)
             }
         })
     
@@ -129,6 +125,11 @@ class AllBranchPaymentReportListView(BaseCustomListNoPaginationAPIView,UtilsMixi
 
         response_data = []
 
+        sum_total_amount = 0
+        sum_total_discount = 0
+        sum_discounted_amount = 0
+        sum_loyalty_fees = 0
+
         for branch in branches:
             (total_amount,total_discount,discounted_amount) = PaymentReportService.get_total_amount_of_the_month(
                 branch.id,year,month
@@ -136,18 +137,44 @@ class AllBranchPaymentReportListView(BaseCustomListNoPaginationAPIView,UtilsMixi
   
             serializer = self.get_serializer(branch)
             branch_data = serializer.data
+
+            total_amount = total_amount or 0
+            total_discount = total_discount or 0
+            discounted_amount = discounted_amount or 0
+
+            loyalty_fees = PaymentReportService.get_royalty_fees(discounted_amount,branch)
+
+            # Accumulate sums
+            sum_total_amount += total_amount
+            sum_total_discount += total_discount
+            sum_discounted_amount += discounted_amount
+            sum_loyalty_fees += loyalty_fees
+
             
             # Add payment data to the branch data
             branch_data['total_amount'] = self.format_decimal_points(total_amount or 0)
             branch_data['total_discount'] = self.format_decimal_points(total_discount or 0)
             branch_data['discounted_amount'] = self.format_decimal_points(discounted_amount or 0)
+            branch_data['percentage'] = branch.branch_grade.percentage
+            branch_data['loyalty_fees'] = self.format_decimal_points(loyalty_fees or 0)
             
             response_data.append(branch_data)
 
+        attendances = PaymentReportService.get_attendance_statuses(year,month,country=country)
+
+        currency = Country.objects.get(name=country).currency
 
         return Response({
             "success": True,
-            "data": response_data
+            "data": {
+                "attendances":attendances,
+                "payments": response_data,
+                "total_amount": self.format_decimal_points(sum_total_amount),
+                "total_discount": self.format_decimal_points(sum_total_discount),
+                "discounted_amount": self.format_decimal_points(sum_discounted_amount),
+                "currency": currency,
+                "loyalty_fees":self.format_decimal_points(sum_loyalty_fees)
+            }
         })
 
     
