@@ -42,7 +42,7 @@ class PaymentReportListSerializer(serializers.ModelSerializer):
         return obj.invoice.paid_at.strftime("%Y-%m-%d")
     
     def get_amount(self, obj:Payment):
-        return "{:.2f}".format(float(obj.amount - obj.discount))
+        return "{:.2f}".format(float(obj.amount))
     
     def get_discounted_amount(self, obj:Payment):
         discounted_amount = obj.amount - obj.discount
