@@ -76,4 +76,4 @@ class UtilsMixin:
         super().__init__(*args, **kwargs)
 
     def format_decimal_points(self, value, precision=2) -> str:
-        return f"{float(value):.{precision}f}"
+        return f"{float(value):,.{precision}f}"
