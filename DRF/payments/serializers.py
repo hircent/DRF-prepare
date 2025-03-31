@@ -25,10 +25,10 @@ class PaymentReportListSerializer(serializers.ModelSerializer):
     grade = serializers.SerializerMethodField()
     paid_at = serializers.SerializerMethodField()
     amount = serializers.SerializerMethodField()
-
+    discounted_amount = serializers.SerializerMethodField()
     class Meta:
         model = Payment
-        fields = ['id','student','grade','enrolment_type','paid_at','amount','status']
+        fields = ['id','student','grade','enrolment_type','paid_at','amount','discount','discounted_amount','start_date']
 
     def get_student(self, obj):
         return obj.enrolment.student.fullname
@@ -43,6 +43,10 @@ class PaymentReportListSerializer(serializers.ModelSerializer):
     
     def get_amount(self, obj:Payment):
         return "{:.2f}".format(float(obj.amount - obj.discount))
+    
+    def get_discounted_amount(self, obj:Payment):
+        discounted_amount = obj.amount - obj.discount
+        return "{:.2f}".format(float(discounted_amount))
 
 class PaymentDetailsSerializer(serializers.ModelSerializer):
     grade = serializers.SerializerMethodField()
