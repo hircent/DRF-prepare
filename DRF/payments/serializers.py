@@ -24,7 +24,6 @@ class PaymentReportListSerializer(serializers.ModelSerializer):
     student = serializers.SerializerMethodField()
     grade = serializers.SerializerMethodField()
     paid_at = serializers.SerializerMethodField()
-    amount = serializers.SerializerMethodField()
     discounted_amount = serializers.SerializerMethodField()
     class Meta:
         model = Payment
@@ -40,9 +39,6 @@ class PaymentReportListSerializer(serializers.ModelSerializer):
         if not obj.invoice:
             return None
         return obj.invoice.paid_at.strftime("%Y-%m-%d")
-    
-    def get_amount(self, obj:Payment):
-        return "{:.2f}".format(float(obj.amount))
     
     def get_discounted_amount(self, obj:Payment):
         discounted_amount = obj.amount - obj.discount
