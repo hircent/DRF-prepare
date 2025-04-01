@@ -443,7 +443,6 @@ class ClassCreateUpdateSerializer(serializers.ModelSerializer):
             'id',
             'branch',
             'name',
-            'label',
             'start_date',
             'start_time',
             'end_time',
