@@ -27,9 +27,14 @@ class ClassListSerializer(serializers.ModelSerializer):
         fields = ['id','branch','name','label','start_date','start_time','end_time','day']
 
 class ClassDetailsSerializer(serializers.ModelSerializer):
+    display_name = serializers.SerializerMethodField()
+
     class Meta:
         model = Class
-        fields = ['id','name','label','start_time','end_time','day']
+        fields = ['id','name','label','start_time','end_time','day','display_name']
+
+    def get_display_name(self,obj:Class):
+        return obj.day[:3] + ' ' + str(obj.start_time.strftime("%H:%M")) + '-' + str(obj.end_time.strftime("%H:%M"))
 
 class RescheduleClassListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -389,13 +394,14 @@ class ClassEnrolmentListSerializer(serializers.ModelSerializer):
 
         return serializer.data
     
-    def get_class_instance(self, obj):
+    def get_class_instance(self, obj:Class):
         return {
             "name": obj.name,
             "label": obj.label,
             "start_time": obj.start_time,
             "end_time": obj.end_time,
-            "day": obj.day
+            "day": obj.day,
+            "display_name": obj.day[:3] + ' ' + str(obj.start_time.strftime("%H:%M")) + '-' + str(obj.end_time.strftime("%H:%M"))
         }
     
     def get_replacement_students(self, obj):

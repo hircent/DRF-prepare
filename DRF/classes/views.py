@@ -472,7 +472,7 @@ class ClassLessonPastListByDateView(BaseCustomListNoPaginationAPIView):
         
         date = datetime.strptime(date, '%Y-%m-%d').date()
         
-        all_classes = ClassLesson.objects.filter(branch__id=branch_id,date=date).order_by('start_datetime')
+        all_classes = ClassLesson.objects.filter(branch__id=branch_id,date=date).order_by('class_instance__start_time')
         
         return all_classes
     
@@ -545,7 +545,7 @@ class ClassLessonTodayListByDateView(BaseClassLessonView):
         all_lessons = ClassLesson.objects.filter(
             branch_id=branch_id,
             date=today
-        ).order_by('start_datetime')
+        ).order_by('class_instance__start_time')
             
         return all_lessons
 
