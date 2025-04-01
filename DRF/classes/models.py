@@ -41,6 +41,11 @@ class Class(models.Model):
         
     def __str__(self):
         return self.name + ' - ' + self.day[:3] + ' ' + str(self.start_time.strftime("%H:%M")) + '-' + str(self.end_time.strftime("%H:%M"))
+    
+    def save(self, *args, **kwargs):
+        if not self.label:
+            self.label = self.name + ' - ' + self.day[:3] + ' ' + str(self.start_time.strftime("%H:%M")) + '-' + str(self.end_time.strftime("%H:%M"))
+        super().save(*args, **kwargs)
 
 class StudentEnrolment(models.Model):
     ENROLMENT_STATUS_CHOICES = [
