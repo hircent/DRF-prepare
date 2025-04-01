@@ -25,7 +25,7 @@ class Class(models.Model):
     
     branch              = models.ForeignKey(Branch, on_delete=models.CASCADE)
     name                = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
-    label               = models.CharField(max_length=100)
+    label               = models.CharField(max_length=100,null=True,blank=True)
     start_date          = models.DateField()
     start_time          = models.TimeField()
     end_time            = models.TimeField()
@@ -40,7 +40,7 @@ class Class(models.Model):
         verbose_name_plural = 'Classes'
         
     def __str__(self):
-        return self.name
+        return self.name + ' - ' + self.day[:3] + ' ' + str(self.start_time.strftime("%H:%M")) + '-' + str(self.end_time.strftime("%H:%M"))
 
 class StudentEnrolment(models.Model):
     ENROLMENT_STATUS_CHOICES = [
