@@ -8,7 +8,7 @@ class Command(BaseCommand):
 
     def handle(self, *args: Any, **options: Any) -> None:
 
-        data = [("Level 1", 15), ("Level 2", 20)]
+        data = [("Level 1", 20), ("Level 2", 15)]
 
         try:
             for level,percentage in data:
