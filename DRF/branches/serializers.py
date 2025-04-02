@@ -106,7 +106,6 @@ class BranchCreateUpdateSerializer(serializers.ModelSerializer):
 class BranchDetailsSerializer(serializers.ModelSerializer):
     address = BranchAddressSerializer(source='branch_address',read_only=True)
     principal = serializers.SerializerMethodField()
-    branch_grade = BranchGradeSerializer(read_only=True)
 
     class Meta:
         model = Branch
