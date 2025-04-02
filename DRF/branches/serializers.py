@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Branch,UserBranchRole,BranchAddress,BranchGrade
-from accounts.models import User,Role
+from accounts.models import User
+from country.models import Country
 
 class BranchGradeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,7 +44,7 @@ class BranchCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Branch
         fields = [
-            'id', 'branch_grade', 'name', 'display_name', 'business_name', 'business_reg_no',
+            'id', 'branch_grade', 'country' ,'name', 'display_name', 'business_name', 'business_reg_no',
             'description', 'operation_date', 'is_headquaters', 'created_at', 'updated_at', 'terminated_at', 'address'
         ]
 
@@ -52,26 +53,10 @@ class BranchCreateUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Invalid Branch Grade.")
         return value
     
-    # def validate_principal(self,value):
-    #     if value:
-    #         # Check if user is active
-    #         if not value.is_active:
-    #             raise serializers.ValidationError("User is not active.")
-            
-    #         # Get the current instance if this is an update operation
-    #         instance = getattr(self, 'instance', None)
-            
-    #         # Check if the user has any existing roles
-    #         existing_roles = UserBranchRole.objects.filter(user=value)
-            
-    #         # If this is an update, exclude the current branch's roles from the check
-    #         if instance:
-    #             existing_roles = existing_roles.exclude(branch=instance)
-            
-    #         if existing_roles.exists():
-    #             raise serializers.ValidationError("User already has a role in another branch.")
-        
-    #     return value
+    def validate_country(self,value):
+        if not value:
+            raise serializers.ValidationError("Invalid Country.")
+        return value
 
     def create(self, validated_data):
         # Pop the address data from the validated data
@@ -122,11 +107,11 @@ class BranchDetailsSerializer(serializers.ModelSerializer):
     address = BranchAddressSerializer(source='branch_address',read_only=True)
     principal = serializers.SerializerMethodField()
     branch_grade = BranchGradeSerializer(read_only=True)
-    
+
     class Meta:
         model = Branch
         fields = [
-            'principal','branch_grade','id','name','display_name','business_name','business_reg_no',
+            'principal','branch_grade','country','id','name','display_name','business_name','business_reg_no',
             'description','operation_date','is_headquaters','created_at','created_at',
             'updated_at','terminated_at','address'
         ]

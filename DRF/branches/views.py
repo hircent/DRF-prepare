@@ -80,32 +80,36 @@ class BranchCreateView(generics.CreateAPIView):
     permission_classes = [IsSuperAdmin]
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response({"success": True, "data": serializer.data}, status=status.HTTP_201_CREATED, headers=headers)
-    
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response({"success": True, "data": serializer.data}, status=status.HTTP_201_CREATED, headers=headers)
+        except Exception as e:
+            return Response({"success": False, "message": f"Invalid data: {e}"}, status=status.HTTP_400_BAD_REQUEST)
+        
 class BranchUpdateView(BaseCustomBranchView,generics.UpdateAPIView):
     queryset = Branch.objects.all()
     serializer_class = BranchCreateUpdateSerializer
     permission_classes = [IsPrincipalOrHigher]
 
     def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-    
-        self.perform_update(serializer)
-        
-        updated_instance = self.get_object()
-        updated_serializer = self.get_serializer(updated_instance)
-        
-        return Response({
-            "success": True,
-            "data": updated_serializer.data
-        })
+        try:
+            partial = kwargs.pop('partial', False)
+            instance = self.get_object()
+            serializer = self.get_serializer(instance, data=request.data, partial=partial)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            updated_instance = self.get_object()
+            updated_serializer = self.get_serializer(updated_instance)
+            
+            return Response({
+                "success": True,
+                "data": updated_serializer.data
+            })
+        except Exception as e:
+            return Response({"success": False, "message": f"Invalid data: {e}"}, status=status.HTTP_400_BAD_REQUEST)
 
     def perform_update(self, serializer):
         serializer.save()
