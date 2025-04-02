@@ -8,6 +8,7 @@ from .models import (
     ReplacementAttendance
 )
 from category.serializers import ThemeLessonAndNameDetailsSerializer
+from classes.service import VideoAssignmentService
 from django.db.models import F,Value
 from django.db import transaction
 from django.utils import timezone
@@ -194,6 +195,36 @@ class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSeria
                 weeks_remaining -= 1
         
         return current_date.strftime("%Y-%m-%d")
+
+class StudentEnrolmentCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = StudentEnrolment
+        fields = ['branch','grade','student','classroom','start_date']
+
+    def validate_student(self, value):
+        if value:
+            enrolmentExists = StudentEnrolment.objects.filter(student=value).exists()
+            if enrolmentExists:
+                raise serializers.ValidationError("Student already has enrolment.Create a new enrolment is prohibited.")
+        return value
+    
+    @transaction.atomic
+    def create(self, validated_data):
+        try:
+            new_enrolment = StudentEnrolment.objects.create(**validated_data)
+            PaymentService.create_payment(
+                enrolment=new_enrolment,
+                amount=new_enrolment.grade.price,
+                pre_outstanding=0,
+                parent=new_enrolment.student.parent,
+                enrolment_type="ENROLMENT"
+            )
+
+            VideoAssignmentService.create_video_assignments_after_advance(new_enrolment)
+            return new_enrolment
+        except Exception as e:
+            raise serializers.ValidationError({"message": str(e), "code": "system_error"})
     
 class EnrolmentRescheduleClassSerializer(serializers.ModelSerializer):
     classroom = serializers.PrimaryKeyRelatedField(
@@ -294,7 +325,7 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
                     enrolment_type="ADVANCE"
                 )
 
-            self._create_video_assignments_after_advance(new_enrolment)
+            VideoAssignmentService.create_video_assignments_after_advance(new_enrolment)
 
             self._deactivate_current_enrolment(current_enrolment)
             
@@ -341,13 +372,6 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
         enrolment_instance.status = 'COMPLETED'
         enrolment_instance.save()
 
-    def _create_video_assignments_after_advance(self,enrolment_instance):
-
-        va_arr = [
-                VideoAssignment(enrolment=enrolment_instance, video_number=1),
-                VideoAssignment(enrolment=enrolment_instance, video_number=2)
-            ]
-        VideoAssignment.objects.bulk_create(va_arr)
 '''
 Student Attendance Serializer
 '''

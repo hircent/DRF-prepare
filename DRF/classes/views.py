@@ -29,7 +29,8 @@ from .serializers import (
     ClassLessonListSerializer,TimeslotListSerializer,StudentEnrolmentDetailsSerializer,EnrolmentLessonListSerializer,
     EnrolmentExtensionSerializer,VideoAssignmentListSerializer,VideoAssignmentDetailsSerializer,
     VideoAssignmentUpdateSerializer,TodayClassLessonSerializer,EnrolmentRescheduleClassSerializer,
-    RescheduleClassListSerializer,EnrolmentAdvanceSerializer,TestLearnSerializer
+    RescheduleClassListSerializer,EnrolmentAdvanceSerializer,TestLearnSerializer,
+    StudentEnrolmentCreateSerializer
 )
 
 import json
@@ -179,6 +180,23 @@ class StudentEnrolmentListView(BaseCustomListAPIView):
             enrolment.filter(grade__category=category.upper())
 
         return enrolment
+    
+class StudentEnrolmentCreateView(BaseCustomEnrolmentView, CreateAPIView):
+    serializer_class = StudentEnrolmentCreateSerializer
+    permission_classes = [IsManagerOrHigher]
+
+    def create(self, request, *args, **kwargs):
+        branch_id = self.get_branch_id()
+        self.branch_accessible(branch_id)
+        
+        data = request.data.copy()
+        data['branch'] = int(branch_id)
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response({"success": True, "data": serializer.data}, status=status.HTTP_201_CREATED, headers=headers)
 
 class StudentEnrolmentDetailView(BaseCustomEnrolmentView,RetrieveAPIView):
     serializer_class = StudentEnrolmentDetailsSerializer
