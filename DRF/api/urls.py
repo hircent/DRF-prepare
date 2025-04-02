@@ -31,7 +31,7 @@ from classes.views import (
     StudentEnrolmentDetailView, StudentEnrolmentUpdateView, StudentEnrolmentDeleteView,
     EnrolmentLessonListView, EnrolmentExtendView, VideoAssignmentListView, VideoAssignmentDetailsView,
     VideoAssignmentUpdateView, MarkAttendanceView, EnrolmentRescheduleClassView,EnrolmentAdvanceView,
-    EnrolmentExtensionRevertView,TestLearnView
+    EnrolmentExtensionRevertView,TestLearnView,StudentEnrolmentCreateView
 )
 
 from country.views import (
@@ -148,6 +148,7 @@ urlpatterns = [
     path('student/enrolment/list', StudentEnrolmentListView.as_view(), name='student-enrolment-list'),
     path('student/enrolment/details/<int:enrolment_id>', StudentEnrolmentDetailView.as_view(), name='student-enrolment-details'),
     path('student/enrolment/update/<int:enrolment_id>', StudentEnrolmentUpdateView.as_view(), name='update-student-enrolment'),
+    path('student/enrolment/create', StudentEnrolmentCreateView.as_view(), name='create-student-enrolment'),
     path('student/enrolment/delete/<int:enrolment_id>', StudentEnrolmentDeleteView.as_view(), name='delete-student-enrolment'),
     path('student/enrolment/<int:enrolment_id>/lessons/list', EnrolmentLessonListView.as_view(), name='student-enrolment-lesson-list'),
     path('student/enrolment/<int:enrolment_id>/extend', EnrolmentExtendView.as_view(), name='enrolment-extend'),
