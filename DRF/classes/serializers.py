@@ -18,6 +18,7 @@ from rest_framework import serializers
 
 from payments.serializers import PaymentListSerializer
 from payments.service import PaymentService
+from payments.models import Payment
 
 '''
 Class Serializer
@@ -392,15 +393,21 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"message": str(e), "code": "system_error"})
     
     def _calculate_bring_forward_balance(self,current_enrolment:StudentEnrolment) -> float:
-        return current_enrolment.grade.price / 2
+        payment = Payment.objects.filter(enrolment=current_enrolment,status='PAID').last()
+        return payment.amount / 2
         
-    def _advance_new_enrolment(self,current_enrolment_instance,classroom,start_date,grade):
-        current_grade_id = current_enrolment_instance.grade.id
+    def _advance_new_enrolment(self,current_enrolment_instance:StudentEnrolment,classroom:Class,start_date:str,grade:Grade):
+        current_grade_id = current_enrolment_instance.grade.tier.id
+        new_grade = Grade.objects.filter(tier_id=current_grade_id,grade_level=grade.grade_level)
+
+        if not new_grade.exists():
+            raise serializers.ValidationError("Invalid grade provided")
+            
         return StudentEnrolment.objects.create(
                 student=current_enrolment_instance.student,
                 classroom=classroom,
                 start_date=start_date,
-                grade_id=current_grade_id+1,
+                grade_id=new_grade.first().id,
                 branch=current_enrolment_instance.branch,
             )
     
