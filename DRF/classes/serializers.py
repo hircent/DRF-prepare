@@ -13,7 +13,7 @@ from django.db.models import F,Value
 from django.db import transaction
 from django.utils import timezone
 from datetime import timedelta ,  datetime
-from feeStructure.models import Grade
+from feeStructure.models import Grade, Tier
 from rest_framework import serializers
 
 from payments.serializers import PaymentListSerializer
@@ -251,10 +251,36 @@ class StudentEnrolmentDetailsForUpdateViewSerializer(BlockedDatesMixin,serialize
         }
         
 class StudentEnrolmentUpdateSerializer(serializers.ModelSerializer):
+    grade_level = serializers.IntegerField(write_only=True)
+    tier = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = StudentEnrolment
-        fields = ['grade','is_active','status']
+        fields = ['grade_level','is_active','status','tier']
+
+    def validate(self, data):
+        grade_level = data.get('grade_level')
+        tier = data.get('tier')
+
+        if not grade_level or not tier:
+            raise serializers.ValidationError("Grade level and Tier are required.")
+        
+        grade = Grade.objects.filter(tier_id=tier,grade_level=grade_level)
+
+        if not grade.exists():
+            raise serializers.ValidationError("Invalid Grade.")
+        
+        return data
+    
+    def update(self, instance, validated_data):
+        grade_level = validated_data.pop('grade_level')
+        tier = validated_data.pop('tier')
+
+        grade = Grade.objects.filter(tier_id=tier,grade_level=grade_level).first()
+        instance = super().update(instance, validated_data)
+        instance.grade = grade
+        instance.save()
+        return instance
     
 class EnrolmentRescheduleClassSerializer(serializers.ModelSerializer):
     classroom = serializers.PrimaryKeyRelatedField(

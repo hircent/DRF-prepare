@@ -30,7 +30,7 @@ from .serializers import (
     EnrolmentExtensionSerializer,VideoAssignmentListSerializer,VideoAssignmentDetailsSerializer,
     VideoAssignmentUpdateSerializer,TodayClassLessonSerializer,EnrolmentRescheduleClassSerializer,
     RescheduleClassListSerializer,EnrolmentAdvanceSerializer,TestLearnSerializer,
-    StudentEnrolmentCreateSerializer
+    StudentEnrolmentCreateSerializer,StudentEnrolmentUpdateSerializer,StudentEnrolmentDetailsForUpdateViewSerializer
 )
 
 import json
@@ -199,7 +199,7 @@ class StudentEnrolmentCreateView(BaseCustomEnrolmentView, CreateAPIView):
         return Response({"success": True, "data": serializer.data}, status=status.HTTP_201_CREATED, headers=headers)
 
 class StudentEnrolmentDetailView(BaseCustomEnrolmentView,RetrieveAPIView):
-    serializer_class = StudentEnrolmentDetailsSerializer
+    serializer_class = StudentEnrolmentDetailsForUpdateViewSerializer
     permission_classes = [IsAuthenticated]
 
     def retrieve(self, request, *args, **kwargs):
@@ -208,28 +208,46 @@ class StudentEnrolmentDetailView(BaseCustomEnrolmentView,RetrieveAPIView):
         return Response({"success": True, "data": serializer.data}, status=status.HTTP_200_OK)
 
 class StudentEnrolmentUpdateView(BaseCustomEnrolmentView,UpdateAPIView):
-    serializer_class = StudentEnrolmentDetailsSerializer
+    serializer_class = StudentEnrolmentUpdateSerializer
     permission_classes = [IsManagerOrHigher]
 
+    @transaction.atomic
     def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
+        try:
+            partial = kwargs.pop('partial', False)
+            branch_id = self.get_branch_id()
+            self.branch_accessible(branch_id)
+            instance = self.get_object()
+            
+            serializer = self.get_serializer(instance, data=request.data, partial=partial)
+            serializer.is_valid(raise_exception=True)
         
-        data = request.data.copy()
-        data['branch'] = int(self.request.headers.get('BranchId'))
-        serializer = self.get_serializer(instance, data=data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-    
-        self.perform_update(serializer)
+            self.perform_update(serializer)
+            
+            updated_instance = self.get_object()
+            updated_serializer = self.get_serializer(updated_instance)
+            
+            return Response({
+                "success": True,
+                "data": updated_serializer.data
+            })
         
-        updated_instance = self.get_object()
-        updated_serializer = self.get_serializer(updated_instance)
+        except ValidationError as e:
+            # Extracts the first error message
+            error_message = " ".join(
+                [str(msg) for field, messages in e.detail.items() for msg in messages]
+            )
+            return Response({
+                "success": False,
+                "msg": error_message
+            }, status=status.HTTP_400_BAD_REQUEST)
         
-        return Response({
-            "success": True,
-            "data": updated_serializer.data
-        })
-
+        except Exception as e:
+            return Response({
+                "success": False,
+                "msg": str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
     def perform_update(self, serializer):
         serializer.save()
 
