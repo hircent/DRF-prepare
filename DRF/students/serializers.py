@@ -26,7 +26,7 @@ class StudentListSerializer(serializers.ModelSerializer):
 
 class StudentDetailsSerializer(serializers.ModelSerializer):
     parent = ParentDetailSerializer()
-    enrolments = StudentEnrolmentDetailsSerializer(many=True)
+    enrolments = serializers.SerializerMethodField()
     payments = serializers.SerializerMethodField()
     branch = serializers.SerializerMethodField()
     class Meta:
@@ -46,6 +46,10 @@ class StudentDetailsSerializer(serializers.ModelSerializer):
         payments = Payment.objects.filter(enrolment__student_id=obj.id).order_by("-start_date")
 
         return StudentPaymentListSerializer(payments, many=True).data
+    
+    def get_enrolments(self, obj:Students):
+        enrolments = obj.enrolments.all().order_by('-grade__grade_level')
+        return StudentEnrolmentDetailsSerializer(enrolments, many=True).data
 
 class StudentCreateSerializer(serializers.ModelSerializer):
     timeslot = serializers.CharField(write_only=True)
