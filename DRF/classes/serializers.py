@@ -225,6 +225,36 @@ class StudentEnrolmentCreateSerializer(serializers.ModelSerializer):
             return new_enrolment
         except Exception as e:
             raise serializers.ValidationError({"message": str(e), "code": "system_error"})
+        
+class StudentEnrolmentDetailsForUpdateViewSerializer(BlockedDatesMixin,serializers.ModelSerializer):
+    tier = serializers.SerializerMethodField()
+    grade = serializers.SerializerMethodField()
+
+    class Meta:
+        model = StudentEnrolment
+        fields = [
+            'id','start_date','status','remaining_lessons',
+            'is_active','freeze_lessons','grade','tier'
+        ]
+
+    def get_grade(self, obj):
+        return {
+            "id": obj.grade.id,
+            "grade_level": obj.grade.grade_level,
+            "category": obj.grade.category,
+        }
+
+    def get_tier(self, obj):
+        return {
+            "id": obj.grade.tier.id,
+            "name": obj.grade.tier.name,
+        }
+        
+class StudentEnrolmentUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = StudentEnrolment
+        fields = ['grade','is_active','status']
     
 class EnrolmentRescheduleClassSerializer(serializers.ModelSerializer):
     classroom = serializers.PrimaryKeyRelatedField(
