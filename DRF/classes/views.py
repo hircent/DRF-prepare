@@ -638,6 +638,7 @@ class EnrolmentExtendView(BaseCustomEnrolmentView,UpdateAPIView):
     serializer_class = EnrolmentExtensionSerializer
     permission_classes = [IsManagerOrHigher]
 
+    @transaction.atomic
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
 
