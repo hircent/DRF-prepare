@@ -641,6 +641,19 @@ class EnrolmentExtendView(BaseCustomEnrolmentView,UpdateAPIView):
     @transaction.atomic
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
+        require_start_date = request.data.get('start_date')
+        self.require_query_param(require_start_date,'start date')
+        start_date = datetime.strptime(require_start_date, '%Y-%m-%d').date()
+
+        today = datetime.today().date()
+
+        if start_date < today:
+            return Response({
+                "success": False,
+                "msg": "Start date is less than today."
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        is_today = start_date == today
 
         if not self._check_is_payment_paid():
             return Response({
@@ -658,12 +671,16 @@ class EnrolmentExtendView(BaseCustomEnrolmentView,UpdateAPIView):
             ext = EnrolmentExtension.objects.create(
                 enrolment=instance, 
                 branch=instance.branch, 
-                start_date=timezone.now().date()
+                start_date=start_date
             )
 
             if ext:
-                # instance.remaining_lessons += 12
-                # instance.save()
+
+                if is_today:
+                    ext.status = 'EXTENDED'
+                    ext.save()
+                    instance.remaining_lessons += 12
+                    instance.save()
 
                 self._create_video_assignments_after_extend_enrolment(instance)
 
