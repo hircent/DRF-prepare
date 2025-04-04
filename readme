@@ -56,6 +56,7 @@ python manage.py generate_ctls --year=2025
 
 Other commands:
 python manage.py mark_all_attendances
+python manage.py update_enrolment_extensions
 
 python manage.py createsuperuser 
 // Add role to new superuser
