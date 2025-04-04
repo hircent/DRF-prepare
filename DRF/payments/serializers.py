@@ -141,14 +141,14 @@ class MakePaymentSerializer(serializers.ModelSerializer):
             instance.promo_code = promo_code.first()
 
         discounted_amount = instance.amount - promo_discount 
-        
-    
-        amount_to_pay = self._get_amount_to_pay(instance,discounted_amount) 
+
+        pre_outstanding = instance.pre_outstanding
+        amount_to_pay = self._get_amount_to_pay(pre_outstanding,discounted_amount) 
 
         if not self._validate_amount_to_pay(paid_amount,amount_to_pay):
             raise serializers.ValidationError(f"Amount to pay: {amount_to_pay}")
         
-        after_payment_remaining = self._after_payment(paid_amount,amount_to_pay)
+        after_payment_remaining = self._after_payment(paid_amount,amount_to_pay,instance)
         
         instance.post_outstanding += after_payment_remaining
         instance.discount = promo_discount
@@ -159,20 +159,23 @@ class MakePaymentSerializer(serializers.ModelSerializer):
 
         return instance
     
-    def _get_amount_to_pay(self,payment:Payment,discount_amount:float):
-        if payment.pre_outstanding >= discount_amount:
-            payment.pre_outstanding -= discount_amount
+    def _get_amount_to_pay(self,pre_outstanding:float,discounted_amount:float):
+        if pre_outstanding >= discounted_amount:
             return 0
         else:
-            return discount_amount - payment.pre_outstanding
+            return discounted_amount - pre_outstanding
         
     def _validate_amount_to_pay(self,paid_amount:float,amount_to_pay:float):
-
         if paid_amount >= amount_to_pay:
             return True
         return False
     
-    def _after_payment(self,paid_amount:float,amount_to_pay:float):
+    def _after_payment(self,paid_amount:float,amount_to_pay:float,payment:Payment):
+        pre_outstanding = payment.pre_outstanding
+        if pre_outstanding >= amount_to_pay:
+            payment.pre_outstanding -= amount_to_pay
+            return abs(payment.amount - ((paid_amount + pre_outstanding) - amount_to_pay))
+        
         return paid_amount - amount_to_pay
 
     
