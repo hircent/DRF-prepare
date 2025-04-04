@@ -1215,12 +1215,15 @@ class EnrolmentExtensionRevertView(BaseAPIView):
             if not enrolment:
                 raise PermissionDenied("Invalid enrolment id.")
             
+            extension_status = enrolment.extensions.last().status
+            
             enrolment.extensions.last().delete()
             enrolment.video_assignments.last().delete()
             enrolment.payments.filter(enrolment_type='EXTEND').last().delete()
             
-            enrolment.remaining_lessons -= 12
-            enrolment.save()
+            if extension_status == 'EXTENDED':
+                enrolment.remaining_lessons -= 12
+                enrolment.save()
 
             return Response({
                 "success": True,
