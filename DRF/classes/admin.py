@@ -29,7 +29,7 @@ class StudentAttendanceAdmin(admin.ModelAdmin):
     raw_id_fields = ('enrollment', 'class_lesson','branch')
 
 class EnrolmentExtensionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'enrolment','enrolment__id', 'branch', 'start_date')
+    list_display = ('id', 'enrolment','enrolment__id', 'branch', 'start_date','status')
     search_fields = ('enrolment__student__fullname',)
     list_filter = ('branch','enrolment__student__fullname',)
 

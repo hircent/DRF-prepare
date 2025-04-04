@@ -153,8 +153,14 @@ class StudentAttendance(models.Model):
 
 
 class EnrolmentExtension(models.Model):
+    STATUS = [
+        ('PENDING','PENDING'),
+        ('EXTENDED','EXTENDED')
+    ]
+
     enrolment   = models.ForeignKey(StudentEnrolment, on_delete=models.CASCADE,related_name='extensions')
     branch      = models.ForeignKey(Branch, on_delete=models.SET_NULL,null=True,related_name='enrolment_extensions')
+    status      = models.CharField(choices=STATUS,default='PENDING')
     start_date  = models.DateField()
     created_at  = models.DateTimeField(auto_now_add=True)
     updated_at  = models.DateTimeField(auto_now=True)
