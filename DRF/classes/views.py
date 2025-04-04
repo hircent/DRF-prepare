@@ -655,6 +655,14 @@ class EnrolmentExtendView(BaseCustomEnrolmentView,UpdateAPIView):
         
         is_today = start_date == today
 
+        is_pending_ext = EnrolmentExtension.objects.filter(enrolment=instance,status='PENDING').exists()
+
+        if is_pending_ext:
+            return Response({
+                "success": False,
+                "msg": "There is an enrolment extension is pending, cannot extend further."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
         if not self._check_is_payment_paid():
             return Response({
                 "success": True,
