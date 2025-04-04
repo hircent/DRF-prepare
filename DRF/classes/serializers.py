@@ -167,7 +167,10 @@ class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSeria
         ]
 
     def get_extensions(self, obj):
-        return obj.extensions.count()
+        return {
+            "total":obj.extensions.count(),
+            "extension":EnrolmentExtensionDetailsSerializer(obj.extensions,many=True).data
+        }
     
     def get_grade(self, obj):
         return obj.grade.grade_level
@@ -752,6 +755,11 @@ class EnrolmentExtensionSerializer(serializers.ModelSerializer):
             instance.save()
 
         return instance
+    
+class EnrolmentExtensionDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EnrolmentExtension
+        fields = ['id','status','start_date']
 
 class ReplacementAttendanceListSerializer(serializers.ModelSerializer):
     class Meta:
