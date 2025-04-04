@@ -662,8 +662,8 @@ class EnrolmentExtendView(BaseCustomEnrolmentView,UpdateAPIView):
             )
 
             if ext:
-                instance.remaining_lessons += 12
-                instance.save()
+                # instance.remaining_lessons += 12
+                # instance.save()
 
                 self._create_video_assignments_after_extend_enrolment(instance)
 
