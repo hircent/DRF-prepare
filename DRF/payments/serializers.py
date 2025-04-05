@@ -2,6 +2,7 @@ from branches.serializers import BranchDetailsSerializer
 from rest_framework import serializers
 from .models import Invoice,Payment,PromoCode
 from .service import PaymentService
+from accounts.models import User
 
 class StudentPaymentListSerializer(serializers.ModelSerializer):
     grade = serializers.SerializerMethodField()
@@ -181,6 +182,7 @@ class MakePaymentSerializer(serializers.ModelSerializer):
 class PaymentInvoiceDetailsForPrintSerializer(serializers.ModelSerializer):
     branch = serializers.SerializerMethodField()
     grade = serializers.SerializerMethodField()
+    invoice = serializers.SerializerMethodField()
     student = serializers.SerializerMethodField()
     parent = serializers.SerializerMethodField()
 
@@ -199,8 +201,41 @@ class PaymentInvoiceDetailsForPrintSerializer(serializers.ModelSerializer):
     def get_grade(self, obj:Payment):
         return obj.enrolment.grade.grade_level
     
+    def get_invoice(self, obj:Payment):
+        return obj.invoice.invoice_sequence.invoice_number
+    
     def get_student(self, obj:Payment):
         return obj.enrolment.student.fullname.capitalize()
     
     def get_parent(self, obj:Payment):
-        return obj.parent.first_name.capitalize() + ' ' + obj.parent.last_name.capitalize() if obj.parent else None
+        user:User = User.objects.prefetch_related('user_profile','user_address').get(id=obj.parent.id)
+        return {
+            "id": user.id,
+            "first_name": user.first_name.capitalize(),
+            "last_name": user.last_name.capitalize(),
+            "username": user.username,
+            "email": user.email,
+            "details": {
+                "gender": user.user_profile.gender,
+                "dob": user.user_profile.dob,
+                "ic_number": user.user_profile.ic_number,
+                "occupation": user.user_profile.occupation,
+                "phone": user.user_profile.phone,
+                "spouse_name": user.user_profile.spouse_name,
+                "spouse_phone": user.user_profile.spouse_phone,
+                "spouse_occupation": user.user_profile.spouse_occupation,
+                "no_of_children": user.user_profile.no_of_children,
+                "personal_email": user.user_profile.personal_email,
+                "bank_name": user.user_profile.bank_name,
+                "bank_account_name": user.user_profile.bank_account_name,
+                "bank_account_number": user.user_profile.bank_account_number
+            },
+            "address": {
+                "address_line_1": user.user_address.address_line_1,
+                "address_line_2": user.user_address.address_line_2,
+                "address_line_3": user.user_address.address_line_3,
+                "postcode": user.user_address.postcode,
+                "city": user.user_address.city,
+                "state": user.user_address.state
+            }
+        }
