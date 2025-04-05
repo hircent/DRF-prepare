@@ -9,7 +9,7 @@ class StudentPaymentListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Payment
-        fields = ['id','status','amount','discount','paid_amount','pre_outstanding','post_outstanding','start_date','grade','enrolment_type']
+        fields = ['id','status','amount','discount','early_advance_rebate','paid_amount','pre_outstanding','post_outstanding','start_date','grade','enrolment_type']
         
     def get_grade(self, obj):
         return obj.enrolment.grade.grade_level

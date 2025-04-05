@@ -18,6 +18,7 @@ class PaymentService:
                        pre_outstanding:float, 
                        parent:User,
                        enrolment_type:str,
+                       early_advance_rebate:float=0, 
                        description:str=None,
         ):
 
@@ -26,6 +27,7 @@ class PaymentService:
                 enrolment=enrolment,
                 parent=parent,
                 amount=amount,
+                early_advance_rebate=early_advance_rebate,
                 pre_outstanding=pre_outstanding,
                 start_date=enrolment.start_date,
                 enrolment_type=enrolment_type,
