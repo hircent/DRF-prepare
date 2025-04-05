@@ -379,7 +379,8 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
                     amount=new_enrolment.grade.price,
                     pre_outstanding=pre_outstanding + balance,
                     parent=current_enrolment.student.parent,
-                    enrolment_type="EARLY_ADVANCE"
+                    enrolment_type="EARLY_ADVANCE",
+                    early_advance_rebate=current_enrolment.grade.price / 2
                 )
             else:
                 PaymentService.create_payment(
