@@ -369,6 +369,11 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
 
             if is_early_advance:
                 balance = self._calculate_bring_forward_balance(current_enrolment)
+                has_ext = EnrolmentExtension.objects.filter(enrolment=current_enrolment).exists()
+
+                if has_ext:
+                    raise serializers.ValidationError("Student has enrolment extension, cannot early advance.")
+                
                 PaymentService.create_payment(
                     enrolment=new_enrolment,
                     amount=new_enrolment.grade.price,
