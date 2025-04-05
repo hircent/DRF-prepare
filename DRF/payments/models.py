@@ -49,6 +49,10 @@ class InvoiceSequence(models.Model):
     @property
     def _get_year_last_two_digits(self):
         return int(str(self.year)[2:])
+    
+    @property
+    def invoice_number(self):
+        return f"{self.branch.country.code.upper()}{self.branch.id:03d}-{self._get_year_last_two_digits}-{self.number:04d}"
 
 class Invoice(models.Model):
     branch              = models.ForeignKey(Branch, on_delete=models.PROTECT,related_name='invoices')
