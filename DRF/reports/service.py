@@ -82,10 +82,11 @@ class PaymentReportService:
         ).aggregate(
             total_amount=Sum('amount'),
             total_discount=Sum('discount'),
-            discounted_amount=Sum('amount') - Sum('discount'),
+            discounted_amount=Sum('amount') - Sum('discount') - Sum('early_advance_rebate'),
+            early_advance_rebate=Sum('early_advance_rebate')
         )
 
-        return (payments['total_amount'],payments['total_discount'],payments['discounted_amount'])
+        return (payments['total_amount'],payments['total_discount'],payments['early_advance_rebate'],payments['discounted_amount'])
     
     
 

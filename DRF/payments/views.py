@@ -83,7 +83,7 @@ class PaymentReportListView(BaseCustomListNoPaginationAPIView,UtilsMixin):
         attendances['early_advance'] = status_from_payment['total_early_advance']
         attendances['extend'] = status_from_payment['total_extend']
 
-        (total_amount,total_discount,discounted_amount) = PaymentReportService.get_total_amount_of_the_month(
+        (total_amount,total_discount,early_advance_rebate,discounted_amount) = PaymentReportService.get_total_amount_of_the_month(
                 branch_id,year,month
             )
 
@@ -141,7 +141,7 @@ class AllBranchPaymentReportListView(BaseCustomListNoPaginationAPIView,UtilsMixi
         sum_loyalty_fees = 0
 
         for branch in branches:
-            (total_amount,total_discount,discounted_amount) = PaymentReportService.get_total_amount_of_the_month(
+            (total_amount,total_discount,early_advance_rebate,discounted_amount) = PaymentReportService.get_total_amount_of_the_month(
                 branch.id,year,month
             )
   
@@ -164,6 +164,7 @@ class AllBranchPaymentReportListView(BaseCustomListNoPaginationAPIView,UtilsMixi
             # Add payment data to the branch data
             branch_data['total_amount'] = self.format_decimal_points(total_amount or 0)
             branch_data['total_discount'] = self.format_decimal_points(total_discount or 0)
+            branch_data['early_advance_rebate'] = self.format_decimal_points(early_advance_rebate or 0)
             branch_data['discounted_amount'] = self.format_decimal_points(discounted_amount or 0)
             branch_data['percentage'] = branch.branch_grade.percentage
             branch_data['loyalty_fees'] = self.format_decimal_points(loyalty_fees or 0)

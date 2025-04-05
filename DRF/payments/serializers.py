@@ -27,7 +27,7 @@ class PaymentReportListSerializer(serializers.ModelSerializer):
     discounted_amount = serializers.SerializerMethodField()
     class Meta:
         model = Payment
-        fields = ['id','student','grade','enrolment_type','paid_at','amount','discount','discounted_amount','start_date']
+        fields = ['id','student','grade','enrolment_type','paid_at','amount','discount','early_advance_rebate','discounted_amount','start_date']
 
     def get_student(self, obj):
         return obj.enrolment.student.fullname
@@ -41,7 +41,7 @@ class PaymentReportListSerializer(serializers.ModelSerializer):
         return obj.invoice.paid_at.strftime("%Y-%m-%d")
     
     def get_discounted_amount(self, obj:Payment):
-        discounted_amount = obj.amount - obj.discount
+        discounted_amount = obj.amount - obj.discount - obj.early_advance_rebate
         return "{:.2f}".format(float(discounted_amount))
 
 class PaymentDetailsSerializer(serializers.ModelSerializer):
