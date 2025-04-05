@@ -396,8 +396,8 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"message": str(e), "code": "system_error"})
     
     def _calculate_bring_forward_balance(self,current_enrolment:StudentEnrolment) -> float:
-        payment = Payment.objects.filter(enrolment=current_enrolment,status='PAID').last()
-        return payment.amount / 2
+        payment = current_enrolment.grade.price
+        return payment / 2
         
     def _advance_new_enrolment(self,current_enrolment_instance:StudentEnrolment,classroom:Class,start_date:str,grade:Grade):
         current_grade_id = current_enrolment_instance.grade.tier.id
