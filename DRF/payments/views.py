@@ -355,5 +355,12 @@ class PaymentInvoiceDetailsForPrintView(BasePaymentView,RetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
+
+        if instance.status != 'PAID':
+            return Response({
+                "success": False,
+                "msg": "Invoice is either not paid or is voided."
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
         serializer = self.get_serializer(instance)
         return Response({"success": True, "data": serializer.data}, status=status.HTTP_200_OK)
