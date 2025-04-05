@@ -182,6 +182,7 @@ class PaymentInvoiceDetailsForPrintSerializer(serializers.ModelSerializer):
     branch = serializers.SerializerMethodField()
     grade = serializers.SerializerMethodField()
     student = serializers.SerializerMethodField()
+    parent = serializers.SerializerMethodField()
 
     class Meta:
         model = Payment
@@ -199,4 +200,7 @@ class PaymentInvoiceDetailsForPrintSerializer(serializers.ModelSerializer):
         return obj.enrolment.grade.grade_level
     
     def get_student(self, obj:Payment):
-        return obj.enrolment.student.fullname
+        return obj.enrolment.student.fullname.capitalize()
+    
+    def get_parent(self, obj:Payment):
+        return obj.parent.first_name.capitalize() + ' ' + obj.parent.last_name.capitalize() if obj.parent else None
