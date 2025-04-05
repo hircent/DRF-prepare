@@ -1,5 +1,4 @@
-from django.shortcuts import get_object_or_404
-from branches.models import Branch
+from branches.serializers import BranchDetailsSerializer
 from rest_framework import serializers
 from .models import Invoice,Payment,PromoCode
 from .service import PaymentService
@@ -179,3 +178,25 @@ class MakePaymentSerializer(serializers.ModelSerializer):
         return paid_amount - amount_to_pay
 
     
+class PaymentInvoiceDetailsForPrintSerializer(serializers.ModelSerializer):
+    branch = serializers.SerializerMethodField()
+    grade = serializers.SerializerMethodField()
+    student = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Payment
+        fields = [
+            'id','student','grade','invoice','parent','enrolment_type',
+            'amount','discount','early_advance_rebate',
+            'paid_amount','pre_outstanding','post_outstanding',
+            'start_date','status','branch'
+        ]
+
+    def get_branch(self, obj:Payment):
+        return BranchDetailsSerializer(obj.enrolment.branch).data
+    
+    def get_grade(self, obj:Payment):
+        return obj.enrolment.grade.grade_level
+    
+    def get_student(self, obj:Payment):
+        return obj.enrolment.student.fullname

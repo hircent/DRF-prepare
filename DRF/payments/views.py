@@ -19,7 +19,7 @@ from reports.service import PaymentReportService
 
 from .serializers import (
     PaymentListSerializer, InvoiceListSerializer, PromoCodeSerializer, PromoCodeCreateUpdateSerializer,
-    PaymentDetailsSerializer, PaymentReportListSerializer, MakePaymentSerializer
+    PaymentDetailsSerializer, PaymentReportListSerializer, MakePaymentSerializer,PaymentInvoiceDetailsForPrintSerializer
 )
 from .models import (
     Invoice,Payment,PromoCode
@@ -347,3 +347,13 @@ class MakePaymentView(BasePaymentView,UpdateAPIView):
                 "success": False,
                 "msg": str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class PaymentInvoiceDetailsForPrintView(BasePaymentView,RetrieveAPIView):
+    permission_classes = [IsManagerOrHigher]
+    serializer_class = PaymentInvoiceDetailsForPrintSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response({"success": True, "data": serializer.data}, status=status.HTTP_200_OK)
