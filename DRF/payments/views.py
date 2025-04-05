@@ -179,9 +179,6 @@ class AllBranchPaymentReportListView(BaseCustomListNoPaginationAPIView,UtilsMixi
         attendances['early_advance'] = status_from_payment['total_early_advance']
         attendances['extend'] = status_from_payment['total_extend']
 
-        print({
-            "data":attendances
-        })
         currency = Country.objects.get(name=country).currency
 
         return Response({
