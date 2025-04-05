@@ -77,7 +77,7 @@ class Payment(models.Model):
     ENROLMENT_TYPE_CHOICES = [
         ('ENROLMENT','NEW ENROLMENT'),
         ('ADVANCE','ADVANCE'),
-        ('EARLY_ADVANCE','EARLY_ADVANCE'),
+        ('EARLY_ADVANCE','EARLY ADVANCE'),
         ('EXTEND','3 MONTHS COUTINUATION')
     ]
 
