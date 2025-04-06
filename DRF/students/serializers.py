@@ -244,4 +244,14 @@ class StudentUpdateSerializer(serializers.ModelSerializer):
         ]
 
     def update(self, instance, validated_data):
+        status = validated_data.get('status')
+        if status == 'IN_PROGRESS':
+            enrolment = instance.enrolments.last()
+            enrolment.is_active = True
+            enrolment.save()
+            
+        else:
+            enrolments = instance.enrolments.all()
+            enrolments.update(is_active=False)
+
         return super().update(instance, validated_data)
