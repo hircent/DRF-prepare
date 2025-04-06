@@ -86,7 +86,12 @@ class PaymentReportService:
             early_advance_rebate=Sum('early_advance_rebate')
         )
 
-        return (payments['total_amount'],payments['total_discount'],payments['early_advance_rebate'],payments['discounted_amount'])
+        return (
+            payments['total_amount'] if payments['total_amount'] else 0,
+            payments['total_discount'] if payments['total_discount'] else 0,
+            payments['early_advance_rebate'] if payments['early_advance_rebate'] else 0,
+            payments['discounted_amount'] if payments['discounted_amount'] else 0
+        )
     
     
 
