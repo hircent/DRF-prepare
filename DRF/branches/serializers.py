@@ -106,6 +106,7 @@ class BranchCreateUpdateSerializer(serializers.ModelSerializer):
 class BranchDetailsSerializer(serializers.ModelSerializer):
     address = BranchAddressSerializer(source='branch_address',read_only=True)
     principal = serializers.SerializerMethodField()
+    country = serializers.SerializerMethodField()
 
     class Meta:
         model = Branch
@@ -115,6 +116,12 @@ class BranchDetailsSerializer(serializers.ModelSerializer):
             'updated_at','terminated_at','address'
         ]
 
+    def get_country(self, obj):
+        return {
+            "name": obj.country.name,
+            "currency": obj.country.currency
+        }
+    
     def get_principal(self,obj):
         try:
             principal_role = UserBranchRole.objects.filter(branch=obj,role__name="principal").select_related('user').first()
