@@ -118,6 +118,7 @@ class BranchDetailsSerializer(serializers.ModelSerializer):
 
     def get_country(self, obj):
         return {
+            "id": obj.country.id,
             "name": obj.country.name,
             "currency": obj.country.currency
         }
