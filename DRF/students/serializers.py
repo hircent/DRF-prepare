@@ -3,6 +3,7 @@ from accounts.models import User ,Role , UserProfile , UserAddress
 from branches.models import Branch ,UserBranchRole
 from classes.models import StudentEnrolment,Class, VideoAssignment
 from classes.serializers import StudentEnrolmentDetailsSerializer
+from classes.service import EnrolmentService
 from django.db import transaction
 from feeStructure.models import Tier
 from rest_framework import serializers
@@ -243,15 +244,21 @@ class StudentUpdateSerializer(serializers.ModelSerializer):
             'school','deemcee_starting_grade','status','enrolment_date','referral_channel','referral'
         ]
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         status = validated_data.get('status')
-        if status == 'IN_PROGRESS':
-            enrolment = instance.enrolments.last()
-            enrolment.is_active = True
-            enrolment.save()
-            
-        else:
-            enrolments = instance.enrolments.all()
-            enrolments.update(is_active=False)
 
-        return super().update(instance, validated_data)
+        try:
+            if status == 'IN_PROGRESS':
+                EnrolmentService.activate_latest_enrolment(instance.id)
+            
+            elif status == 'GRADUATED':
+                EnrolmentService.graduate_enrolment(instance.id)
+
+            elif status == 'DROPPED_OUT':
+                EnrolmentService.deactivate_enrolments(instance.id)
+
+            return super().update(instance, validated_data)
+        
+        except Exception as e:
+            raise serializers.ValidationError({"status": f"{str(e)}"})
