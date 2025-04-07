@@ -261,7 +261,13 @@ class BaseCustomEnrolmentView(GenericViewWithExtractJWTInfo):
 
         userId = self.extract_jwt_info("user_id")
 
-        enrolment = get_object_or_404(StudentEnrolment,id=enrolment_id)
+        stu_enrolments = StudentEnrolment.objects.select_related(
+            "student","grade","classroom"
+        ).prefetch_related(
+            "payments","video_assignments","extensions"
+        )
+
+        enrolment = get_object_or_404(stu_enrolments,id=enrolment_id)
         if is_superadmin:
             
             return enrolment
