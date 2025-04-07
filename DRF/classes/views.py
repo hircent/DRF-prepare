@@ -218,6 +218,12 @@ class StudentEnrolmentUpdateView(BaseCustomEnrolmentView,UpdateAPIView):
             branch_id = self.get_branch_id()
             self.branch_accessible(branch_id)
             instance = self.get_object()
+
+            if instance.student.status != 'IN_PROGRESS':
+                return Response({
+                    "success": False,
+                    "msg": "Student is not in progress, cannot update."
+                }, status=status.HTTP_400_BAD_REQUEST)
             
             serializer = self.get_serializer(instance, data=request.data, partial=partial)
             serializer.is_valid(raise_exception=True)
