@@ -13,9 +13,9 @@ from api.global_customViews import (
 from accounts.permission import IsManagerOrHigher, IsTeacherOrHigher
 from calendars.models import Calendar
 from classes.models import StudentAttendance
+from classes.service import EnrolmentService
 from django.db.models import Q, F, Case, When, Value
 from django.db import transaction
-from django.utils import timezone
 from django.http import JsonResponse
 from datetime import date, datetime ,timedelta
 from rest_framework.exceptions import ValidationError
@@ -277,12 +277,14 @@ class StudentEnrolmentDeleteView(BaseCustomEnrolmentView,DestroyAPIView):
         try:
             instance = self.get_object()
             id = instance.id
-
+            student_id = instance.student.id
             PaymentService.void_payments(
                 enrolment_ids=[id],
                 description=f"Student {instance.student.fullname}'s enrolment has been deleted at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
             )
+
             self.perform_destroy(instance)    
+            EnrolmentService.activate_latest_enrolment(student_id)
 
             return Response({"success": True, "message": f"Student Enrolment {id} deleted successfully"})
         except Exception as e:
