@@ -1,6 +1,8 @@
 from api.baseCommand import CustomBaseCommand
 from api.mixins import BlockedDatesMixin
 from classes.models import ClassLesson,StudentAttendance,Class,ReplacementAttendance
+from calendars.models import CalendarThemeLesson
+from category.models import ThemeLesson
 from branches.models import Branch
 from classes.models import StudentEnrolment
 from django.db import transaction
@@ -66,11 +68,18 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
             class_instances = self._get_class_instance_by_day(date,branch_id)
             class_lessons_arr = []
 
+
             for ci in class_instances:
+                theme_lesson = self._calendar_theme_lesson(date,branch_id,ci.name)
+                
+                if theme_lesson == None:
+                    continue
+                
                 class_lesson = ClassLesson(
                     branch_id=branch_id,
                     date=date,
-                    class_instance=ci
+                    class_instance=ci,
+                    theme_lesson=theme_lesson
                 )
                 class_lessons_arr.append(class_lesson)
 
@@ -82,6 +91,12 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
 
     def _get_class_instance_by_day(self,date:date,branch_id:int) -> List[Class]:
         return Class.objects.filter(branch_id=branch_id,day=date.strftime("%A"))
+    
+    def _calendar_theme_lesson(self,date:date,branch_id:int,category_name:str) -> ThemeLesson | None:
+        ctl = CalendarThemeLesson.objects.filter(branch_id=branch_id,lesson_date=date,theme__category__name=category_name)
+        if ctl.exists():
+            return ctl.first().theme_lesson
+        return None
 
     def _is_class_lesson_exists(self,date:date,branch_id:int) -> bool:
         return ClassLesson.objects.filter(branch_id=branch_id,date=date).exists()
