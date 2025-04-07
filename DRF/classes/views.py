@@ -225,6 +225,14 @@ class StudentEnrolmentUpdateView(BaseCustomEnrolmentView,UpdateAPIView):
                     "msg": "Student is not in progress, cannot update."
                 }, status=status.HTTP_400_BAD_REQUEST)
             
+            enrolments = StudentEnrolment.objects.filter(student_id=instance.student.id,is_active=True).exclude(id=instance.id).exists()
+            
+            if enrolments:
+                return Response({
+                    "success": False,
+                    "msg": "Student has active enrolment, cannot update."
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
             serializer = self.get_serializer(instance, data=request.data, partial=partial)
             serializer.is_valid(raise_exception=True)
         
