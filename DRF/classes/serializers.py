@@ -8,6 +8,7 @@ from .models import (
     ReplacementAttendance
 )
 from category.serializers import ThemeLessonAndNameDetailsSerializer
+from certificate.service import CertificateService
 from classes.service import VideoAssignmentService
 from django.db.models import F,Value
 from django.db import transaction
@@ -390,6 +391,13 @@ class EnrolmentAdvanceSerializer(serializers.ModelSerializer):
                     parent=current_enrolment.student.parent,
                     enrolment_type="ADVANCE"
                 )
+
+            CertificateService.generate_certificate(
+                current_enrolment.student.id,
+                current_enrolment.branch.id,
+                start_date,
+                current_enrolment.grade.grade_level
+            )
 
             VideoAssignmentService.create_video_assignments_after_advance(new_enrolment)
 

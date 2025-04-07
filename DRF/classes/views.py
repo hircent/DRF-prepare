@@ -14,6 +14,7 @@ from accounts.permission import IsManagerOrHigher, IsTeacherOrHigher
 from calendars.models import Calendar
 from classes.models import StudentAttendance
 from classes.service import EnrolmentService
+from certificate.service import CertificateService
 from django.db.models import Q, F, Case, When, Value
 from django.db import transaction
 from django.http import JsonResponse
@@ -278,13 +279,17 @@ class StudentEnrolmentDeleteView(BaseCustomEnrolmentView,DestroyAPIView):
             instance = self.get_object()
             id = instance.id
             student_id = instance.student.id
+            grade_level = instance.grade.grade_level
+
             PaymentService.void_payments(
                 enrolment_ids=[id],
                 description=f"Student {instance.student.fullname}'s enrolment has been deleted at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
             )
 
             self.perform_destroy(instance)    
+
             EnrolmentService.activate_latest_enrolment(student_id)
+            CertificateService.destory_certificate(student_id,grade_level)
 
             return Response({"success": True, "message": f"Student Enrolment {id} deleted successfully"})
         except Exception as e:
