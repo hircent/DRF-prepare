@@ -150,7 +150,7 @@ class StudentEnrolmentListForClassSerializer(serializers.ModelSerializer):
         fields = ['id', 'student','is_active','remaining_lessons','future_remaining_lessons']
 
     def get_student(self, obj):
-        return { "id": obj.student.id, "fullname": obj.student.fullname }
+        return { "id": obj.student.id, "fullname": obj.student.fullname ,"grade": obj.grade.grade_level}
 
 class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSerializer):
     end_date = serializers.SerializerMethodField()
@@ -467,7 +467,8 @@ class StudentAttendanceListSerializer(serializers.ModelSerializer):
             "id": obj.enrollment.id, 
             "student": {
                 "id": obj.enrollment.student.id,
-                "fullname": obj.enrollment.student.fullname
+                "fullname": obj.enrollment.student.fullname,
+                "grade": obj.enrollment.grade.grade_level,
             } 
         }
 
@@ -523,7 +524,8 @@ class ClassEnrolmentListSerializer(serializers.ModelSerializer):
                 "id": replacement.id,
                 "student":{
                     "id": replacement.attendances.enrollment.student.id,
-                    "fullname": replacement.attendances.enrollment.student.fullname
+                    "fullname": replacement.attendances.enrollment.student.fullname,
+                    "grade": replacement.attendances.enrollment.grade.grade_level,
                     },
                 "is_active": replacement.attendances.enrollment.is_active,
                 "status": replacement.status,
@@ -712,7 +714,8 @@ class TodayClassLessonSerializer(serializers.ModelSerializer):
                 "id": replacement.id,
                 "student":{
                     "id": replacement.attendances.enrollment.student.id,
-                    "fullname": replacement.attendances.enrollment.student.fullname
+                    "fullname": replacement.attendances.enrollment.student.fullname,
+                    "grade": replacement.attendances.enrollment.grade.grade_level,
                     },
                 "is_active": replacement.attendances.enrollment.is_active,
                 "status": replacement.status,
