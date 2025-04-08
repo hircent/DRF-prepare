@@ -15,10 +15,16 @@ class StudentPaymentListSerializer(serializers.ModelSerializer):
         return obj.enrolment.grade.grade_level
 
 class PaymentListSerializer(serializers.ModelSerializer):
+    paid_at = serializers.SerializerMethodField()
 
     class Meta:
         model = Payment
-        fields = ['id','status']
+        fields = ['id','status','amount','paid_at']
+
+    def get_paid_at(self, obj):
+        if not obj.invoice:
+            return None
+        return obj.invoice.paid_at.strftime("%Y-%m-%d")
 
 class PaymentReportListSerializer(serializers.ModelSerializer):
     student = serializers.SerializerMethodField()

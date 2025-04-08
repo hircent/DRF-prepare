@@ -124,13 +124,17 @@ class StudentEnrolmentListSerializer(serializers.ModelSerializer):
     video_assignments = VideoAssignmentListSerializer(many=True)
     student = serializers.SerializerMethodField()
     payments = serializers.SerializerMethodField()
+    currency = serializers.SerializerMethodField()
 
     class Meta:
         model = StudentEnrolment
-        fields = ['id','student','grade','remaining_lessons','video_assignments','payments']
+        fields = ['id','currency','student','start_date','grade','remaining_lessons','video_assignments','payments']
 
     def get_student(self, obj):
         return { "id": obj.student.id, "fullname": obj.student.fullname }
+    
+    def get_currency(self, obj):
+        return obj.branch.country.currency
     
     def get_payments(self, obj):
 
