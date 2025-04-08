@@ -70,13 +70,15 @@ class StudentCreateSerializer(serializers.ModelSerializer):
     tier = serializers.CharField(write_only=True)
     start_date = serializers.DateField(write_only=True)
     parent_details = serializers.DictField(write_only=True,required=False)
+    address_details = serializers.DictField(write_only=True,required=False)
+    profile = serializers.DictField(write_only=True,required=False)
 
     class Meta:
         model = Students
         fields = [
             'id','first_name','last_name','fullname','gender','dob',
             'school','tier','deemcee_starting_grade','status','start_date','timeslot','referral_channel','referral','starter_kits',
-            'branch','parent','parent_details','created_at','updated_at'
+            'branch','parent','parent_details','address_details','profile','created_at','updated_at'
         ]
 
     def validate_tier(self, value):
@@ -161,6 +163,8 @@ class StudentCreateSerializer(serializers.ModelSerializer):
         timeslot = validated_data.pop('timeslot', None)
         start_date = validated_data.pop('start_date')
         parent_details = validated_data.pop('parent_details', None)
+        address_details = validated_data.pop('address_details')
+        profile = validated_data.pop('profile')
         tier = validated_data.pop('tier', None)
 
         # Create new parent user if parent_details is provided
@@ -179,6 +183,8 @@ class StudentCreateSerializer(serializers.ModelSerializer):
             # Create new user
                 new_parent = User.objects.create(
                     username=parent_details['username'],
+                    first_name=parent_details['first_name'],
+                    last_name=parent_details['last_name'],
                     email=parent_details['email'],
                     password="Password123!",
                     # Add any other required User fields here
@@ -192,10 +198,21 @@ class StudentCreateSerializer(serializers.ModelSerializer):
                 )
 
                 UserProfile.objects.create(
-                    user=new_parent)
+                    user=new_parent,
+                    dob=profile['dob'],
+                    occupation=profile['occupation'],
+                    phone=profile['phone'],
+                )
                 
                 UserAddress.objects.create(
-                    user=new_parent)
+                    user=new_parent,
+                    address_line_1=address_details['address_line_1'],
+                    address_line_2=address_details['address_line_2'],
+                    address_line_3=address_details['address_line_3'],
+                    postcode=address_details['postcode'],
+                    city=address_details['city'],
+                    state=address_details['state']
+                )
                 # Set the new parent as the student's parent
                 validated_data['parent'] = new_parent
 
