@@ -10,6 +10,7 @@ from .models import (
 from category.serializers import ThemeLessonAndNameDetailsSerializer
 from certificate.service import CertificateService
 from classes.service import VideoAssignmentService
+from category.serializers import ThemeListSerializer
 from django.db.models import F,Value
 from django.db import transaction
 from django.utils import timezone
@@ -70,6 +71,7 @@ class VideoAssignmentListSerializer(BlockedDatesMixin,serializers.ModelSerialize
     
 class VideoAssignmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSerializer):
     submit_due_date = serializers.SerializerMethodField()
+    theme = ThemeListSerializer(read_only=True)
 
     class Meta:
         model = VideoAssignment
