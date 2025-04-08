@@ -21,8 +21,8 @@ import csv
 
 from .models import Students
 from .serializers import (
-    StudentListSerializer,StudentDetailsSerializer,StudentCreateSerializer,
-    StudentUpdateSerializer
+    StudentListSerializer, StudentDetailsSerializer, StudentCreateSerializer,
+    StudentUpdateSerializer, StudentRemarkSerializer
 )
 # Create your views here.
 
@@ -89,7 +89,6 @@ class StudentListView(BasedCustomStudentsView,generics.ListAPIView):
             "data": serializer.data
         })
         
-
 class StudentDetailsView(BasedCustomStudentsView,generics.RetrieveAPIView):
     serializer_class = StudentDetailsSerializer
     permission_classes = [IsTeacherOrHigher]
@@ -236,3 +235,47 @@ class ExportStudentsCSV(APIView):
         except Exception as e:
             print(f"Export error: {str(e)}")  # Add logging
             return Response({'error': str(e)}, status=500)
+
+class StudentRemarkView(BasedCustomStudentsView,generics.RetrieveAPIView):
+    serializer_class = StudentRemarkSerializer
+    permission_classes = [IsTeacherOrHigher]
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response({"success": True, "data": serializer.data}, status=status.HTTP_200_OK)
+    
+class StudentRemarkUpdateView(BasedCustomStudentsView,generics.UpdateAPIView):
+    serializer_class = StudentRemarkSerializer
+    permission_classes = [IsTeacherOrHigher]
+
+    @transaction.atomic
+    def update(self, request, *args, **kwargs):
+        try:
+            partial = kwargs.pop('partial', False)
+            instance = self.get_object()
+            serializer = self.get_serializer(instance, data=request.data, partial=partial)
+            
+            serializer.is_valid(raise_exception=True)
+        
+            self.perform_update(serializer)
+            
+            updated_instance = self.get_object()
+            updated_serializer = self.get_serializer(updated_instance)
+            
+            return Response({
+                "success": True,
+                "data": updated_serializer.data
+            })
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": f"Error updating student remark: {str(e)}"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)

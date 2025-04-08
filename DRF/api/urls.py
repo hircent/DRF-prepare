@@ -49,7 +49,7 @@ from feeStructure.views import (
 
 from students.views import (
     StudentListView ,StudentDetailsView ,StudentCreateView,StudentUpdateView,StudentDeleteView,
-    ExportStudentsCSV
+    ExportStudentsCSV, StudentRemarkView, StudentRemarkUpdateView
 )
 
 from payments.views import (
@@ -93,13 +93,12 @@ urlpatterns = [
     path("student/update/<int:student_id>",StudentUpdateView.as_view(),name="update-student"),
     path("student/delete/<int:student_id>",StudentDeleteView.as_view(),name="delete-student"),
     path('students/export-csv', ExportStudentsCSV.as_view(), name='export-students-csv'),
+    path('students/remark/<int:student_id>', StudentRemarkView.as_view(), name='student-remark'),
+    path('students/remark/<int:student_id>/update', StudentRemarkUpdateView.as_view(), name='update-student-remark'),
 
     #Parents
     path("parent/list",ParentListView.as_view(),name="parent-list"),
     path("parent/details/<int:parent_id>",ParentDetailsView.as_view(),name="parent-details"),
-    # path("parent/create",parentCreateView.as_view(),name="create-parent"),
-    # path("parent/update/<int:parent_id>",parentUpdateView.as_view(),name="update-parent"),
-    # path("parent/delete/<int:parent_id>",parentDeleteView.as_view(),name="delete-parent"),
 
     #Calendars
     path('calendars/list', CalendarListView.as_view(), name='calendar-list'),

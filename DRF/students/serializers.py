@@ -24,6 +24,19 @@ class StudentListSerializer(serializers.ModelSerializer):
             'school','deemcee_starting_grade','status','enrolment_date'
         ]
 
+class StudentRemarkSerializer(serializers.ModelSerializer):
+    fullname = serializers.CharField(read_only=True)
+    class Meta:
+        model = Students
+        fields = [
+            'fullname','remark'
+        ]
+
+    def update(self, instance, validated_data):
+        super().update(instance, validated_data)
+        instance.save()
+        return instance
+
 
 class StudentDetailsSerializer(serializers.ModelSerializer):
     parent = ParentDetailSerializer()
