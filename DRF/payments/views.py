@@ -172,7 +172,7 @@ class AllBranchPaymentReportListView(BaseCustomListNoPaginationAPIView,UtilsMixi
             response_data.append(branch_data)
 
         attendances = PaymentReportService.get_attendance_statuses(year,month,country=country)
-        students = PaymentReportService.get_student_statuses()
+        students = PaymentReportService.get_student_statuses(country=country)
         status_from_payment = PaymentReportService.get_status_from_payment(year,month,country=country)
 
         attendances['enrolment'] = status_from_payment['total_enrolment']

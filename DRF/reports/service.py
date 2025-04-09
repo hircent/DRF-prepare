@@ -16,7 +16,7 @@ class PaymentReportService:
 
 
     @staticmethod
-    def get_student_statuses(branch_id:int | None = None) -> QuerySet[Students]:
+    def get_student_statuses(country:str,branch_id:int | None = None) -> QuerySet[Students]:
         if branch_id:
             return Students.objects.filter(branch_id=branch_id).aggregate(
                 total=Count('id'),
@@ -25,7 +25,7 @@ class PaymentReportService:
                 graduated=Count('id', filter=Q(status='GRADUATED'))
             )
         
-        return Students.objects.all().aggregate(
+        return Students.objects.filter(branch__country__name=country).aggregate(
             total=Count('id'),
             in_progress=Count('id', filter=Q(status='IN_PROGRESS')),
             dropped_out=Count('id', filter=Q(status='DROPPED_OUT')),
