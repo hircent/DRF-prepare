@@ -149,12 +149,13 @@ class MakePaymentSerializer(serializers.ModelSerializer):
         discounted_amount = instance.amount - promo_discount 
 
         pre_outstanding = instance.pre_outstanding
+
         amount_to_pay = self._get_amount_to_pay(pre_outstanding,discounted_amount) 
 
         if not self._validate_amount_to_pay(paid_amount,amount_to_pay):
             raise serializers.ValidationError(f"Amount to pay: {amount_to_pay}")
         
-        after_payment_remaining = self._after_payment(paid_amount,amount_to_pay,instance)
+        after_payment_remaining = self._after_payment(paid_amount,promo_discount,instance)
         
         instance.post_outstanding += after_payment_remaining
         instance.discount = promo_discount
@@ -176,13 +177,14 @@ class MakePaymentSerializer(serializers.ModelSerializer):
             return True
         return False
     
-    def _after_payment(self,paid_amount:float,amount_to_pay:float,payment:Payment):
+    def _after_payment(self,paid_amount:float,discount_amount:float,payment:Payment):
         pre_outstanding = payment.pre_outstanding
-        if pre_outstanding >= amount_to_pay:
-            payment.pre_outstanding -= amount_to_pay
-            return abs(payment.amount - ((paid_amount + pre_outstanding) - amount_to_pay))
-        
-        return paid_amount - amount_to_pay
+        amount = payment.amount
+
+        if pre_outstanding >= (amount - discount_amount):
+            return pre_outstanding - (amount - discount_amount)
+        else:
+            return abs((amount - discount_amount) - paid_amount - pre_outstanding) 
 
     
 class PaymentInvoiceDetailsForPrintSerializer(serializers.ModelSerializer):

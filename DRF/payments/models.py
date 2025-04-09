@@ -118,7 +118,7 @@ class Payment(models.Model):
             self.paid_amount >= self.amount
             or self.post_outstanding > 0
             or self.discount + self.paid_amount >= self.amount
-            or self.paid_amount + self.pre_outstanding >= self.amount
+            or self.paid_amount + self.pre_outstanding +self.discount >= self.amount
         ):
             self.status = 'PAID'
 
