@@ -219,8 +219,8 @@ class PaymentInvoiceDetailsForPrintSerializer(serializers.ModelSerializer):
         user:User = User.objects.prefetch_related('user_profile','user_address').get(id=obj.parent.id)
         return {
             "id": user.id,
-            "first_name": user.first_name.capitalize(),
-            "last_name": user.last_name.capitalize(),
+            "first_name": user.first_name.capitalize() if user.first_name else "-",
+            "last_name": user.last_name.capitalize() if user.last_name else "-",
             "username": user.username,
             "email": user.email,
             "details": {
