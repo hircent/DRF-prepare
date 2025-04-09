@@ -6,6 +6,7 @@ from accounts.models import User
 
 class StudentPaymentListSerializer(serializers.ModelSerializer):
     grade = serializers.SerializerMethodField()
+    enrolment_type = serializers.SerializerMethodField()
     
     class Meta:
         model = Payment
@@ -13,6 +14,9 @@ class StudentPaymentListSerializer(serializers.ModelSerializer):
         
     def get_grade(self, obj):
         return obj.enrolment.grade.grade_level
+    
+    def get_enrolment_type(self, obj):
+        return obj.get_enrolment_type_display() if obj.enrolment_type else None
 
 class PaymentListSerializer(serializers.ModelSerializer):
     paid_at = serializers.SerializerMethodField()
@@ -193,6 +197,7 @@ class PaymentInvoiceDetailsForPrintSerializer(serializers.ModelSerializer):
     invoice = serializers.SerializerMethodField()
     student = serializers.SerializerMethodField()
     parent = serializers.SerializerMethodField()
+    enrolment_type = serializers.SerializerMethodField()
 
     class Meta:
         model = Payment
@@ -214,6 +219,9 @@ class PaymentInvoiceDetailsForPrintSerializer(serializers.ModelSerializer):
     
     def get_student(self, obj:Payment):
         return obj.enrolment.student.fullname.capitalize()
+    
+    def get_enrolment_type(self, obj:Payment):
+        return obj.get_enrolment_type_display() if obj.enrolment_type else None
     
     def get_parent(self, obj:Payment):
         user:User = User.objects.prefetch_related('user_profile','user_address').get(id=obj.parent.id)
