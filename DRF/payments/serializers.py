@@ -198,15 +198,20 @@ class PaymentInvoiceDetailsForPrintSerializer(serializers.ModelSerializer):
     student = serializers.SerializerMethodField()
     parent = serializers.SerializerMethodField()
     enrolment_type = serializers.SerializerMethodField()
+    amount_to_pay = serializers.SerializerMethodField()
 
     class Meta:
         model = Payment
         fields = [
             'id','student','grade','invoice','parent','enrolment_type',
-            'amount','discount','early_advance_rebate',
+            'amount','amount_to_pay','discount','early_advance_rebate',
             'paid_amount','pre_outstanding','post_outstanding',
             'start_date','status','branch'
         ]
+
+    def get_amount_to_pay(self,obj:Payment):
+        amount_to_pay = obj.amount - obj.discount - obj.early_advance_rebate
+        return f"{amount_to_pay:.2f}"
 
     def get_branch(self, obj:Payment):
         return BranchDetailsSerializer(obj.enrolment.branch).data
