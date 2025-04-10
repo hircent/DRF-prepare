@@ -199,15 +199,19 @@ class PaymentInvoiceDetailsForPrintSerializer(serializers.ModelSerializer):
     parent = serializers.SerializerMethodField()
     enrolment_type = serializers.SerializerMethodField()
     amount_to_pay = serializers.SerializerMethodField()
+    promo_code = serializers.SerializerMethodField()
 
     class Meta:
         model = Payment
         fields = [
             'id','student','grade','invoice','parent','enrolment_type',
-            'amount','amount_to_pay','discount','early_advance_rebate',
+            'amount','amount_to_pay','discount','promo_code','early_advance_rebate',
             'paid_amount','pre_outstanding','post_outstanding',
             'start_date','status','branch'
         ]
+
+    def get_promo_code(self, obj:Payment):
+        return obj.promo_code.code if obj.promo_code else "Promo 1"
 
     def get_amount_to_pay(self,obj:Payment):
         amount_to_pay = obj.amount - obj.discount - obj.early_advance_rebate
