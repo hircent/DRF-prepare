@@ -85,26 +85,26 @@ class Students(models.Model):
     def __str__(self):
         return self.fullname
     
-# class StudentTransfer(models.Model):
-#     STATUS = [
-#         ('IN_PROGRESS','IN_PROGRESS'),
-#         ('COMPLETED','COMPLETED'),
-#         ('CANCELLED','CANCELLED')
-#     ]
+class StudentTransfer(models.Model):
+    STATUS = [
+        ('TRANSFERING','TRANSFERING'),
+        ('ACCEPTED','ACCEPTED'),
+        ('REJECTED','REJECTED')
+    ]
 
-#     student                = models.ForeignKey(Students,on_delete=models.CASCADE,related_name='transfers')
-#     from_branch            = models.ForeignKey(Branch,on_delete=models.CASCADE,related_name='transfer-from')
-#     to_branch              = models.ForeignKey(Branch,on_delete=models.CASCADE,related_name='transfer-to')
-#     transfer_date          = models.DateField(default=now)
-#     status                 = models.CharField(choices=STATUS,max_length=12,default='IN_PROGRESS')
-#     created_at             = models.DateTimeField(auto_now_add=True)
-#     updated_at             = models.DateTimeField(auto_now=True)
+    student                = models.ForeignKey(Students,on_delete=models.CASCADE,related_name='transfers')
+    from_branch            = models.ForeignKey(Branch,on_delete=models.CASCADE,related_name='transfer-from+')
+    to_branch              = models.ForeignKey(Branch,on_delete=models.CASCADE,related_name='transfer-to+')
+    transfer_date          = models.DateField(default=now)
+    status                 = models.CharField(choices=STATUS,max_length=12,default='TRANSFERING')
+    created_at             = models.DateTimeField(auto_now_add=True)
+    updated_at             = models.DateTimeField(auto_now=True)
     
-#     class Meta:
-#         db_table = 'student_transfer'
-#         verbose_name = 'Student Transfer'
-#         verbose_name_plural = 'Student Transfers'
-#         ordering = ['-id']
+    class Meta:
+        db_table = 'student_transfer'
+        verbose_name = 'Student Transfer'
+        verbose_name_plural = 'Student Transfers'
+        ordering = ['-transfer_date']
 
-#     def __str__(self):
-#         return f"{self.student.fullname} Transferred from {self.from_branch.name} to {self.to_branch.name}"
+    def __str__(self):
+        return f"{self.student.fullname} Transferred from {self.from_branch.name} to {self.to_branch.name}"
