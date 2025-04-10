@@ -54,13 +54,15 @@ python manage.py update_all_branch_enrolments
 python manage.py generate_ctls --year=2025
 
 
-Other commands:
+Cronjob Commands:
 python manage.py mark_all_attendances
 python manage.py update_enrolment_extensions
 
+Migration Day Commands:
+python manage.py delete_class_attendances --from_date='2025-04-07' --to_date='2025-04-13' --branchId=16
+
 python manage.py createsuperuser 
 // Add role to new superuser
-
 
 python manage.py migrate your_app --fake-initial (if any needed....)
 '''
