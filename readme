@@ -47,6 +47,7 @@ python manage.py bulk_create_invoice_sequence
 python manage.py bulk_create_invoice
 python manage.py bulk_create_payments
 python manage.py bulk_create_certificates
+python manage.py bulk_create_transfer
 
 python manage.py update_lesson_by_freezed_count
 python manage.py update_all_branch_enrolments
