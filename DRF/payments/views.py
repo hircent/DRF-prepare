@@ -222,13 +222,26 @@ class PromoCodeListView(BaseCustomListNoPaginationAPIView):
     serializer_class = PromoCodeSerializer
 
     def get_queryset(self):
-
         branch = self.request.query_params.get('branch')
+        is_active = self.request.query_params.get('is_active')
+        self.require_query_param(is_active, 'is_active')
+
+        # Convert is_active to a boolean
+        is_active = is_active.lower() in ['true', '1', 'yes']
+
+        today = datetime.today().date()
+
+        queryset = PromoCode.objects.all()
 
         if branch:
-            return PromoCode.objects.filter(branch_id=int(branch))
-        
-        return PromoCode.objects.all()
+            queryset = queryset.filter(branch_id=int(branch))
+
+        if is_active:
+            queryset = queryset.filter(expired_at__gt=today)
+        else:
+            queryset = queryset.filter(expired_at__lt=today)
+
+        return queryset
     
 class PromoCodeListForPaymentView(BaseCustomListNoPaginationAPIView):
     permission_classes = [IsSuperAdmin]
