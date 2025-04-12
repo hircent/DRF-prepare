@@ -1,11 +1,12 @@
-# myapp/middleware.py
+from api.baseCommand import CustomBaseCommand
 import os
 from dotenv import load_dotenv
 from django.http import JsonResponse
 
-class OriginRestrictionMiddleware:
+class OriginRestrictionMiddleware(CustomBaseCommand):
     def __init__(self, get_response):
         self.get_response = get_response
+        self.logger = self.setup_logger("restrict_origins",__name__)
         
         # Load environment variables
         load_dotenv()
@@ -34,14 +35,14 @@ class OriginRestrictionMiddleware:
         referer = request.headers.get('Referer')
         
         # For debugging
-        print(f"Request from - Origin: {origin}, Referer: {referer}")
+        self.logger.info(f"Request from - Origin: {origin}, Referer: {referer}")
         
         # Implement validation logic
         is_allowed = False
         
         # Internal requests (no origin/referer) are allowed
         if not origin and not referer:
-            print({
+            self.logger.error({
                 "in_allowed_origins": origin in self.allowed_origins,
                 "origin": origin,
                 "referer": referer
