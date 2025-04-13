@@ -20,6 +20,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2044,2044,Vista mutiara kepong baru,Vista mutiara kepong baru,,Kepong,Kuala Lumpur,52000,2024-06-02 11:46:23,2024-06-02 11:46:23
 2795,2795,"Lot 572, Kampung Lereng Bukit, Jalan Pujut,",,,Miri,Sarawak,98000,2025-03-05 01:57:23,2025-03-05 01:57:23
 2616,2616,"107, Jalan Setia 10/2",Taman Setia Indah,,Johor Bahru,Johor,81100,2025-01-13 16:31:39,2025-01-13 16:31:39
+2838,2838,123,,,Eight Mile Plains,Johor,4113,2025-03-20 19:29:08,2025-03-20 19:29:08
 1534,1534,"33, JALAN PUTRA SETIA 6/1L PUTRA HEIGHTS",,,subang,Selangor,47650,2023-09-19 23:34:03,2023-09-19 23:34:03
 2702,2702,"15, Jalan Simbang 11,","Taman Perling,",,Johor Bahru,Johor,81200,2025-02-14 18:53:58,2025-02-14 18:53:58
 1816,1816,"No31, jalan sungai rasau d32/d",,,Shah Alam,Selangor,40200,2024-02-02 17:44:20,2024-02-02 17:44:20
@@ -36,6 +37,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1906,1906,"17, Jalan Sutera Pulai 2/8,",Taman Sutera Utama,,Skudai,Johor,81300,2024-03-31 17:53:40,2024-03-31 17:53:40
 1405,1405,15-1Jalan Usj 10/1C Uep Subang Jaya,,,subang,Selangor,47610,2023-05-29 20:50:15,2023-05-29 20:50:15
 1334,1334,"14,Jalan Kemuning Damai 32/149D, Kemuning Utama",,,Shah Alam,Selangor,40460,2023-04-02 16:29:31,2023-04-02 16:29:31
+2840,2840,"No22A Kemuning Bayu 33/30a, Kemuning Utama",,,Kemuning Utama,Selangor,40460,2025-03-21 15:52:39,2025-03-21 15:52:39
 974,974,"C-08-06 Changkat View Condo, Jalan Dutamas Raya Segambut",,,Kuala Lumpur,Kuala Lumpur,51200,2022-06-03 15:42:27,2022-06-03 15:42:27
 1633,1633,"C-26-03 The Rainz, No 3, Jalan Jalil Perwira 2, Bukit Jalil,",,,Kuala Lumpur,Kuala Lumpur,58200,2023-11-01 16:50:15,2023-11-01 16:50:15
 1698,1698,"16, Jalan barat laut 1, corallia ,d island",,,puchong,Selangor,47130,2023-12-12 19:38:09,2023-12-12 19:38:09
@@ -45,6 +47,8 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1589,1589,"64, Jln Waja 3/1,","Tmn Kangkar Jaya Sg Mati,",,Tangkak,Johor,84400,2023-10-11 00:58:43,2023-10-11 00:58:43
 2067,2067,"No.1375, JLN BUKIT GALENA 27, TMN BUKIT GALENA,",,,Seremban,Negeri Sembilan,70200,2024-06-10 22:33:59,2024-06-10 22:33:59
 1767,1767,"35-08, Trinity Lemanja Kepong, Jalan Kuang Bertam 6, Taman Kepong",,,Kuala Lumpur,Kuala Lumpur,52100,2024-01-08 11:09:02,2024-01-08 11:09:02
+2831,2831,Taman Rinting,,,Johor Bahru,Johor,81750,2025-03-16 22:49:12,2025-03-16 22:49:12
+2885,2885,20 LORONG KRISTAL 4H,BANDAR PARKLANDS,,KLANG,Selangor,41200,2025-04-05 14:37:25,2025-04-05 14:37:25
 1793,1793,"08-16-02, Jay Series Apartment, Jalan Gangsa,",,,Greenlane,Pulau Pinang,11600,2024-01-25 14:09:14,2024-01-25 14:09:14
 2799,2799,"No. 49,","Jalan SS 2/105,",,Petaling Jaya,Selangor,47300,2025-03-06 12:52:43,2025-03-06 12:52:43
 1613,1613,"A-1-17, Villa Condominium, Taman Desa Relau",,,"Bayan Lepas,",Pulau Pinang,11900,2023-10-23 17:36:54,2023-10-23 17:36:54
@@ -56,6 +60,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 316,316,"23, Jalan Impian Indah 5",,,Seri Kembangan,Kuala Lumpur,43300,2021-01-30 23:05:54,2021-01-30 23:05:54
 1213,1213,"B-12-3A Park 51 Residency,","Jalan 51A/241, Seksyen 51A,",,Petaling Jaya,Selangor,46100,2022-12-16 21:55:01,2022-12-16 21:55:01
 2040,2040,"69 , jalan tr 2/3 ,",Tropicana,,Petaling Jaya,Selangor,47410,2024-06-02 06:40:18,2024-06-02 06:40:18
+2903,2903,34 JALAN BAYU IMPIAN 14B/KS9,KOTA BAYU EMAS,,KLANG,Selangor,41200,2025-04-11 13:40:17,2025-04-11 13:40:17
 2409,2409,"No 8, Jalan Eco Cascadia 1/12",Taman Setia Eco Cascadia,,Johor Bahru,Johor,81100,2024-09-29 22:46:17,2024-09-29 22:46:17
 1179,1179,"Jalan 9,","Taman Len Seng,",,cheras,Kuala Lumpur,56000,2022-11-12 00:00:55,2022-11-12 00:00:55
 716,716,"NO 3, LEVEL 5, TOWER 1, D'JEWEL CONDOMINIUM",,,KUCHING,Sarawak,93250,2021-04-11 14:07:22,2021-04-11 14:07:22
@@ -68,6 +73,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 191,191,"153, Hala Sepakat 15a,","Tmn Pinggir Rapat Perdana,",,Ipoh,Perak,31350,2021-01-17 15:50:49,2021-01-17 15:50:49
 2474,2474,"A-12-05, KIARAMAS SUTERA CONDO","NO 7, JALAN DESA KIARA",,MONT KIARA,Kuala Lumpur,50480,2024-11-01 20:02:02,2024-11-01 20:02:02
 953,953,"38, Jalan C, Taman Batu, Jinjang Selatan",,,Kuala Lumpur,Kuala Lumpur,52000,2022-05-26 09:37:55,2022-05-26 09:37:55
+2870,2870,"36,","Jln 7/149D,",,Sri Petaling,Kuala Lumpur,57000,2025-03-31 12:11:36,2025-03-31 12:11:36
 1284,1284,"10, Jalan Taman Bukit Maluri 6, Taman Bukit Maluri",,,Kepong,Kuala Lumpur,52100,2023-03-02 10:02:40,2023-03-02 10:02:40
 146,146,"16, Jalan SS 20/25",Damansara Utama,,Petaling Jaya,Selangor,47400,2021-01-09 12:30:15,2021-01-09 12:30:15
 207,207,"43, Jln 1C",Residence Persiaran Sepang,,Cyberjaya,Selangor,63000,2021-01-17 21:56:17,2021-01-17 21:56:17
@@ -81,6 +87,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1080,1080,"7315, Jln 7 Taman Selayang Baru",,,Selayang,Selangor,68,2022-08-30 11:30:46,2022-08-30 11:30:46
 1434,1434,"22a, Jalan Kerongsang 10, Bandar Puteri",,,Klang,Selangor,41200,2023-07-01 10:30:51,2023-07-01 10:30:51
 1939,1939,"69, Lorong Highfield 7, Taman Highfields Phase 2, Batu Kawa, 93250 Kuching, Sarawak",,,Kuching,Sarawak,93250,2024-04-11 22:08:24,2024-04-11 22:08:24
+2851,2851,"36,JALAN BROMELIA 4, BROMELIA, BANDAR BUKIT PUCHONG 2, ,SELANGOR",,,PUCHONG,Selangor,47120,2025-03-25 20:37:09,2025-03-25 20:37:09
 2559,2559,"No 8, Jalan 31/25, 40460 Shah Alam di Selangor",,,Shah Alam,Selangor,40460,2024-12-16 18:01:05,2024-12-16 18:01:05
 1772,1772,"NO102, TMN BINTANG,","JLN BINTANG 2/1, PARIT JAWA",,Muar,Johor,84150,2024-01-09 13:59:17,2024-01-09 13:59:17
 2706,2706,"133, Villa Mas 1,","Sri Utara, off Jalan Ipoh",,Jalan Ipoh,Kuala Lumpur,68100,2025-02-15 21:13:38,2025-02-15 21:13:38
@@ -120,6 +127,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1008,1008,"56, Jalan Alam Putra 3A/2",Taman Alam Putra,,Seri Kembangan,Selangor,43300,2022-06-30 09:45:12,2022-06-30 09:45:12
 2317,2317,"35, lorong Tropika 7, residensi Tropika",,,Bukit Mertajam,Pulau Pinang,14020,2024-09-06 20:56:19,2024-09-06 20:56:19
 404,404,"3, Jalan 8/155A",,,Bukit Jalil,Kuala Lumpur,57000,2021-02-01 00:45:57,2021-02-01 00:45:57
+2846,2846,"Pangsapuri Serumpun Dâ€™Cerrum , Ecohill",,,Semenyih,Selangor,43500,2025-03-24 15:07:22,2025-03-24 15:07:22
 2470,2470,127-17,Lorong Bunga Ros Jalan Daud,,Muar,Johor,84000,2024-11-01 01:01:41,2024-11-01 01:01:41
 2046,2046,"12, jalan Ecohill 7/2N",,,setia Ecohill 2,Selangor,43500,2024-06-03 22:45:41,2024-06-03 22:45:41
 126,,,,,,,,,
@@ -149,6 +157,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2820,2820,"i8K KG. KUBANG BUYONG CHABANG TIGA,",,,Kuala Terengganu,Terengganu,21000,2025-03-13 22:27:03,2025-03-13 22:27:03
 151,151,"150, Lorong Lapangan Terbang 545,","Lapang Terbang,",,Kuching,Sarawak,93359,2021-01-11 11:38:20,2021-01-11 11:38:20
 1332,1332,"NO.26 JALAN KEMUNING DAMAI 32/149E KEMUNING UTAMA,",,,Shah Alam,Selangor,40460,2023-04-02 14:27:17,2023-04-02 14:27:17
+2843,2843,Puncak Alam,,,Kuala Selangor,Selangor,42300,2025-03-22 14:07:21,2025-03-22 14:07:21
 1354,1354,B-06-09 BLOCK B ONE,"DAMANSARA, JALAN PJU 10/3C DAMANSARA DAMAI",,Petaling Jaya,Selangor,47830,2023-04-11 18:02:10,2023-04-11 18:02:10
 544,544,"No.5, Jalan Manja 1","Villa Manja,  Off Jalan Damansara",,KL,Kuala Lumpur,52200,2021-02-08 15:30:42,2021-02-08 15:30:42
 2487,2487,"16, Jalan Setia Permai U13/42L, Setia Alam Seksyen U13",,,Shah Alam,Selangor,40170,2024-11-05 17:05:31,2024-11-05 17:05:31
@@ -162,6 +171,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 205,205,"9, Jln PP 5/24",Taman Putra Prima,,Puchong,Selangor,41730,2021-01-17 21:18:59,2021-01-17 21:18:59
 2554,2554,"No39, Jalan Berombong, Kepong Baru",,,Kuala Lumpur,Kuala Lumpur,52100,2024-12-14 13:41:09,2024-12-14 13:41:09
 1144,1144,"No.307, Lorong luang Ranting, Taman Kepong",,,KL,Kuala Lumpur,52100,2022-10-11 21:37:44,2022-10-11 21:37:44
+2875,2875,Bandar Damai Perdana,,,Cheras,Kuala Lumpur,56000,2025-04-02 19:03:35,2025-04-02 19:03:35
 1506,1506,"Blok B-12-7, Pertiwi Indah",Taman Maluri,,KL,Kuala Lumpur,55100,2023-08-12 13:15:04,2023-08-12 13:15:04
 2276,2276,No 1118 Lorong 2G,Jalan Piasau Jaya,,Miri,Sarawak,98000,2024-08-20 10:56:41,2024-08-20 10:56:41
 2801,2801,NO 24 JALAN S2 CITY CENTRE,,,Sere,Negeri Sembilan,70300,2025-03-06 21:03:11,2025-03-06 21:03:11
@@ -176,7 +186,9 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2715,2715,"No.99, Lorong 7C, Jalan Hup Kee",,,Kuching,Sarawak,93250,2025-02-19 16:10:34,2025-02-19 16:10:34
 1163,1163,"No. 30, Jalan Kemuning Bayu 33/30H",,,Klang,Selangor,420000,2022-11-02 02:01:15,2022-11-02 02:01:15
 1928,1928,"L8-02-08, Liberty grove",,,kuching,Sarawak,93250,2024-04-06 12:48:12,2024-04-06 12:48:12
+2821,2821,DURIAN BURUNG,,,Kuala Terengganu,Terengganu,20050,2025-03-14 22:53:12,2025-03-14 22:53:12
 626,626,"Prima Midah Heights, 26-19-2, Jalan Widah 8, Taman Midah.",,,Cheras,Selangor,56000,2021-03-27 23:11:35,2021-03-27 23:11:35
+2911,2911,"437 Losong Panglima Perang,",,,Kuala Terengganu,Terengganu,21000,2025-04-12 22:26:21,2025-04-12 22:26:21
 167,167,"9, Jalan Anggerik Vanilla 31/99E,","Kota Kemuning,",,Shah Alam,Selangor,40460,2021-01-16 15:08:22,2021-01-16 15:08:22
 1294,1294,"31, SOLOK BATU UNJUR 3B, TAMAN BAYU PERDANA, 41200 KLANG, SELANGOR",,,Shah Alam,Selangor,41200,2023-03-02 18:17:41,2023-03-02 18:17:41
 2262,2262,91 Taman Bukit Belida,,,Seremban,Negeri Sembilan,70300,2024-08-14 19:20:52,2024-08-14 19:20:52
@@ -194,6 +206,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1951,1951,Tropicana Aman,,,Shah Alam,Selangor,40460,2024-04-21 14:16:54,2024-04-21 14:16:54
 1149,1149,No. 38,jalan damai budi 3,,alam damai,Kuala Lumpur,56000,2022-10-25 14:11:02,2022-10-25 14:11:02
 2586,2586,NO 9 JALAN IMPIAN 7E,AMBANG BOTANIC,,KLANG,Selangor,41200,2025-01-06 17:17:52,2025-01-06 17:17:52
+2839,2839,"412,","Jalan 18,",,Salak Selatan Baru,Kuala Lumpur,57100,2025-03-20 19:56:00,2025-03-20 19:56:00
 299,299,"No. 115-B,","Brook Drive 16, Rajang Park",,Sibu,Sarawak,96000,2021-01-27 20:50:07,2021-01-27 20:50:07
 2623,2623,"9 Jalan Aman Perdana 11H/KU5, Tmn Aman Perdana",,,Klang,Selangor,40150,2025-01-16 12:03:17,2025-01-16 12:03:17
 172,172,"68, Jalan Midah 19A, Taman Midah",,,Cheras,Selangor,56000,2021-01-16 16:17:28,2021-01-16 16:17:28
@@ -209,6 +222,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2338,2338,"No.509, Countryvale, Stephen Yong Road",,,kuching,Sarawak,93250,2024-09-11 20:46:34,2024-09-11 20:46:34
 733,733,"33, The Airie",,,BSD,Kuala Lumpur,52200,2021-04-19 16:22:02,2021-04-19 16:22:02
 512,512,"Continental Height Condo, CH0102, Jalan Batalong",,,Kuchai Lama,Kuala Lumpur,58200,2021-02-06 21:43:49,2021-02-06 21:43:49
+2881,2881,"Block B-13-3a, Damansara Foresta Condominium, Persiaran meranti,",,,Bandar Sri Damansara,Kuala Lumpur,52200,2025-04-03 15:33:36,2025-04-03 15:33:36
 1825,1825,24 JALAN SUMAZAU 1B/KU5,BANDAR BUKIT RAJA,,KLANG,Selangor,41050,2024-02-08 16:49:02,2024-02-08 16:49:02
 1382,1382,"No 21, Jalan Suakasih 3/3, Bandar Hussein Onn",,,Cheras,Selangor,43200,2023-05-06 11:57:18,2023-05-06 11:57:18
 1193,1193,"2A, Jln 11/9",Bandar Puteri,,Puchong,Selangor,47100,2022-12-01 17:45:29,2022-12-01 17:45:29
@@ -372,6 +386,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 139,139,"No.13, Taman Moyan, Jln Batu Kawa",,,Kuching,Sarawak,93250,2021-01-07 17:56:47,2021-01-07 17:56:47
 2306,2306,puchong,,,Puchong,Selangor,47180,2024-09-03 13:24:53,2024-09-03 13:24:53
 2516,2516,Lot 869 Jln embun Miri,Jln spring lutong baru,,Miri,Sarawak,98000,2024-11-26 12:53:07,2024-11-26 12:53:07
+2850,2850,"C-3A-02, La Vista Condo, Jalan Tempua 6,",,,Bandar Puchong Jaya,Selangor,47100,2025-03-25 16:05:33,2025-03-25 16:05:33
 157,157,"41, Lot 321, Lorong 5,","Tmn Gateway Height,",,Kota Samarahan,Sarawak,94300,2021-01-11 12:24:47,2021-01-11 12:24:47
 2095,2095,"Block A-25-03, Bennington Residences","1, Jalan Arena 1",,Setapak,Kuala Lumpur,53200,2024-06-25 07:54:03,2024-06-25 07:54:03
 772,772,"No 20, The Ara Bangsar",Jalan Kapas,,Bangsar Utama,Kuala Lumpur,59100,2021-05-02 21:32:33,2021-05-02 21:32:33
@@ -387,6 +402,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2719,2719,"D-05-06, Regina USJ 1, Jalan Subang Permai,",,,subang,Selangor,47500,2025-02-21 14:46:30,2025-02-21 14:46:30
 643,643,"No 17, Jalan Wangsa",2/2 Taman Wangsa Permai,,Kepong,Kuala Lumpur,52200,2021-03-30 18:00:12,2021-03-30 18:00:12
 1000,1000,"A-3-1 Starville Apartment,","Jalan USJ 19/6,",,Subang Jaya,Selangor,47630,2022-06-29 22:39:44,2022-06-29 22:39:44
+2826,2826,"No 50, Lorong Delima 14A/KS6, Bandar Parklands",,,Klang,Selangor,41200,2025-03-15 14:20:04,2025-03-15 14:20:04
 2336,2336,"No 25, Jalan EJ1, Taman Emas Jaya,",,,Dengkil,Selangor,43800,2024-09-11 16:49:39,2024-09-11 16:49:39
 2683,2683,"97, Jalan Jasa 32,","Rini Hills 2, Taman Mutiara Rini,",,Skudai,Johor,81300,2025-02-09 10:02:04,2025-02-09 10:02:04
 140,140,"No.14, Jln Kenny Hill",Tmn Kenny Heights,,Kuching,Sarawak,93350,2021-01-07 18:05:57,2021-01-07 18:05:57
@@ -394,6 +410,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 259,259,"33, Jln 38/38A",Taman Indah,,Kepong,Kuala Lumpur,52100,2021-01-22 14:39:12,2021-01-22 14:39:12
 1289,1289,"B-5-9 Aman Heights condo,","Jalan Bersatu,",,Taman Skudai Baru,Selangor,43300,2023-03-02 15:58:56,2023-03-02 15:58:56
 2093,2093,"B-13A-02, The Reach @ Tinggian Titiwangsa,",Jalan Tiara Titiwangsa,,Setapak,Kuala Lumpur,53200,2024-06-24 08:15:33,2024-06-24 08:15:33
+2902,2902,22A JALAN BATU NILAM 18,BANDAR BUKIT TINGGI 2,,KLANG,Selangor,41200,2025-04-11 13:35:04,2025-04-11 13:35:04
 2722,2722,"26, Lorong Seri Sejahtera 6, Taman Seri Sejahtera",,,Bukit Mertajam,Pulau Pinang,14000,2025-02-21 21:07:39,2025-02-21 21:07:39
 1089,1089,"47, jalan 4/149a, Taman Bukit Intan,",,,Kuala Lumpur,Kuala Lumpur,57000,2022-09-03 11:49:03,2022-09-03 11:49:03
 1630,1630,"45, Taman Pelangi,","Jalan Jabbar, Parit Jawa,",,muar,Johor,84150,2023-10-31 18:42:09,2023-10-31 18:42:09
@@ -415,9 +432,10 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2577,2577,"23, Jalan Ekoflora 1/11",Taman Ekoflora,,Johor Bahru,Johor,81100,2024-12-31 09:22:08,2024-12-31 09:22:08
 1256,1256,"50 Jalan Mutiara Barat 4,",Taman Mutiara,,cheras,Kuala Lumpur,56000,2023-02-14 14:22:47,2023-02-14 14:22:47
 227,227,"No 5, Jln Rimbunan Melor 1",Laman Rimbunan,,KL,Kuala Lumpur,52100,2021-01-20 20:03:12,2021-01-20 20:03:12
-2539,2539,"Akasa Residence, Tower C-22-9,","Jalan Akasa, Akasa Cheras Selatan 43300 Seri Kembangan, Selangor, Malaysia,43300""",2024-12-03 20:41:26,2024-12-03 20:41:26,,,,
+2539,2539,"Akasa Residence, Tower C-22-9,","Akasa Cheras Selatan 43300 Seri Kembangan, Selangor",,Seri Kembangan,Selangor,43300,2024-12-03 20:41:26,2024-12-03 20:41:26
 1503,1503,"10, Jalan Aman Perdana 5c/ku5, Taman Aman Perdana,",,,Klang,Selangor,41050,2023-08-11 18:48:13,2023-08-11 18:48:13
 2423,2423,"11, Jalan Anggerik Vanilla 31/98L, Kota Kemuning",,,Shah Alam,Selangor,40460,2024-10-03 15:15:07,2024-10-03 15:15:07
+2901,2901,"898, jalan Suriaman 3/2, Taman Suriaman 3",,,Seremban,Negeri Sembilan,71900,2025-04-11 09:43:24,2025-04-11 09:43:24
 515,515,"18, Taman Tentayu, Bukit Pelanduk, 71960, Chuah",,,Seremban,Negeri Sembilan,71960,2021-02-06 22:31:59,2021-02-06 22:31:59
 1455,1455,"58, Jalan 14/38D, Taman Sri Sinar",,,Kuala Lumpur,Kuala Lumpur,51200,2023-07-17 17:17:17,2023-07-17 17:17:17
 688,688,"No. 351, Lorong Bentong Makmur 19, Taman Bentong Makmur,",,,Bentong,Pahang,28700,2021-04-02 01:57:09,2021-04-02 01:57:09
@@ -431,6 +449,8 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 984,984,"No.33, Jalan BK 7A/1, Rimbun 2 Kinrara,","Bandar Kinrara,",,"Puchong,",Selangor,47180,2022-06-28 10:55:04,2022-06-28 10:55:04
 304,304,"6H,",Lorong Tun Ahmad Zaidi Adrule 52 D3,,Sibu,Sarawak,96000,2021-01-27 21:20:52,2021-01-27 21:20:52
 994,994,"Block i-7-3, Perdana Puri Apartment","Jalan Puri, Desa Aman Puri",,Kepong,Kuala Lumpur,52100,2022-06-28 23:27:26,2022-06-28 23:27:26
+2878,2878,No 21 Jalan Angsana SD2/2e Sri Damansara,,,Bandar Sri Damansara,Selangor,52200,2025-04-03 15:00:31,2025-04-03 15:00:31
+2836,2836,Jln Riangria,,,Taman Desa Tiara,Kuala Lumpur,58200,2025-03-20 16:25:24,2025-03-20 16:25:24
 2006,2006,"No 3, Jalan Dafodil 5, Gamuda Kemuning 25.7",,,Telok Panglima Garang,Selangor,42500,2024-05-06 19:57:06,2024-05-06 19:57:06
 269,269,"219, Taman Permai,","Jalan Kurau 6, Off Jalan Sg. Ujong,",,Seremban,Negeri Sembilan,70200,2021-01-22 21:56:35,2021-01-22 21:56:35
 1420,1420,"10B-8-11, Forestville, Lengkok Kelicap, Sungai Ara",,,Bayen Lepas,Pulau Pinang,11900,2023-06-09 21:09:23,2023-06-09 21:09:23
@@ -445,6 +465,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 442,442,"3A-02, Blk B, Dataran Prima Condo,",Jalan PJU 1/42,,Petaling Jaya,Selangor,47301,2021-02-03 00:05:24,2021-02-03 00:05:24
 1781,1781,"12,JALAN DEDAP 29",TAMAN JOHOR JAYA,,JOHOR BAHRU,Johor,81100,2024-01-14 10:36:49,2024-01-14 10:36:49
 1313,1313,"No 3, Jalan BRP 3/3c,",Sunway Rahman Putra,,Sungai Buloh,Selangor,46100,2023-03-11 08:14:27,2023-03-11 08:14:27
+2894,2894,"A-5-L2, Block A, Unit 5, Level 2, Ensyn Avenue, Lorong 13, Jalan Ensing Timur",,,kuching,Sarawak,93250,2025-04-09 11:17:23,2025-04-09 11:17:23
 2039,2039,"No.8, 2nd Floor,","Lorong Chew Siik Hiong 1,",,sibu,Sarawak,96000,2024-06-01 18:37:17,2024-06-01 18:37:17
 2241,2241,"A-13-09 SEMARAK CONDO,","JALAN ARIZA, TAMAN RAINTREE,",,BATU CAVES,Selangor,68100,2024-08-11 15:07:24,2024-08-11 15:07:24
 1376,1376,"SD 8, Bandar Sri Damansara",,,Kuala Lumpur,Kuala Lumpur,52200,2023-04-30 18:15:25,2023-04-30 18:15:25
@@ -521,7 +542,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2050,2050,No 15,Jalan Ekoflora 1/4,,JOHOR BAHRU,Johor,81100,2024-06-04 19:47:06,2024-06-04 19:47:06
 1982,1982,"Lot6250 SL49 Lorong Kuching City Mall West 6,93250 Kuching Sarawak",,,Kuching,Sarawak,93250,2024-05-01 16:22:08,2024-05-01 16:22:08
 262,262,"67, Jalan Daya 26",Taman Daya,,KL,Kuala Lumpur,52100,2021-01-22 19:57:17,2021-01-22 19:57:17
-2691,2691,"Lot 2623,1B/1 Jalan nasturium,",Pin fook garden,,Miri,Sarawak,98000,2025-02-11 09:56:05,2025-02-11 09:56:05
+2691,2691,"Lot 2623,1B/1 Jalan nasturium,","Pin fook garden\"",\N,Miri""",Sarawak,98000,2025-02-11 09:56:05,2025-02-11 09:56:05,,
 2223,2223,NO 21 LORONG KRISTAL 4F/KS9,BANDAR PARKLANDS,,KLANG,Selangor,41200,2024-08-08 10:55:48,2024-08-08 10:55:48
 573,573,"5-1, Jln 12/2, Pusat Bandar 16 Sierra,",,,Puchong,Selangor,47100,2021-02-10 23:43:29,2021-02-10 23:43:29
 1729,1729,"No.145, Jalan SS18/1B, SS18 Subang Jaya",,,subang,Selangor,47500 S,2023-12-23 22:56:24,2023-12-23 22:56:24
@@ -595,6 +616,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 657,657,"No 67 Jalan PJU10/17,",Sutera Damansara,,Petaling Jaya,Selangor,47830,2021-03-31 00:58:14,2021-03-31 00:58:14
 535,535,"56, Jalan SG 5/3",Taman Sri Gombak,,Batu Caves,Selangor,68100,2021-02-08 14:23:05,2021-02-08 14:23:05
 1076,1076,"2, Jalan Pandan Indah 5/18, Taman Pandan Indah,",,,Kuala Lumpur,Kuala Lumpur,55100,2022-08-29 18:24:03,2022-08-29 18:24:03
+2910,2910,"1001 Jalan Tok Adis, Kuala Ibai,",,,Kuala Terengganu,Terengganu,20400,2025-04-12 22:24:07,2025-04-12 22:24:07
 507,507,"No 8, Jalan Putra Bistari 2/5J,","Putra Height,",,Subang Jaya,Selangor,47650,2021-02-06 21:13:09,2021-02-06 21:13:09
 1938,1938,"531, Lorong Hong Hong 2A, Taman Hong Hong, 93250 Ku93250ching, Sarawak",,,Kuching,Sarawak,93250,2024-04-11 22:00:15,2024-04-11 22:00:15
 275,275,"A7,12 Glenview Villa, Taman Pinggiran Cheras,",,,Cheras.,Selangor,56100,2021-01-22 22:59:50,2021-01-22 22:59:50
@@ -609,12 +631,14 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 711,711,-,,,-,Selangor,-,2021-04-10 12:52:29,2021-04-10 12:52:29
 1287,1287,"No.420, Jln Dogan Lrg 10",,,Kuching,Sarawak,93250,2023-03-02 15:37:20,2023-03-02 15:37:20
 1865,1865,"9, Lorong orchard Villa 8, Taman orchard villa",,,Simpang Ampat,Pulau Pinang,14100,2024-03-13 19:22:19,2024-03-13 19:22:19
+2886,2886,"Jalan Anggerik 5/1,","Taman Anggerik,",,Johor Bahru,Johor,81200,2025-04-06 14:58:13,2025-04-06 14:58:13
 2687,2687,40 Major Drive,,,Rochedale,Johor,4123,2025-02-09 13:49:33,2025-02-09 13:49:33
 292,292,"3F,","46G, Ulu Sungai Merah",,Sibu,Sarawak,96000,2021-01-27 15:17:54,2021-01-27 15:17:54
 2197,2197,28-0-5 Jalan 1/108c,Taman Sungai Besi,,Salak Selatan,Kuala Lumpur,57100,2024-08-01 14:54:33,2024-08-01 14:54:33
 2294,2294,Saujana impian golf club,,,Kajang,Selangor,43000,2024-08-30 20:03:51,2024-08-30 20:03:51
 185,185,"52, Bougainvillea B/17,","Tmn Sri Bougainvillea, Bandar Seri Botani,",,Ipoh,Perak,31350,2021-01-16 23:01:49,2021-01-16 23:01:49
 653,653,"D-19-3A,",Piatinum Lake Condo (PV10),,Setapak,Kuala Lumpur,53300,2021-03-31 00:35:47,2021-03-31 00:35:47
+2866,2866,Lot 1636 Vista Perdana,,,Miri,Sarawak,98000,2025-03-30 10:16:43,2025-03-30 10:16:43
 527,527,"No 16, Jalan Kiara SD11/4",Bandar Sri Damansara,,KL,Kuala Lumpur,52200,2021-02-08 00:12:49,2021-02-08 00:12:49
 2268,2268,"15 Lorong Cegar 14, Taman Cegar",,,Simpang Ampat,Pulau Pinang,14100,2024-08-17 10:26:29,2024-08-17 10:26:29
 2793,2793,"Lot 23113, Jln Sek Keb Gong Badak, Gong Badak,",,,kuala Terengganu,Terengganu,21300,2025-03-04 15:26:54,2025-03-04 15:26:54
@@ -622,6 +646,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2596,2596,848 Stapok Utara,,,kuching,Sarawak,93250,2025-01-08 00:04:17,2025-01-08 00:04:17
 935,935,"No.1, Solok Pendamar Indah 3B, taman pendamar Indah",,,Klang,Selangor,42000,2022-05-01 19:54:04,2022-05-01 19:54:04
 1892,1892,"15, Jalan Abadi 8, Rini Homes 1, 81300, Skudai, Johor",,,Skudai,Johor,81300,2024-03-24 22:02:03,2024-03-24 22:02:03
+2877,2877,"23A-08, Suite Enesta Kepong, No. 201, Pintasan Segambut, Kepong",,,Kuala Lumpur,Kuala Lumpur,52000,2025-04-03 10:43:38,2025-04-03 10:43:38
 2662,2662,11 Edith Street,,,Sunnybank QLD,Johor,4109,2025-01-29 19:09:26,2025-01-29 19:09:26
 2135,2135,"No 12A, Jalan IG 1/4",Taman Indah Gemilang,,Batu Caves,Selangor,68100,2024-07-10 12:57:11,2024-07-10 12:57:11
 866,866,"Block B, The Saffron, off Jalan Sentul Indah",,,KL,Kuala Lumpur,51100,2022-02-28 10:52:05,2022-02-28 10:52:05
@@ -638,6 +663,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 783,783,No. 49 Jalan DJU 10/16D,Sutera Damansara,,Petaling Jaya,Selangor,47830,2021-11-13 10:56:58,2021-11-13 10:56:58
 152,152,"431, Lorong 4,","Taman Kuching City Mall, Jln Stephen Yong Kuching",,Kuching,Sarawak,93350,2021-01-11 11:41:47,2021-01-11 11:41:47
 1802,1802,"53, Jalan Setia Damai U13/15D, Setia Alam",,,Shah Alam,Selangor,40170,2024-01-27 12:45:55,2024-01-27 12:45:55
+2847,2847,"67, Jalan TPS 3/13",Taman Pelangi Semenyih,,Semenyih,Selangor,43500,2025-03-24 15:09:45,2025-03-24 15:09:45
 1228,1228,"45, jalan CV 4B/2, Selangor Cyber Valley",,,Cyberjaya,Selangor,63300,2023-01-14 10:10:01,2024-03-05 19:56:39
 1402,1402,7 USJ Heights 4/2A,,,Subang Jaya,Selangor,47600,2023-05-27 13:16:34,2023-05-27 13:16:34
 473,473,"A-09-5, 9 Bukit Utama, No 9, Persiaran Bukit Utama,",Bandar Utama,,Petaling Jaya,Selangor,47800,2021-02-03 14:53:36,2021-02-03 14:53:36
@@ -650,6 +676,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 579,579,"B-2-16, Jalan PJU 1/43,",Aman Suria,,Petaling Jaya,Selangor,47301,2021-02-24 18:34:25,2021-02-24 18:34:25
 162,162,"01-03, Maxim Alam Damai,","No.43 Jalan 9, Taman Len Seng,",,Cheras,Kuala Lumpur,56000,2021-01-14 16:14:01,2021-01-14 16:14:01
 2297,2297,Lot 2450 Taman Bayshore,Jalan Pantai 2,,Miri,Sarawak,98000,2024-08-31 09:05:54,2024-08-31 09:05:54
+2829,2829,Fairview Residence,,,Bayan Lepas,Pulau Pinang,11900,2025-03-15 15:22:18,2025-03-15 15:22:18
 735,735,"8, Jalan Anggerik Oncidium 31/73A",Kota Kemuning,,Shah Alam,Selangor,40460,2021-04-20 18:43:08,2021-04-20 18:43:08
 1883,1883,"21,Jalan 8/149D,",Zone M,,Bandar Baru Sri Petaling,Kuala Lumpur,57000,2024-03-21 23:45:21,2024-03-21 23:45:21
 238,238,"12-7, Prima Tiara 1, No.4, Jln 6/38A",Taman SribSinar,,KL,Kuala Lumpur,52100,2021-01-21 14:40:49,2021-01-21 14:40:49
@@ -703,7 +730,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1122,1122,Bandar Parklands Klang,,,Klang,Selangor,420000,2022-09-30 01:03:08,2022-09-30 01:03:08
 1870,1870,"19, jln pp 5/2, tmn putra prima",,,puchong,Selangor,47130,2024-03-15 16:14:51,2024-03-15 16:14:51
 2073,2073,"No 10, Jalan Setia Indah U13/12S, Setia Alam",,,Shah Alam,Selangor,40170,2024-06-14 18:37:24,2024-06-14 18:37:24
-1940,1940,"28,Townhouse, Block H, L215, Jalan Dogan, 93250 Kuching, Sarawak.  ",,,Kuching,Sarawak,93250,2024-04-11 22:13:09,2024-04-11 22:13:09
+1940,1940,"28,Townhouse, Block H, L215, Jalan Dogan, 93250 Kuching, Sarawak.  \"",\N,\N,Kuching""",Sarawak,93250,2024-04-11 22:13:09,2024-04-11 22:13:09,,,
 751,751,"No 15, Jalan Taming Ria 3, Taman Taming Ria Balakong",,,Cheras,Selangor,43300,2021-04-24 15:31:39,2021-04-24 15:31:39
 217,217,"100, Jalan Hujan Bubuk 6, Taman OUG,",Taman OUG,,OUG,Kuala Lumpur,58200,2021-01-20 11:58:10,2021-01-20 11:58:10
 2456,2456,"Lot 1507, Bulan 1, Pujut 7D,",,,Miri,Sarawak,98000,2024-10-20 12:56:05,2024-10-20 12:56:05
@@ -736,6 +763,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1600,1600,"15, Lrg Bkt Minyak 17",Tmn Bkt Minyak Indah,,Bukit Mertajam,Pulau Pinang,14000,2023-10-17 10:36:53,2023-10-17 10:36:53
 1742,1742,"28, Jln Ponderosa 3/3",Tmn Ponderosa,,Johor Bahru,Johor,81100,2023-12-31 11:20:38,2023-12-31 11:20:38
 2670,2670,"12 Jalan Opus 3, Perdana Lakeview East Cyber 7,",,,Cyberjaya,Selangor,63000,2025-02-02 20:54:39,2025-02-02 20:54:39
+2844,2844,"No 20 Jalan Aliff Harmoni 2/2,",Taman Damansara Aliff,,Johor Bahru,Johor,81200,2025-03-22 15:52:13,2025-03-22 15:52:13
 2760,2760,"Lot 56220 (PT20291), Jalan Undang Kg Mak Kemas",,,Bukit Payong,Terengganu,21400,2025-02-26 23:01:25,2025-02-26 23:01:25
 2708,2708,"Lot 3304, Desa Bahagia Ph.3,",Bandar Permyjaya,,Miri,Sarawak,98000,2025-02-16 12:52:10,2025-02-16 12:52:10
 313,313,"6E,",Lorong 9 Jalan Maludan,,Sibu,Sarawak,96000,2021-01-30 22:48:31,2021-01-30 22:48:31
@@ -775,8 +803,10 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2620,2620,"7, Eco Ardence 52P",,,Shah Alam,Selangor,40170,2025-01-15 18:44:56,2025-01-15 18:44:56
 352,352,"8, Jalan Midah 4C, Taman Midah",,,Cheras,Kuala Lumpur,56000,2021-01-31 16:04:12,2021-01-31 16:04:12
 563,563,"31, Jalan PU 1/1C,",Taman Puchong Utama,,Puchong,Selangor,47140,2021-02-10 23:06:25,2021-02-10 23:06:25
+2855,2855,"30-Reed, 1,","Jalan Tasik Damai, Lake Fields,",,"Sg. Besi,",Kuala Lumpur,57000,2025-03-25 22:00:07,2025-03-25 22:00:07
 1642,1642,"58, Lembah Taman Bukit 1",Taman Bukit,,Bukit Mertajam,Pulau Pinang,14000,2023-11-04 15:36:42,2023-11-04 15:36:42
 962,962,"46, Lorong Stampin Tengah 5/3a",,,Kuching,Sarawak,93350,2022-05-28 10:57:59,2022-05-28 10:57:59
+2864,2864,94 JLN PUTERI 6/5 BANDAR PUTERI  SELANGOR,,,PUCHONG,Selangor,47100,2025-03-29 14:35:00,2025-03-29 14:35:00
 1187,1187,"C-12-11, KOI KINRARA","JALAN PIPIT, BUKIT TANDANG,",,Puchong Jaya,Selangor,47190,2022-12-01 17:17:44,2022-12-01 17:17:44
 1565,1565,"No 2, Jalan treh 10/1",taman Sri treh,,Muar,Johor,84000,2023-10-02 00:13:13,2023-10-02 00:13:13
 1515,1515,"47,Jalan CV 1/1E,Casa View Cybersouth",,,Dengkil,Selangor,43800,2023-08-26 12:19:45,2023-08-26 12:19:45
@@ -797,16 +827,19 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1559,1559,"D11-13,Kip Suria Damansara",,,Kuala Lumpur,Kuala Lumpur,52200,2023-09-30 13:22:25,2023-09-30 13:22:25
 1903,1903,"no 24,jalan 9/1A,taman kepong indah",,,Kuala Lumpur,Kuala Lumpur,52100,2024-03-30 13:44:12,2024-03-30 13:44:12
 1696,1696,"3124, Taman Punca Emas",,,Seremban,Negeri Sembilan,70100,2023-12-12 14:41:59,2023-12-12 14:41:59
+2898,2898,"27, Jalan Rimba 2/3, The  Woodlands",Horizon Hills,,Iskandar Puteri,Johor,79100,2025-04-10 19:17:49,2025-04-10 19:17:49
 223,223,"A-11-7, Casa Idaman","Jalan 1/12D, Kampung Batu Muda",,KL,Kuala Lumpur,51100,2021-01-20 16:54:41,2021-01-20 16:54:41
 1016,1016,"891, Lorong 1313, Tabuan Jaya Baru 1,",,,Kuching,Sarawak,93250,2022-07-08 17:04:45,2022-07-08 17:04:45
 980,980,"15, Jalan Bentara 7/5",Mahkota Cheras,,Cheras,Selangor,43200,2022-06-18 13:02:23,2022-06-18 13:02:23
 629,629,"32, Jalan Meranti Bukit",Sierramas West,,Sungai Buloh,Selangor,47000,2021-03-29 13:05:31,2021-03-29 13:05:31
+2824,2824,"36C, Jalan Sembilang, Taman Tenaga",,,Cheras,Kuala Lumpur,56000,2025-03-15 13:27:27,2025-03-15 13:27:27
 1120,1120,"11, Jalan Kiara 12/ ks 6, Bandar botanic",,,Klang,Selangor,41200,2022-09-30 00:56:39,2022-09-30 00:56:39
 2682,2682,123,,,Runcorn,Johor,4113,2025-02-08 20:20:50,2025-02-08 20:20:50
 677,677,"B-7-2A, Jalan Metro Perdana 2, Taman Usahawan,",,,Kepong,Kuala Lumpur,52100,2021-04-01 16:33:26,2021-04-01 16:33:26
 1180,1180,"Park Residency Cheras No.12, Taman Seri Cahaya",,,Sri Kembangan,Selangor,43300,2022-11-12 10:32:37,2022-11-12 10:32:37
 401,401,"26, Jalan Bukit Desa 6",,,Taman Bukit Desa,Kuala Lumpur,58100,2021-02-01 00:34:12,2021-02-01 00:34:12
 382,382,"No 6, Jalan SL13/6, Bandar Sungai Long",,,Kajang,Selangor,43000,2021-01-31 20:38:01,2021-01-31 20:38:01
+2835,2835,1317 Lorong 7A Taman Tiya Vista,,,Kuching,Sarawak,93350,2025-03-18 14:37:32,2025-03-18 14:37:32
 2665,2665,Unit 58 433 Watson road,Qld,,Acacia Ridge,Johor,4110,2025-01-31 20:28:55,2025-01-31 20:28:55
 997,997,54 Jalan Puteri 6/3,,,Puchong,Selangor,47100,2022-06-29 22:26:41,2022-06-29 22:26:41
 2408,2408,"1, Jalan Austin Heights 2/1",Taman Mount Austin,,Johor Bahru,Johor,81100,2024-09-29 22:37:05,2024-09-29 22:37:05
@@ -847,6 +880,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1570,1570,"THE RIYANG 30-3, 28 JALAN GEMBIRA, TAMAN GEMBIRA",,,Kuala Lumpur,Kuala Lumpur,58200,2023-10-02 15:16:54,2023-10-02 15:16:54
 1891,1891,No 10 Jln pahlawan 14 Tmn Ungku Tun Aminah 81300 Skudai Johor,,,Skudai,Johor,81300,2024-03-24 21:46:48,2024-03-24 21:46:48
 334,334,"No.12, Jalan Seri Taming 1B, Taman Seri Tanming",,,Bt 9 cheras,Selangor,43200,2021-01-31 09:02:29,2021-01-31 09:02:29
+2876,2876,"No 9, Jalan 2,, Taman Puncak Melawati, 53100 Kuala Lumpur",,,Sunway Rydgeway,Kuala Lumpur,53100,2025-04-02 19:24:38,2025-04-02 19:24:38
 1869,1869,"9, Jln ph 1/5 Taman Puchong hartamas",,,Puchong,Selangor,47120,2024-03-14 18:35:25,2024-03-14 18:35:25
 2256,2256,"Lot 2938 pujut 7c ,kelinai 7",,,miri,Sabah,98000,2024-08-14 15:18:56,2024-08-14 15:18:56
 419,419,"No 8, Jalan Kemuning Indah 32/1430,","Kemuning Utama, Seksyen 32,",,Shah Alam,Selangor,40460,2021-02-02 00:23:12,2021-02-02 00:23:12
@@ -886,6 +920,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1361,1361,"Block A-10-6,Laman Scenaria Kiara 6, Jalan 6/38a,Taman Sri Sinarï¼ŒSegambut",,,Kuala Lumpur,Kuala Lumpur,51200,2023-04-15 11:08:39,2023-04-15 11:08:39
 611,611,"No 7 Jalan Aknatik, 13/77C, Taman D'kanyagan, Seksyen 13",,,Shah Alam,Selangor,40150,2021-03-27 02:48:10,2021-03-27 02:48:10
 555,555,"B-16-03A, Kinrara Mas Condo,","No3, Jalan Mas,",,"Bukit Jalil,",Kuala Lumpur,58200,2021-02-10 22:22:40,2021-02-10 22:22:40
+2865,2865,"A0906, Zefer Hill Residence, Jalan Pipit 4",,,"Puchong, S",Selangor,47170,2025-03-29 14:56:02,2025-03-29 14:56:02
 560,560,"No 8, Jalan PUI/IC ,","Taman Puchong Utama,",,Puchong,Selangor,47100,2021-02-10 22:53:29,2021-02-10 22:53:29
 82,,,,,,,,,
 2388,2388,"111 Laman Jentayu, Persiaran Laman Setia",Taman Laman Setia,,Iskandar Puteri,Johor,81550,2024-09-27 16:46:47,2024-09-27 16:46:47
@@ -926,6 +961,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 723,723,No & Jalan Reburung 7,Ambang Botanic,,Klang,Selangor,41200,2021-04-14 01:35:41,2021-04-14 01:35:41
 1897,1897,"236, La Promenade 7F",,,Kuching,Sarawak,94300,2024-03-26 11:31:13,2024-03-26 11:31:13
 410,410,"30, Jalan Balakong Jaya 8, Taman Balakong Jaya",,,Seri Kembangan,Selangor,43200,2021-02-01 01:06:19,2021-02-01 01:06:19
+2900,2900,"Lot 362, Kg Mengabang Tengah, Lorong Budiman 5, Batu Buruk,",,,Kuala Terengganu,Terengganu,20400,2025-04-10 21:14:28,2025-04-10 21:14:28
 2360,2360,"6, JALAN GITA 4/4","THE VALLEY WEST 2, HORIZON HILLS",,Iskandar Puteri,Johor,79100,2024-09-19 10:07:49,2024-09-19 10:07:49
 2361,2361,"6, JALAN GITA 4/4",HORIZON HILLS,,ISKANDAR PUTERI,Johor,79100,2024-09-19 10:32:01,2024-09-19 10:32:01
 670,670,"C-12-01, Koi Tropika Condo",Jalan Puchong Batu 131/2,,Puchong,Selangor,47100,2021-03-31 17:37:19,2021-03-31 17:37:19
@@ -955,6 +991,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 967,967,"216,jln 11a, tmn salak selatan baru, 57100 kuala Lumpur",,,Kuala Lumpur,Kuala Lumpur,57100,2022-05-31 21:17:25,2022-05-31 21:17:25
 2346,2346,"45, Jalan USJ 5/1C,",,,subang,Selangor,47600,2024-09-13 18:37:41,2024-09-13 18:37:41
 904,904,"7D,",Ulu Sg. Merah 18D,,Sibu,Sarawak,96000,2022-03-31 17:34:27,2022-03-31 17:34:27
+2862,2862,"38, Jalan Puncak utama 2/2",,,KAJANG,Selangor,43000,2025-03-27 16:59:04,2025-03-27 16:59:04
 1027,1027,No. 42 Jalan Rimbunan Melati 1,Laman Rimbunan,,Kepong,Kuala Lumpur,52100,2022-07-16 17:46:12,2022-07-16 17:46:12
 1744,1744,44 LORONG BENDAHARA 4/KS7,TAMAN SEJATI,,KLANG,Selangor,41200,2024-01-02 12:16:13,2024-01-02 12:16:13
 2329,2329,45 Jalan GR 3/2 Jacaranda Garden Residence,,,Cyberjaya,Selangor,62000,2024-09-10 16:58:35,2024-09-10 17:41:55
@@ -975,6 +1012,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 363,363,"A1508, Pandan Height Condo",,,Pandan Perdana,Kuala Lumpur,55300,2021-01-31 17:07:44,2021-01-31 17:07:44
 551,551,"33, Jalan Merak 3,","Bandar Puchong Jaya,",,Puchong,Selangor,47100,2021-02-10 21:52:19,2021-02-10 21:52:19
 314,314,"1A,",Jalan Au Yong Selatan,,Sibu,Sarawak,96000,2021-01-30 22:53:41,2021-01-30 22:53:41
+2842,2842,"95,Jalan Mewah Ria 4/4,","Taman Bukit Mewah,",,Johor Bahru,Johor,81200,2025-03-22 12:00:34,2025-03-22 12:00:34
 79,,,,,,,,,
 543,543,"26, Jalan Meranti",SD 13/7,,Bandar Sri Damansara,Kuala Lumpur,52200,2021-02-08 15:20:33,2021-02-08 15:20:33
 2505,2505,"No 12, Jalan Desa Melawati 1A,",,,Desa Melawati,Kuala Lumpur,53100,2024-11-17 15:47:24,2024-11-17 15:47:24
@@ -995,6 +1033,8 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 840,840,"NO17, Jln Bk5c/1A",Bandar Kinrara,,Puchong,Selangor,47180,2022-01-27 09:22:43,2022-01-27 09:22:43
 1771,1771,"No.9-10, Jalan Kasawari 21/3",Taman Sg.Abong Permai,,Muar,Johor,84000,2024-01-09 11:35:52,2024-01-09 11:35:52
 1705,1705,793 Jalan Hijayu 1/34 Bandar Sri sendayan,,,Seremban,Negeri Sembilan,70900,2023-12-13 12:33:07,2023-12-13 12:33:07
+2872,2872,"Lot 2827, Jalan Berembang 7",", Jalan Pujut 7c",,Miri,Sarawak,98000,2025-03-31 13:26:43,2025-03-31 13:26:43
+2884,2884,"No. 49,","Jalan Fortuna,",,Sarikei,Sarawak,96100,2025-04-05 14:07:28,2025-04-05 14:07:28
 1817,1817,"No14, jalan teluk jambu 1B, taman alam indah",,,Shah Alam,Selangor,40400,2024-02-02 17:47:52,2024-02-02 17:47:52
 1848,1848,"50, Jalan Sumazau 3A/KU5, Bandar Bukit Raja, 41050",,,Klang,Selangor,40150,2024-03-06 21:46:08,2024-03-06 21:46:08
 1030,1030,"No16, Jalan Aman Ceria 3,",,,"Bandar Tropicana Aman,",Selangor,42500,2022-07-20 20:12:45,2022-07-20 20:12:45
@@ -1007,7 +1047,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2519,2519,NO 2 JALAN SAMBAU 15,TAMAN CHI LIUNG,,KLANG,Selangor,41200,2024-11-27 10:22:51,2024-11-27 10:22:51
 786,786,Kuching,,,Kota Samarahan,Sarawak,93250,2021-11-22 14:22:52,2021-11-22 14:22:52
 864,864,"1623, Lorong BDC E6, Taman Satia Jaya",,,Kuching,Sarawak,93350,2022-02-27 16:50:01,2022-02-27 16:50:01
-1985,1985,"NO. 562, LORONG 1G, TAMAN SRI MOYAN 2 PHASE 3 OFF JALAN BATU KAWA-MATANG",,,Kuching,Sarawak,93250,2024-05-01 16:45:26,2024-05-01 16:45:26
+1985,1985,"NO. 562, LORONG 1G, TAMAN SRI MOYAN 2 PHASE 3 OFF JALAN BATU KAWA-MATANG\"",\N,\N,Kuching""",Sarawak,93250,2024-05-01 16:45:26,2024-05-01 16:45:26,,,
 758,758,"NO.994, LOT 5350,LI LOK GARDEN JALAN STAPOK",,,KUCHING,Sarawak,93250,2021-04-27 20:03:35,2021-04-27 20:03:35
 815,815,"26 Jalan Setianusantara U13/19F,","Setia Eco Park, Seksyen U13,",,Shah Alam,Selangor,40170,2022-01-08 11:20:03,2022-01-08 11:20:03
 1809,1809,"12 JALAN BU 11/16,",BANDAR UTAMA,,Petaling Jaya,Selangor,47800,2024-01-30 22:20:11,2024-01-30 22:20:11
@@ -1019,6 +1059,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 710,710,"No 22A, Jalabn Sungai Beranarg 32/58, Bukit Rimau",,,Shah Alam,Selangor,40460,2021-04-10 12:50:00,2021-04-10 12:50:00
 2076,2076,No 15 Jalan Keleb Golf 13/5B Seksyen 13,,,Shah Alam,Selangor,40100,2024-06-14 19:01:03,2024-06-14 19:01:03
 356,356,"45, Jalan Jintan, Taman Supreme",,,Cheras,Kuala Lumpur,56200,2021-01-31 16:23:35,2021-01-31 16:23:35
+2871,2871,"LOT 860,5TH MILE",", JLN RIAM",,Miri,Sarawak,98000,2025-03-31 12:57:11,2025-03-31 12:57:11
 2274,2274,"52A, jalan eco majestic 2/1B, eco majestic","Ecomajestic,",,sememyih selangor,Selangor,43500,2024-08-19 13:25:13,2024-08-19 13:25:13
 888,888,"18, Jalan Daun Inai 1",Sunway SPK Damansara,,KL,Kuala Lumpur,52200,2022-03-19 11:32:32,2022-03-19 11:39:38
 1560,1560,"Wedtside 3, Jalan Residen Utama, Desa Parkcity",,,Kuala Lumpur,Kuala Lumpur,52200,2023-09-30 13:42:06,2023-09-30 13:42:06
@@ -1087,6 +1128,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1074,1074,No 1A,Lorong Deshon Timur 17-A,,Sibu,Sarawak,96000,2022-08-25 17:58:30,2022-08-25 17:58:30
 1391,1391,"B9-03, Glenview Villa Condo,","Jalan 49 Off Jalan Kuari, Tmn Pinggiran Cheras,",,cheras,Kuala Lumpur,56100,2023-05-15 17:01:46,2023-05-15 17:01:46
 2807,2807,89 Sanctuary Villa,,,Bintulu,Sarawak,97000,2025-03-07 15:44:33,2025-03-07 15:44:33
+2887,2887,"29  Jalan SL6/10, Bandar Sungai Long,",,,KAJANG,Selangor,43000,2025-04-06 17:02:59,2025-04-06 17:02:59
 1713,1713,2 LORONG SANGGUL 2C,BANDAR PUTERI,,KLANG,Selangor,41200,2023-12-18 18:18:59,2023-12-18 18:18:59
 2705,2705,"31, Jalan Austin Heights 1/34",Taman Mount Austin,,Johor Bahru,Johor,81100,2025-02-15 16:28:11,2025-02-15 16:28:11
 114,114,"No.25A Jalan Au Yong, 96000 Sibu, Sarawak.",,,Sibu,Sarawak,96000,2025-02-17 10:12:02,2025-02-17 10:12:02
@@ -1119,7 +1161,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 857,857,"No 7, Jalan USJ 16/2P",UEP Subang Jaya,,Subang Jaya,Selangor,47630,2022-02-24 11:59:47,2022-02-24 11:59:47
 1117,1117,"NO 71LORONG PJS 10/24A,BANDAR SRI SUBANG",,,Petaling Jaya,Selangor,46100,2022-09-29 23:21:36,2022-09-29 23:21:36
 2328,2328,"2836, MILEA PHASE 2 RESIDENCES",PARKCITY EASTWOOD,,Miri,Sarawak,98000,2024-09-10 15:52:28,2024-09-10 15:52:28
-2300,2300,"No.47, Lorong 4, Taman Stakan Waja Lot 5598 Block 24 Muara Tuang Land District",,,kuching,Sarawak,94300,2024-09-01 00:41:13,2024-09-01 00:41:13
+2300,2300,"No.47, Lorong 4, Taman Stakan Waja Lot 5598 Block 24 Muara Tuang Land District\"",\N,\N,kuching""",Sarawak,94300,2024-09-01 00:41:13,2024-09-01 00:41:13,,,
 1285,1285,"No.634, Lort 417, RPR Batu Kawa, Jln Batu Kawa",,,Kuching,Sarawak,93250,2023-03-02 15:27:32,2023-03-02 15:27:32
 576,576,-,,,-,Kuala Lumpur,-,2021-02-23 13:03:15,2021-02-23 13:03:15
 806,806,"1133, Lorong TBK 4-2/8, Taman Bukit Kepayang",Seremban,,Seremban,Negeri Sembilan,70200,2021-12-18 18:33:47,2021-12-18 18:33:47
@@ -1148,6 +1190,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2318,2318,"No 12, Taman Yen Yen",,,Kuching,Sarawak,93050,2024-09-07 08:44:47,2024-09-07 08:44:47
 469,469,"25, Jalan Cecawi 6/22,",Kota Damansara,,Petaling Jaya,Selangor,47810,2021-02-03 14:19:00,2021-02-03 14:19:00
 1702,1702,119 JALAN SAUJANA INDAH 2 TAMAN SAUJANA INDAH,,,Seremban,Negeri Sembilan,70300,2023-12-13 12:13:59,2023-12-13 12:13:59
+2908,2908,718 jalan Forest Height 4/6 precinct Taman Forest Bayu,,,Seremban,Negeri Sembilan,70450,2025-04-11 21:07:44,2025-04-11 21:07:44
 2121,2121,718 jalan Forest Height 4/6 precinct Taman Forest Bayu,,,Seremban,Negeri Sembilan,70450,2024-07-04 18:08:38,2024-07-04 18:08:38
 212,212,"NO. 49, Jalan Manisan",Bandar Baru Sri Petaling,,Sri Petaling,Kuala Lumpur,57000,2021-01-19 03:15:43,2021-01-19 03:15:43
 267,267,"22-3, The Breezeway, 12A, Persiaran Residen",Desapark City,,KL,Kuala Lumpur,52200,2021-01-22 21:45:27,2021-01-22 21:45:27
@@ -1172,6 +1215,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 118,,,,,,,,,
 386,386,"b-11-3a, Endah Puri Condominium, No 15, Jalan 3/149 E",,,Sri Petaling,Kuala Lumpur,57000,2021-01-31 23:10:28,2021-01-31 23:10:28
 290,290,"11A, Jalan PJU 10/16",SUTERA Damansara,,Petaling Jaya,Selangor,47830,2021-01-24 22:55:49,2021-01-24 22:55:49
+2896,2896,Desa park city,,,Kuala Lumpur,Kuala Lumpur,52200,2025-04-10 16:47:42,2025-04-10 16:47:42
 991,991,"No.50,Jalan Pendamar Indah 1B,Taman Pendamar Indah,",,,Port Klang.,Selangor,42000,2022-06-28 11:29:38,2022-06-28 11:29:38
 387,387,"16, Jalan Cahaya 5",,,Taman Salak Selatan,Kuala Lumpur,57100,2021-01-31 23:15:18,2021-01-31 23:15:18
 2406,2406,"no 301 ,lot 1262 ,Lrg 5e1 ,Taman. Janting ,off jln batu kawa ,",,,kuching,Sarawak,93250,2024-09-29 14:46:43,2024-09-29 14:46:43
@@ -1226,6 +1270,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2517,2517,"J0412, Tower J, Mutiara Ville Residence,",,,Cyberjaya,Selangor,63000,2024-11-27 04:47:28,2024-11-27 04:47:28
 1936,1936,"33 , JALAN TPS 1/12 , TAMAN PELANGI SEMENYIH",,,SEMENYIH,Selangor,43500,2024-04-08 19:29:09,2024-04-08 19:29:09
 2005,2005,7 kee yang theatre arcade 94800 simunjan,,,Kuching,Sarawak,94800,2024-05-06 17:43:44,2024-05-06 17:43:44
+2841,2841,"C-10-01, Jadite Suites, Jade Hills",,,KAJANG,Selangor,43000,2025-03-21 16:17:30,2025-03-21 16:17:30
 2436,2436,"A-09-09, Koi Kinrara Suites, Jln. Pipit, Bkt. Tandang, 47190 Puchong, Selangor",,,Puchong,Selangor,47190,2024-10-11 20:30:36,2024-10-11 20:30:36
 2359,2359,"Lot 262, Jalan Nipah 5,","Jalan Jee Foh 7, Krokop,",,Miri,Sarawak,98000,2024-09-18 08:41:07,2024-09-18 08:41:07
 987,987,"91, Lorong Delima 4a, Bandar Parkland,",,,Klang,Selangor,41200,2022-06-28 11:13:10,2022-06-28 11:13:10
@@ -1327,7 +1372,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2051,2051,"No 1, Jalan Sg Rincing 32/63C Bukit Rimau",,,Shah Alam,Selangor,40470,2024-06-04 21:23:05,2024-06-04 21:23:05
 2315,2315,"Lot 149, Jalan Eastern Park",,,Kuching,Sarawak,93250,2024-09-06 13:42:03,2024-09-06 13:42:03
 482,482,"No 1, Jalan BRD 6/9b",Bukit Rahman Putra,,Sungai Buloh,Selangor,47000,2021-02-05 22:44:28,2021-02-05 22:44:28
-1298,1298,"11, Jalan Hang Nadim 35/35A SEKSYEN 35 ALAM IMPIAN",,,Klang,Selangor,420000,2023-03-02 18:24:04,2023-03-02 18:24:04
+1298,1298,"11, Jalan Hang Nadim 35/35A SEKSYEN 35 ALAM IMPIAN\"",\N,\N,Klang""",Selangor,420000,2023-03-02 18:24:04,2023-03-02 18:24:04,,,
 350,350,"No 14, Jalan Damai Rasa 16, Alam Damai",,,Cheras,Kuala Lumpur,56000,2021-01-31 15:49:16,2021-01-31 15:49:16
 757,757,-,,,-,Selangor,-,2021-04-27 19:50:16,2021-04-27 19:50:16
 1929,1929,"22b, cloud estate",,,kuching,Sarawak,93150,2024-04-06 13:11:57,2024-04-06 13:11:57
@@ -1345,6 +1390,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 83,,,,,,,,,
 1577,1577,"No.69, off Jalan Tuan Haji said,","lake height,",,Seremban,Negeri Sembilan,70100,2023-10-03 22:01:28,2023-10-03 22:01:28
 2243,2243,31 JALAN PRIMIA IMPIAN 4 52100 KEPONG KL,,,Kuala Lumpur,Kuala Lumpur,52100,2024-08-12 12:16:44,2024-08-12 12:16:44
+2905,2905,"29a-12a-10, Golden triangle",jalan  paya terubong,,Bayan Lepas,Pulau Pinang,11900,2025-04-11 19:17:25,2025-04-11 19:17:25
 1134,1134,"8A, Lane 13",Rejang Park,,Sibu,Sarawak,96000,2022-10-01 13:08:56,2022-10-01 13:08:56
 1127,1127,"31, Jalan Jade Hills 11/1",,,Kajang,Selangor,43000,2022-09-30 18:08:26,2022-09-30 18:08:26
 235,235,"No.6, Jalan 21/38A",Tamsn Sri Sinar,,KL,Kuala Lumpur,51200,2021-01-21 13:27:30,2021-01-21 13:27:30
@@ -1396,6 +1442,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2279,2279,"18, Lorong Harmoni 4, Taman BM Indah,",,,Bukit Mertajam,Pulau Pinang,14000,2024-08-24 11:46:41,2024-08-24 11:46:41
 430,430,"No 1, Jalan Sungai Berang 32/57A,","ukit Rimau,",,Shah Alam,Selangor,40460,2021-02-02 23:08:09,2021-02-02 23:08:09
 303,303,"2C, Lorong 3A",Bukit Penyau,,Sibu,Sarawak,96000,2021-01-27 21:16:55,2021-01-27 21:16:55
+2888,2888,"10, Jalan Kemuning Utama Palma 33/37E",,,Shah Alam,Selangor,40400,2025-04-07 15:42:03,2025-04-07 15:42:03
 1649,1649,"16, Jalan USJ 3A/4,",,,"Subang Jaya, Selangor",Selangor,47610,2023-11-06 20:04:54,2023-11-06 20:04:54
 534,534,"No. 103, Jalan BRP 1/13",Bukit Rahman Putra,,Sungai Buloh,Selangor,47000,2021-02-08 01:09:19,2021-02-08 01:09:19
 964,964,"No 11 Lorong Sentosal, Taman Chi Liong",,,Klang,Selangor,420000,2022-05-30 23:09:30,2022-05-30 23:09:30
@@ -1407,6 +1454,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2568,2568,"42, Jalan Pulai Mutiara 11/11",Taman Pulai Mutiara 2,,Iskandar Puteri,Johor,81200,2024-12-22 11:45:08,2024-12-22 11:45:08
 602,602,"18, Jalan Jade Hills 10/4, Jade Hills 43000, Kajang Selangor.",,,Kajang,Selangor,43000,2021-03-26 18:16:52,2021-03-26 18:16:52
 2479,2479,"No.6 Jalan Damar SD15/4A,",,,Bandar Sri Damansara,Kuala Lumpur,52200,2024-11-03 10:10:54,2024-11-03 10:10:54
+2863,2863,"491 Jalan 5/67,  , Selangor",,,Petaling Jaya,Selangor,46000,2025-03-29 12:27:59,2025-03-29 12:27:59
 1714,1714,"35, Jalan Aman Bayan 5, Bandar Tropicana Aman",,,Telok Panglima Garang,Selangor,42500,2023-12-20 04:48:36,2023-12-20 04:48:36
 619,619,pending,,,pending,Negeri Sembilan,pending,2021-03-27 13:14:58,2021-03-27 13:14:58
 618,618,pending,,,pending,Negeri Sembilan,pending,2021-03-27 13:12:48,2021-03-27 13:12:48
@@ -1438,6 +1486,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 719,719,"66, Jalan Harmoni 4",Taman Pengkalan Harmoni,,Ipoh,Perak,31650,2021-04-12 17:39:58,2021-04-12 17:39:58
 1532,1532,"No 9, Jalan USJ 6/2N",,,Subang Jaya,Selangor,47610,2023-09-11 21:45:00,2023-09-11 21:45:00
 1582,1582,Setia Impian 2P,,,shah alam,Selangor,40170,2023-10-05 20:20:59,2023-10-05 20:20:59
+2848,2848,"No 17, Jalan TTS 7/1",Taman Tasik Semenyih,,Semenyih,Selangor,43500,2025-03-24 15:23:28,2025-03-24 15:23:28
 1072,1072,"No11, Lorong Temenggung 39D, Taman Sejahtera,",,,Klang,Kuala Lumpur,41200,2022-08-22 09:06:07,2022-08-22 09:06:07
 2272,2272,Skyvilla Residence,,,kuching,Sarawak,93250,2024-08-18 20:52:28,2024-08-18 20:52:28
 80,,,,,,,,,
@@ -1449,6 +1498,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 943,943,"7 Jln SP 2/3, Tmn Segar Perdana, 43200 Cheras, Selangor",,,Cheras,Selangor,43200,2022-05-08 23:08:43,2022-05-08 23:08:43
 1133,1133,6A,Jalan Serai,,Sibu,Sarawak,96000,2022-10-01 13:01:08,2022-10-01 13:01:08
 411,411,"No. 16, Jalan 3/149G, Taman Sri Endah",,,Sri Petaling,Kuala Lumpur,57000,2021-02-01 01:13:43,2021-02-01 01:13:43
+2879,2879,"B-18-13, Residensi Laman Sari, Taman Batu View, Jalan Batu View,",,,Kuala Lumpur,Kuala Lumpur,68100,2025-04-03 15:20:42,2025-04-03 15:20:42
 1466,1466,"NO. 9, JALAN NPT 1A/7, TAMAN NUSAPUTRA T",,,Puchong,Selangor,47130,2023-07-25 01:20:55,2023-07-25 01:20:55
 846,846,No 2 jalan Kemuning Damai 32/147B,,,Shah Alam,Selangor,40460,2022-01-29 17:05:21,2022-01-29 17:05:21
 798,798,No 33 Jalan Aman Arahsia 7/3,Bandar Tropicana Aman,,Telok Panglima Garang,Selangor,42500,2021-12-01 00:20:37,2021-12-01 00:20:37
@@ -1547,6 +1597,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 425,425,"No 14, Jalan Kemuning Bayu 33/30C,","Kemuning Utama, Seksyen 33,",,Shah Alam,Selangor,40460,2021-02-02 22:55:22,2021-02-02 22:55:22
 1835,1835,"No 3B,",Lorong Kiew Nang 2,,sibu,Sarawak,96000,2024-03-01 16:12:53,2024-03-01 16:12:53
 158,158,"No.136, Lot 2639,","Pine Villa Garden Homes, Jln Bako,",,Kuching,Sarawak,93050,2021-01-11 12:28:07,2021-01-11 12:28:07
+2849,2849,"No 18, Jalan Mutiara Indah 5",Taman Mutiara Indah,,Johor Bahru,Johor,81100,2025-03-25 11:02:59,2025-03-25 11:02:59
 821,821,"38,Jln SL 13/3, Bandar Sungai Long",,,Kajang,Selangor,43000,2022-01-12 15:05:13,2022-01-12 15:05:13
 2588,2588,"NO 12A, LORONG PERMAI 4C",KOTA PENDAMAR,,KLANG,Selangor,42000,2025-01-06 17:43:31,2025-01-06 17:43:31
 1962,1962,Bandar parkland klang,,,Shah Alam,Selangor,40460,2024-04-22 22:51:53,2024-04-22 22:51:53
@@ -1591,10 +1642,11 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 293,293,"30,",Brooke Drive 21,,Sibu,Sarawak,96000,2021-01-27 15:29:37,2021-01-27 15:29:37
 98,,,,,,,,,
 788,788,"Lorong 2, Kampung Sibuluh,",,,Bau,Sarawak,94000,2021-11-23 13:20:15,2021-11-23 13:20:15
-2770,2770,397-L TAMAN ALAMANDA 2 JALAN TEKUKUR,,,KU,Terengganu,21200,2025-02-27 22:08:16,2025-02-27 22:08:16
+2770,2770,"397-L TAMAN ALAMANDA 2 JALAN TEKUKUR\"",\N,\N,KU""",Terengganu,21200,2025-02-27 22:08:16,2025-02-27 22:08:16,,,
 2021,2021,"Janlan anggrik,Dream city",-,,Kajang,Selangor,43000,2024-05-16 17:29:33,2024-05-16 17:29:33
 2643,2643,"A-43-03, Kenwingston Platz",Jalan Gombak,,Setapak,Kuala Lumpur,53000,2025-01-18 17:42:33,2025-01-18 17:42:33
 1568,1568,-,,,Bukit Jalil,Kuala Lumpur,57000,2023-10-02 01:29:09,2023-10-02 01:29:09
+2857,2857,"NO. 1078, JLN FOREST HEIGHTS 4/15B, PRECINCT 4",,,Seremban,Negeri Sembilan,70450,2025-03-26 15:59:39,2025-03-26 15:59:39
 1557,1557,"No.55, Jalan Semenyih Mewah 15, Greensville @ Taman Semenyih Mewah Fasa 5",,,Semenyih,Selangor,43500,2023-09-28 15:59:19,2023-09-28 15:59:19
 87,,,,,,,,,
 1853,1853,6 JALAN IMPIAN 3J,BANDAR BOTANIC,,KLANG,Selangor,41200,2024-03-08 16:11:43,2024-03-08 16:11:43
@@ -1606,6 +1658,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1579,1579,"10,Cangkat Tembaga",,,Georgetown,Pulau Pinang,11600,2023-10-04 06:08:31,2023-10-04 06:08:31
 538,538,"26, Jalan MR 1/8",Taman M-Residensi,,Rawang,Selangor,48020,2021-02-08 14:58:26,2021-02-08 14:58:26
 156,156,"Lot 404 & 405, Tmn Huong,","PL 1602, SL 15,",,Kuching,Sarawak,93250,2021-01-11 12:18:22,2021-01-11 12:18:22
+2880,2880,"32a, Jalan Seri Bukit Segambut 1, Taman Seri Bukit Segambut",,,Kuala Lumpur,Kuala Lumpur,51200,2025-04-03 15:27:46,2025-04-03 15:27:46
 776,776,"E505, Para Desa Tropica condo",Pesiaran Meranti,,KL,Kuala Lumpur,52200,2021-06-03 20:37:38,2021-06-03 20:37:38
 1219,1219,"The Petalz Residence, Unit A-13-10,","No. 2, Jalan 1/132A Off, Jalan Klang Lama,",,KL,Kuala Lumpur,58200,2023-01-05 15:22:34,2023-01-05 15:22:34
 517,517,Block 1-17-406,,,Pandan Jaya,Kuala Lumpur,55100,2021-02-06 22:50:55,2021-02-06 22:50:55
@@ -1636,15 +1689,19 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 322,322,No. 3,"Lane 1, Pahlawan Road",,Sibu,Sarawak,96000,2021-01-30 23:35:16,2021-01-30 23:35:16
 2099,2099,"1336, Jalan Paboi, Bukit Tambun",,,Simpang Ampat,Pulau Pinang,14110,2024-06-28 18:47:53,2024-06-28 18:47:53
 444,444,176-12A Sukia Damansara,PJU 1A/4A,,Petaling Jaya,Selangor,47301,2021-02-03 00:11:29,2021-02-03 00:11:29
+2893,2893,"407, lorong 4c, lotak villa, Stephen yong",,,kuching,Sarawak,93250,2025-04-09 09:42:59,2025-04-09 09:42:59
 2633,2633,"32, Jalan Indah 11/2,",Taman Bukit Indah,,Iskandar Puteri,Johor,79100,2025-01-17 18:23:31,2025-01-17 18:23:31
 2157,2157,"Jalan Wangsa Permai 2/6, Taman Wanga Permai",,,Kuala Lumpur,Kuala Lumpur,52200,2024-07-15 11:31:49,2024-07-15 11:31:49
 726,726,"No.1, Jalan Seri Sungai Long 5, Taman Seri Sg Long",,,Kajang,Selangor,43200,2021-04-14 13:33:30,2021-04-14 13:33:30
+2874,2874,"No 30, Jalan SP 4/3, Taman Segar Perdana",,,Cheras,Kuala Lumpur,43200,2025-04-02 12:13:30,2025-04-02 12:13:30
 494,494,A-19-12a,Taman Usahawan 2,,KL,Kuala Lumpur,52100,2021-02-06 01:25:35,2021-02-06 01:25:35
 1071,1071,Semenyih,,,,Selangor,,2022-08-20 14:39:17,2022-08-20 14:39:17
+2856,2856,"No. 198, Taman Matang Jaya, Lorong 6, Lot 4551, Jalan Matang",,,kuching,Sarawak,93050,2025-03-26 11:07:08,2025-03-26 11:07:08
 2273,2273,"654, Lorong Ensing Timur 20C, Jalan Stapok Utama",,,kuching,Sarawak,93250,2024-08-18 20:59:12,2024-08-18 20:59:12
 729,729,"22, JALAN TROPICANA UTAMA",TROPICANA GOLD & COUNTRY CLUB,,PETALING JAYA,Selangor,47410,2021-04-15 19:41:30,2021-04-15 19:41:30
 706,706,No.22 Jalan Tropicana Utama,Tropicana Golf & Country Club,,Petaling Jaya,Selangor,47410,2021-04-07 18:15:30,2021-04-07 18:15:30
 2469,2469,"B-33A-03 KLTS, No 99 Jalan Gombak",,,Kuala Lumpur,Kuala Lumpur,53000,2024-10-31 13:22:17,2024-10-31 13:22:17
+2890,2890,"7 Jalan Setia Damai U13/15H, Setia Alam, Seksyen U13",,,Shah Alam,Selangor,40170,2025-04-08 13:21:50,2025-04-08 13:21:50
 1034,1034,"153, Jalan Jambu Melaka",Jinjang Selatan,,Jinjang,Kuala Lumpur,52000,2022-07-23 17:49:18,2022-07-23 17:49:18
 2530,2530,"153, Jalan Jambu Melaka, Jinjang Selayang",,,Kuala Lumpur,Kuala Lumpur,52000,2024-12-03 07:38:50,2024-12-03 07:38:50
 2310,2310,"322, Jalan Springhill 7/8, Residence 7, Bandar Springhill,",,,Port Dickson,Negeri Sembilan,71010,2024-09-03 22:16:42,2024-09-03 22:16:42
@@ -1672,10 +1729,12 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1776,1776,jln eco majest 6/3b,,,semenyih,Selangor,43500,2024-01-10 15:41:50,2024-01-10 15:41:50
 748,748,"318, Sakura, Taman Saujana Indah, S2 Height,","Jalan Saujana Indah 6,",,Seremban,Negeri Sembilan,70300,2021-04-24 10:26:12,2021-04-24 10:26:12
 1095,1095,"Block D9-1, Jln1/133, Avenue Court Tmn Sri Sentosa, Jln klang lama",,,Kuala Lumpur,Kuala Lumpur,58000,2022-09-13 18:11:52,2022-09-13 18:11:52
+2827,2827,"No. 30, Golden Villa Phase 3",Jalan Sibiyu,,Bintulu,Sarawak,97000,2025-03-15 14:49:37,2025-03-15 14:49:37
 2590,2590,7 JALAN BUNGOR 9,BANDAR BOTANIC,,KLANG,Selangor,41200,2025-01-07 17:09:35,2025-01-07 17:09:35
 92,,,,,,,,,
 669,669,"No 22v, Jalan PU 1/14A",Taman Puchong Utama,,Puchong,Selangor,47140,2021-03-31 17:21:28,2021-03-31 17:21:28
 2137,2137,"No.16-1, Jalan Taman Melati 3",,,Taman Melati,Kuala Lumpur,53100,2024-07-10 13:19:22,2024-07-10 13:19:22
+2882,2882,"25,LORONG 2/SS8, BANDAR TASEK MUTIARA",,,Simpang Ampat,Pulau Pinang,14120,2025-04-04 00:39:35,2025-04-04 00:39:35
 396,396,"No. 1, Jalan Perisa 11",,,Baru Sri Petaling,Kuala Lumpur,57000,2021-02-01 00:09:46,2021-02-01 00:09:46
 834,834,"No 39, Jalan PUJ 2/14,",Taman Puncak Jalil,,Seri Kembangan,Selangor,43300,2022-01-25 19:21:58,2022-01-25 19:21:58
 149,149,"PL 5431, SL5, Jalan Kung Phin,","Khung Phin Height,",,Kuching,Sarawak,93250,2021-01-11 11:14:32,2021-01-11 11:14:32
@@ -1740,9 +1799,11 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2675,2675,Mckenzie Avenue,,,Kuching,Sarawak,93250,2025-02-04 17:25:55,2025-02-04 17:25:55
 2585,2585,30 Jalan Permas 12/2,Permas Jaya,,Johor Bahru,Johor,81750,2025-01-05 19:49:57,2025-01-05 19:49:57
 2236,2236,"No1, Jln Kajang East 4/2",,,Kajang East,Selangor,43000,2024-08-10 22:47:07,2024-08-10 22:47:07
+2854,2854,Sri petaling,,,Sri petaling,Kuala Lumpur,57000,2025-03-25 21:50:04,2025-03-25 21:50:04
 2432,2432,"JADITE SUITES, JADE HILL, KAJANG",,,Kajang,Selangor,43000,2024-10-10 12:12:21,2024-10-10 12:12:21
 2332,2332,"16-18, Setapak Green Condo",Jalan Semarak Api off Jalan Gombak,,Setapak,Kuala Lumpur,53000,2024-09-10 21:45:12,2024-09-10 21:45:12
 630,630,"43, Jalan BK8/1A",Bandar Kinrara,,Puchong,Selangor,47180,2021-03-29 13:54:27,2021-03-29 13:54:27
+2837,2837,"C-11-3A, Casa Desa Condominium,",Jalan Desa Utama,,Taman Desa,Kuala Lumpur,58100,2025-03-20 18:13:33,2025-03-20 18:13:33
 1607,1607,"11, Lengkok Kerjasama",Taman Kerjasama,,Bukit Mertajam,Pulau Pinang,14000,2023-10-18 22:24:10,2023-10-18 22:24:10
 2753,2753,"No 10, jalan JA 18,Taman Jenderam Aman,",,,Dengkil,Selangor,43800,2025-02-25 23:34:33,2025-02-25 23:34:33
 1761,1761,1 JALAN DATO ABD HAMID 2,TAMAN SENTOSA,,KLANG,Selangor,41200,2024-01-06 15:39:40,2024-01-06 15:39:40
@@ -1780,6 +1841,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 257,257,"44, Jln 34c/38a",Taman Sri Sinar,,KL,Kuala Lumpur,51200,2021-01-22 14:24:43,2021-01-22 14:24:43
 1724,1724,No 3 Jalan Akuatik 13/77G D' Kayangan Seksyen 13 Shah Alam,,,Shaha Alam,Selangor,40100,2023-12-21 16:33:54,2023-12-21 16:33:54
 2803,2803,116 Lorong Selaseh 8/1 Kampung Sentosa Blok B Paroi,,,Seremban,Negeri Sembilan,70400,2025-03-06 21:28:39,2025-03-06 21:28:39
+2892,2892,"No.86 Taman Casa Mutiara, Lorong Depo 11G1, Jalan Depo",,,kuching,Sarawak,93050,2025-04-08 16:16:37,2025-04-08 16:16:37
 2597,2597,"No.91, Lot 1035, Taman Kim Lee, Lorong 8/1B Jalan Semaba",,,kuching,Sarawak,93250,2025-01-08 00:10:51,2025-01-08 00:10:51
 1961,1961,"107, Jalan Impian Emas 59,","Taman Impian Emas,",,Skudai,Johor,81300,2024-04-22 20:16:55,2024-04-22 20:16:55
 1225,1225,"No. 3, Jalan BU12/10, Bandar Utama","Jalan BU12/10, Bandar Utama",,Petaling Jaya,Selangor,47800,2023-01-12 11:54:51,2023-01-12 11:54:51
@@ -1817,14 +1879,17 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2486,2486,"2, Jalan Setia Utama U13/37G",,,Shah Alam,Selangor,40170,2024-11-05 16:53:26,2024-11-05 16:53:26
 2397,2397,"30, Jalan DU2/10, Taman Damai Utama, Puchong, Selangor",,,Puchong,Selangor,47180,2024-09-28 11:18:37,2024-09-28 11:18:37
 2504,2504,"No.26, Medan Idaman ,","Jalan 10/21D,",,Setapak,Kuala Lumpur,53100,2024-11-17 15:41:22,2024-11-17 15:41:22
+2906,2906,"21-29-3A, Lintang Sungai Ara 7,",,,Bayan Lepas,Pulau Pinang,11900,2025-04-11 19:23:03,2025-04-11 19:23:03
 1540,1540,"No.1 Jalan Pahlawan 2,","Taman Pahlawan,Batu 6,Bukit Bakri",,Muar,Johor,84200,2023-09-26 11:01:38,2023-09-26 11:12:23
 128,,,,,,,,,
+2860,2860,"15,","Jl;n BS 10/3B,",,Taman Bukit Serdang,Selangor,43300,2025-03-26 18:03:04,2025-03-26 18:03:04
 415,415,"52, Jalan TK 2/15, Taman Kinrara, Seksyen 2",,,Puchong,Selangor,47180,2021-02-01 01:31:12,2021-02-01 01:31:12
 1678,1678,No.,"Jln BU11/13, Bandar Utama,",,Petaling Jaya,Selangor,47800,2023-12-02 01:22:02,2023-12-02 01:22:02
 557,557,"No 7, Jalan Bangau 7,","Bandar Puchong Jaya,",,Puchong,Selangor,47100,2021-02-10 22:31:05,2021-02-10 22:31:05
 1238,1238,"29, Jalan Permata 7/1",,,Shah Alam,Selangor,40000,2023-02-02 02:14:28,2023-02-02 02:14:28
 2429,2429,NO 8 LORONG GELANG 1D THE PEARL,BANDAR PUTERI,,KLANG,Selangor,41200,2024-10-07 22:51:45,2024-10-07 22:51:45
 1972,1972,"No 11, Jalan Kempas Utama 1/6",,,Johor Bahru,Johor,81300,2024-04-29 11:28:14,2024-04-29 11:28:14
+2853,2853,Trinity Aquata Condominium,,,Sg Besi,Kuala Lumpur,57100,2025-03-25 21:39:05,2025-03-25 21:39:05
 261,261,"20-26-6, Angkupuri Condominium, Jalan Kiara",,,KL,Kuala Lumpur,50480,2021-01-22 19:36:18,2021-01-22 19:36:18
 1959,1959,No 16,Jalan Kasawari 21/7,Taman Sungai Abong Permai,Muar,Johor,84000,2024-04-22 16:41:26,2024-04-22 16:41:26
 2173,2173,"30, Jalan Bestari 38,","Taman Mutiara Rini,",,Johor Bahru,Johor,81300,2024-07-20 14:49:28,2024-07-20 14:49:28
@@ -1859,6 +1924,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1052,1052,"32A, Jalan GR2/2, Evergreen",Garden Residence,,Cyberjaya,Selangor,63100,2022-08-01 13:22:45,2022-08-01 13:22:45
 1425,1425,"56, USJ 2/5F, Subang Jaya,",,,Subang Jaya,Selangor,47600,2023-06-15 11:47:32,2023-06-15 11:47:32
 2259,2259,"3, JLN BU 11/14,",BANDAR UTAMA,,Petaling Jaya,Selangor,47800,2024-08-14 17:42:21,2024-08-14 17:42:21
+2825,2825,"36C, Jalan Sembilang, Taman Tenaga",,,Cheras,Kuala Lumpur,56000,2025-03-15 13:28:37,2025-03-15 13:28:37
 198,198,"106, Hala Pengkalan Barat 1,","Tmn Pengkalan Barat,",,Ipoh,Perak,31650,2021-01-17 18:14:30,2021-01-17 18:14:30
 2427,2427,c180,cheras,,selangor,Selangor,43000,2024-10-04 20:01:19,2024-10-04 20:01:19
 1311,1311,No16 Jalan Awan Dandan,Taman Yarl,,kl,Kuala Lumpur,58200,2023-03-10 17:59:49,2023-03-10 17:59:49
@@ -1973,6 +2039,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1416,1416,"21, Lorong Burung Bayan 1, Taman Bukit Maluri",,,Kuala Lumpur,Kuala Lumpur,52100,2023-06-08 14:23:56,2023-06-08 14:23:56
 179,179,"11, Jln Pengkalan Bayu 5,","Taman Pinggiran Pengkalan Bayu,",,Ipoh,Perak,31360,2021-01-16 22:09:59,2021-01-16 22:09:59
 1778,1778,1295 Lorong Keranji 6E Tabuan Jaya,,,Kuching,Sarawak,93350,2024-01-13 09:02:54,2024-01-13 09:02:54
+2834,2834,"A1-ME, Citi Condo, Jalan Cahaya,",,,Miri,Sarawak,98000,2025-03-18 10:27:50,2025-03-18 10:27:50
 1026,1026,No 6 Amelia,Jalan Desa Anggun 5,,Desa Parkcity,Kuala Lumpur,52200,2022-07-16 17:43:13,2022-07-16 17:43:13
 2190,2190,"15-12, KU Suites, Jalan Kemuning Prima 33/45",,,Shah Alam,Selangor,40460,2024-07-31 09:41:37,2024-07-31 09:41:37
 2452,2452,Sunway Medini,,,Sunway City Iskandar Puteri,Johor,79250,2024-10-19 14:16:00,2024-10-19 14:16:00
@@ -2034,6 +2101,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1635,1635,"20,Jln Kemuning Damai 32/147E, Kemuning Utama",,,Shah Alam,Selangor,40460,2023-11-02 17:32:27,2023-11-02 17:32:27
 2720,2720,"15, JALAN ARA SD 7/1B BANDAR SRI DAMANSARA",,,Kuala Lumpur,Kuala Lumpur,52200,2025-02-21 19:22:12,2025-02-21 19:22:12
 2193,2193,"1718, Jalan Lavender Heights 40, Tmn Lavender Heights,",,,Seremban,Negeri Sembilan,70400,2024-07-31 21:25:51,2024-07-31 21:25:51
+2897,2897,Hui Sing,,,Kuching,Sarawak,93350,2025-04-10 17:01:09,2025-04-10 17:01:09
 2201,2201,Putra Prima,,,Puchong,Selangor,40150,2024-08-02 17:00:32,2024-08-02 17:00:32
 1059,1059,"B-9-3, Kondominium Irama Wangsa, No 5, Jalan 3/27E, Seksyen 10, Wangsa Maju,",,,Cheras,Kuala Lumpur,53300,2022-08-07 23:20:41,2022-08-07 23:20:41
 197,197,"103, Blok 1, Pangsapuri Danaumas","Jln Platinum 7/58, Seksyen 7",,Shah Alam,Selangor,40000,2021-01-17 17:10:38,2021-01-17 17:10:38
@@ -2061,6 +2129,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2732,2732,No 189 Jalan ss9a/5,,,Petaling Jaya,Selangor,47301,2025-02-23 23:30:48,2025-02-23 23:30:48
 2703,2703,"10,Jalan Timur 7,","Taman Timur,",,Skudai,Johor,81300,2025-02-15 11:11:52,2025-02-15 11:11:52
 2293,2293,"LOT 7515, JALAN BARIO",LUTONG.,,Miri,Sarawak,98000,2024-08-30 10:46:45,2024-08-30 10:46:45
+2830,2830,"Jalan Pulai 67,","Taman Pulai Utama,",,Johor Bahru,Johor,81300,2025-03-16 14:41:30,2025-03-16 14:41:30
 612,612,No 17 Jalan Kemuning Permai 33/42B,Kemuning Utama,,Shah Alam,Selangor,40400,2021-03-27 02:53:04,2021-03-27 02:53:04
 1039,1039,Legend Heights,,,KL,Kuala Lumpur,5,2022-07-26 11:27:09,2022-07-26 11:27:09
 1792,1792,"1090, Jalan Forest Heights 4/16, Precinct 4, Forest Heights",,,Seremban,Negeri Sembilan,70450,2024-01-23 08:07:41,2024-01-23 08:07:41
@@ -2080,6 +2149,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2287,2287,"100, LORONG RIMBUN JASMIN TBK 1/4, RIMBUN JASMIN, TAMAN BUKIT KEPAYANG",,,Seremban,Negeri Sembilan,70200,2024-08-27 20:24:18,2024-08-27 20:24:18
 2004,2004,"Royal Domain, Putramas 2",,,Kuala Lumpur,Kuala Lumpur,51200,2024-05-06 09:38:39,2024-05-06 09:38:39
 1719,1719,NO 6 SANGGUL 2F,BANDAR PUTERI,,KLANG,Selangor,41200,2023-12-20 17:51:41,2023-12-20 17:51:41
+2873,2873,"18, Jln BU 1/8, Bandar Utama",,,PJ,Selangor,47800,2025-04-01 04:47:43,2025-04-01 04:47:43
 1824,1824,"945, Jln hijayu 2/61, hijayu 2",,,Seremban,Negeri Sembilan,71900,2024-02-07 20:33:39,2024-02-07 20:33:39
 2010,2010,Kota Tinggi,,,Kota Tinggi,Johor,81900,2024-05-08 09:14:38,2024-05-08 09:14:38
 1013,1013,"13 Jalan Impian Indah 2, Taman Impian Indah,",,,Bukit Jalil,Kuala Lumpur,57000,2022-07-04 17:23:18,2022-07-04 17:23:18
@@ -2092,6 +2162,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 530,530,"No. 29, Jalan Bukit Maluri 5",Taman Bukit Maluri,,KL,Kuala Lumpur,52100,2021-02-08 00:26:55,2021-02-08 00:26:55
 1430,1430,"No.24, Jln 10, Taman Cheras Idaman",,,Kajang,Selangor,43000,2023-06-24 10:49:32,2023-06-24 10:49:32
 1388,1388,"A14-4 Endah Ria condominium, Jln 3/149E ,","Tmn Sri Endah,",,Sri petaling,Kuala Lumpur,57000,2023-05-12 17:15:59,2023-05-12 17:15:59
+2907,2907,"Lot 964, Jalan Acacia 1A",,,Miri,Sarawak,98000,2025-04-11 20:08:52,2025-04-11 20:08:52
 518,518,"B-9-1, Le Yuan Residence, Jalan Selesaria",,,Taman Gembira,Kuala Lumpur,58200,2021-02-06 22:57:38,2021-02-06 22:57:38
 1200,1200,"12, Jln Tasik Damai 2,",,,"Taman Tasik Damai ,",Kuala Lumpur,57000,2022-12-02 23:01:52,2022-12-02 23:01:52
 1110,1110,"9, Lorong Bukit Ayun,",South Homes,,Bayan Lepas,Pulau Pinang,11900,2022-09-26 20:01:20,2022-09-26 20:01:20
@@ -2100,6 +2171,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1497,1497,"A-30-05,Damansara Foresta, Persiaran Meranti",Bandar Sri Damansara,,Kuala Lumpur,Kuala Lumpur,52200,2023-08-03 16:00:28,2023-08-03 16:00:28
 1487,1487,"â€ªNO 31 JALAN MAKYONGâ€¬ 2L/KU5, BANDAR BUKIT RAJA,",,,Klang,Selangor,41050,2023-08-01 13:41:51,2023-08-01 13:41:51
 358,358,"iResidence Mahkota Cheras, 10-12, No 1, Jalan Bendahara 38/7, Sec 7, Bandar Mahkota Cheras",,,Cheras,Kuala Lumpur,43200,2021-01-31 16:33:09,2021-01-31 16:33:09
+2895,2895,Lot 12510 jalan bukit indah taman bukit mewah,,,"KAJANG,",Selangor,43000,2025-04-09 19:31:21,2025-04-09 19:31:21
 2611,2611,BSD,,,KL,Kuala Lumpur,51200,2025-01-10 21:56:06,2025-01-10 21:56:06
 1007,1007,"26, Jalan Puteri 8/10,",Bandar Puteri Puchong,,Puchong,Selangor,47100,2022-06-30 09:42:39,2022-06-30 09:42:39
 1956,1956,"No 12A, Jalan 9/15, Taman Bukit Mewah Fasa 9,",,,kajang,Selangor,43000,2024-04-22 16:03:39,2024-04-22 16:03:39
@@ -2126,6 +2198,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 326,326,"5A, Jalan Teratai 2/7M",,,Taman Bukit Teratai,Kuala Lumpur,56100,2021-01-31 08:29:23,2021-01-31 08:29:23
 1843,1843,"27, Jalan BP14/8, Foreston Bukit Puchong,",,,Puchong,Selangor,47120,2024-03-05 19:00:30,2024-03-05 19:00:30
 2277,2277,"16, Jalan ECO Santuari 2/1C, Eco Santuari, 47500 Telok Panglima Garang, Selangor.",,,Telok Panglima Garang,Selangor,47500,2024-08-20 16:22:39,2024-08-20 16:22:39
+2852,2852,"NO 27, JALAN BP14/8 FORESTON BUKIT PUCHONG",,,PUCHONG,Selangor,47120,2025-03-25 21:18:32,2025-03-25 21:18:32
 2366,2366,"32, JALAN PERWIRA 1/1,","TAMAN PERWIRA, BUKIT BAKRI",,Muar,Johor,84000,2024-09-20 16:22:46,2024-09-20 16:22:46
 2271,2271,"no02-3,Eden Height Condo,Jalan Lapangan Terbang",,,kuching,Sarawak,93250,2024-08-18 17:58:09,2024-08-18 17:58:09
 2147,2147,No. 7 Jalan Impian 9C Ambang Botanic 2 41200 Klang,,,Klang,Selangor,41200,2024-07-11 16:05:03,2024-07-11 16:05:03
@@ -2165,6 +2238,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1572,1572,"73, Jalan Eco Majestic 8/2D",,,Semenyih,Selangor,43500,2023-10-02 16:07:14,2023-10-02 16:07:14
 1671,1671,"Block B-13A-3A, Condominium 1 Sentul, Jalan Sentul Ria",,,Kuala Lumpur,Kuala Lumpur,51200,2023-11-27 17:08:45,2023-11-27 17:08:45
 1327,1327,"2-13A-11,  Summerplace,","Lebuh Sg Pinang 8,",,Jelutong,Pulau Pinang,11600,2023-03-25 23:18:17,2023-03-25 23:18:17
+2858,2858,2093 Jalan Nusari Bayu 7/2 Taman Nusari Bayu 3,,,Seremban,Negeri Sembilan,71950,2025-03-26 16:10:09,2025-03-26 16:10:09
 1484,1484,Block B-23-03a,Maxim Alam Damai,,cheras,Kuala Lumpur,56000,2023-07-31 17:39:55,2023-07-31 17:39:55
 2082,2082,"76, Jalan ekoflora 5/23",Taman Ekoflora,,Johor Bahru,Johor,81100,2024-06-18 16:14:06,2024-06-18 16:14:06
 2222,2222,"6, Jalan Sutera Ungu 2,","Taman Sutera,",,Johor Bahru,Johor,81200,2024-08-07 14:43:02,2024-08-07 14:43:02
@@ -2185,6 +2259,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1267,1267,"R-23A-01, RESIDENSI RIYANG,","NO.28 JALAN GEMBIRA,",,"TAMAN GEMBIRA,",Kuala Lumpur,58200,2023-02-20 22:26:06,2023-02-20 22:26:06
 582,582,"Unit 83A, Reed, Taman Tasik Impian, Jalan Tasik Damai, Lake Fields",,,Sungai Besi,Kuala Lumpur,57000,2021-02-28 16:10:31,2021-02-28 16:10:31
 1935,1935,"No.28, Jalan Idaman 5, Taman Semenyih Idaman",,,Semenyih,Selangor,43500,2024-04-08 19:11:51,2024-04-08 19:11:51
+2891,2891,"11, Jalan U13/56A, seksyen U13, Eco Ardence",,,Shah Alam,Selangor,40170,2025-04-08 13:28:28,2025-04-08 13:28:28
 1507,1507,"16, USJ18/1,",,,Subang Jaya,Selangor,47630,2023-08-17 19:03:34,2023-08-17 19:03:34
 1747,1747,"No 58, 1667 Kuching Outer Ring Road Precinct Premier-La Promenade",,,Kuching,Sarawak,94300,2024-01-02 13:58:36,2024-01-02 13:58:36
 472,472,"32, ss19/1,","Subang Jaya,",,Petaling Jaya,Selangor,47500,2021-02-03 14:35:57,2021-02-03 14:35:57
@@ -2254,6 +2329,8 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1479,1479,"30, Jalan Aman Perdana 8B/KU5, Taman Aman Perdana, 4",,,Shah Alam,Selangor,40150,2023-07-28 14:39:40,2023-07-28 14:39:40
 495,495,"No 16, Jalan Ara SD7/30",Bandar Sri Damansara,,KL,Kuala Lumpur,52200,2021-02-06 01:28:36,2021-02-06 01:28:36
 1390,1390,"B-23A-03 Cloud Tree Residence,",Seri Kembangan,,sri kembangan,Selangor,43300,2023-05-15 16:56:02,2023-05-15 16:56:02
+2861,2861,"26, JALAN KUDA KEPANG 8/KU5 BANDAR BUKIT RAJA 2,",,,Klang,Selangor,40150,2025-03-26 20:49:05,2025-03-26 20:49:05
+2899,2899,"A629, JLN KEPONG PENGADANG BARU,",,,Kuala Terengganu,Terengganu,20050,2025-04-10 21:08:25,2025-04-10 21:08:25
 278,278,"A-23A-13, Laman Scenarua Kiara, No.6, Jalan 6/38A,",Taman Sri Sinar,,KL,Kuala Lumpur,51200,2021-01-23 11:29:08,2021-01-23 11:29:08
 521,521,"22, Jalan Desa Makmur",,,Taman Desa,Kuala Lumpur,58000,2021-02-06 23:27:02,2021-02-06 23:27:02
 2765,2765,"46, JALAN MAWAR, TAMAN SETIA",,,KAJANG,Selangor,43000,2025-02-27 19:37:04,2025-02-27 19:37:04
@@ -2264,6 +2341,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1779,1779,"12-11 Residency V,","No 8,Jalan Sepadu 5",,KL,Kuala Lumpur,58200,2024-01-13 15:06:04,2024-01-13 15:06:04
 526,526,"5, Jalan Kemuning Indah 32/143D,","Kemuning Utama,",,Shah Alam,Selangor,40460,2021-02-07 13:44:58,2021-02-07 13:44:58
 1873,1873,1-7 Jalan Kurau 10,Taman Sungai Abong,,Muar,Johor,84000,2024-03-18 15:55:50,2024-03-18 15:55:50
+2828,2828,Pt28740 taman desa solehah,,,Kuala Terengganu,Terengganu,21060,2025-03-15 15:18:31,2025-03-15 15:18:31
 1766,1766,18 Jalan Enau 11,Taman Daya,,Johor Bahru,Johor,81100,2024-01-08 10:44:32,2024-01-08 10:44:32
 1884,1884,"17, Lorong Machang Bubok 54",Taman Machang Bubok,,Bukit Mertajam,Pulau Pinang,14020,2024-03-23 11:26:10,2024-03-23 11:26:10
 1447,1447,"D-7-12, Ketumbar Heights Condo,","Jalan 6/95B, Taman Cheras Utama,",,KL,Kuala Lumpur,56100,2023-07-06 19:52:14,2023-07-06 19:52:14
@@ -2312,6 +2390,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1155,1155,"28, Jalan Daun Inai 19, Sunway SPK Damansara",,,Kl,Kuala Lumpur,52200,2022-10-29 22:07:24,2022-10-29 22:07:24
 1307,1307,"2299, Height Estate PH1, Lrg 16A2",Jln Stutong,,Kuching,Sarawak,93350,2023-03-10 16:37:35,2023-03-10 16:37:35
 1665,1665,"22A Lorong Eco Meadow 11, Taman Eco Meadow",,,Simpang Ampat,Pulau Pinang,14100,2023-11-25 12:59:53,2023-11-25 12:59:53
+2909,2909,"G/2/7/C,TAMAN PUNCAK KEMAJUAN, PULAU KAMBING, LORONG 9.",,,Kuala Terengganu,Terengganu,20300,2025-04-11 22:02:21,2025-04-11 22:02:21
 1975,1975,"15 A,",Jalan Semayor,,Sibu,Sarawak,96000,2024-04-30 16:42:17,2024-04-30 16:42:17
 2569,2569,"19, Jalan Pinggiran 5/3","Golf East, Horizon Hills",,Iskandar Puteri,Johor,79100,2024-12-22 11:57:19,2024-12-22 11:57:19
 2176,2176,"30, Jalan Ekoflora 5/15",Taman Ekoflora,,Johor Bahru,Johor,81100,2024-07-21 17:07:58,2024-07-21 17:07:58
@@ -2339,6 +2418,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 771,771,-,,,-,Selangor,-,2021-05-02 15:22:34,2021-05-02 15:22:34
 965,965,"23, JALAN ANGGERIK ARANDA 31/22","KOTA KEMUNING, SEKSEN 31",,Shah Alam,Selangor,40460,2022-05-31 18:18:24,2022-05-31 18:18:24
 159,159,"SL 1190 Lot 465, PL 108 No 827,","Jln Stapok Selatan, Tmn Park View,",,Kuching,Sarawak,93250,2021-01-11 13:04:35,2021-01-11 13:04:35
+2867,2867,"282, Lorong Song 1F, Tabuan Heights",,,Kuching,Sarawak,93350,2025-03-30 18:09:59,2025-03-30 18:09:59
 1369,1369,"8, Jalan Kemuning Indah, 32/141A, Kemuning Utama, Seksyen 32",,,Shah Alam,Selangor,40460,2023-04-19 11:01:00,2023-04-19 11:01:00
 1573,1573,53F Kg Selanchar,,,Muar,Johor,84600,2023-10-03 15:53:22,2023-10-03 15:53:22
 341,341,"A02-18, Lumayan Apartment, Jln Tasik Permaisuri 2, Bandar Tun Razak",,,Cheras,Kuala Lumpur,56000,2021-01-31 09:30:46,2021-01-31 09:30:46
@@ -2419,6 +2499,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 730,730,"C-607, CONDO DE ROZELLE, 1, JALAN MERBAG 10/1,",SEKSYEN 10 KOTA DAMANSARA,,PETALING JAYA,Selangor,47810,2021-04-15 19:46:51,2021-04-15 19:46:51
 1970,1970,"C34, Jalan Gembira 4,",Taman Salak Selatan,,Kuala Lumpur,Kuala Lumpur,57100,2024-04-27 16:46:34,2024-04-27 16:46:34
 856,856,"Lot 1059,Taman Sucihandal",,,Kuching,Sarawak,93250,2022-02-24 10:47:58,2022-02-24 10:47:58
+2869,2869,"NO 12, JALAN PUTERA 4/11","TAMAN TEMIANG JAYA,",,Muar,Johor,84000,2025-03-30 19:02:11,2025-03-30 19:02:11
 734,734,"23, The Airie, Bayu Meranti, Persiaran Meranti",PJU 9,,BSD,Kuala Lumpur,52200,2021-04-19 16:37:19,2021-04-19 16:37:19
 2098,2098,"Lot 110,Lorong 3,Taman Siniawan",,,Bau,Sarawak,9400,2024-06-26 16:14:43,2024-06-26 16:14:43
 1460,1460,"No 26, Jalan Kajang East 2/3A",,,Semenyih,Selangor,43500,2023-07-21 19:56:02,2023-07-21 19:56:02
@@ -2495,6 +2576,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1214,1214,"06-09, kasturi idaman,","jalan pekaka 8/6,",,Petaling Jaya,Selangor,47810,2022-12-16 22:04:29,2022-12-16 22:04:29
 120,,,,,,,,,
 2122,2122,NO 45 JALAN ECO MAJESTIC 9/2D ECO MAJESTIC,,,SEMENYIH,Selangor,43500,2024-07-04 18:54:01,2024-07-04 18:54:01
+2859,2859,"No.35, PUJ 5/2,","Puncak Jalil,",,Sri Kembangan,Selangor,43300,2025-03-26 17:58:42,2025-03-26 17:58:42
 1858,1858,"B-7-2 Royal Regent, Sri Putramas 3, Jalan Putramas 2",,,Kuala Lumpur,Kuala Lumpur,51200,2024-03-11 11:24:17,2024-03-11 11:24:17
 1325,1325,"7, Solok Pantai Jerjak",,,Bayan Lepas,Pulau Pinang,11900,2023-03-25 15:19:56,2023-03-25 15:19:56
 2741,2741,"1771 jalan tcu 1, taman chendering utama",,,Kuala Terengganu,Terengganu,21080,2025-02-24 16:11:10,2025-02-24 16:11:10
@@ -2565,6 +2647,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1203,1203,"154-2-13, Bukit Gembira Condominium, Jalan Riang,","Off Jalan Kuchai Lama,",,Kuchai Lama,Kuala Lumpur,58200,2022-12-05 11:46:17,2022-12-05 11:46:17
 1124,1124,"A-22-05, Residensi Renai Jalil (The Rainz)  No.3, Jalan Jalil Perwira 2",,,Bukit Jalil,Kuala Lumpur,58200,2022-09-30 02:00:41,2022-09-30 02:00:41
 2434,2434,"PV 20, Platinium Lake Condo,","Jalan Usahawan 2, Jalan Genting Klang,",,Setapak,Kuala Lumpur,53300,2024-10-11 07:24:23,2024-10-11 07:24:23
+2868,2868,"Sublot No.4, Lot 3389, Jalam Sinjor-Off Jalan Hoping",,,Sri Aman,Sarawak,95000,2025-03-30 18:15:20,2025-03-30 18:15:20
 2191,2191,"No.36, Jalan 26/38A, Taman Sri Sinar",,,Kuala Lumpur,Kuala Lumpur,51200,2024-07-31 10:14:35,2024-07-31 10:14:35
 405,405,"21 & 23, Jalan B8 5/21",,,Taman Bukit Serdang,Selangor,43300,2021-02-01 00:48:56,2021-02-01 00:48:56
 1010,1010,"No 39, Jln BM 1/4,","tmn bukit mayang mas,",,Petaling Jaya,Selangor,47301,2022-07-01 18:34:05,2022-07-01 18:34:05
@@ -2589,6 +2672,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2105,2105,"15, Jalan Indah 14/6,","Taman Bukit Indah,",,Johor Bahru,Johor,81200,2024-07-01 19:23:44,2024-07-01 19:23:44
 2513,2513,"183,lorong dogan 5b,taman domin",,,kuching,Sarawak,93250,2024-11-24 17:11:24,2024-11-24 17:11:24
 1904,1904,"71, Jalan Indah 1 /15,","Taman Bukit Indah,",,Johor Bahru,Johor,81200,2024-03-31 15:15:54,2024-03-31 15:15:54
+2904,2904,"No 72, Jalan 3/149D, Zone M,","Bandar Baru Seri Petaling,",,"Sri Petaling,",Kuala Lumpur,57000,2025-04-11 17:34:56,2025-04-11 17:34:56
 1054,1054,No.11 Jalan Putra Permai 10/4B,Sek 10 Putra Height,,Subang Jaya,Selangor,47650,2022-08-01 13:33:53,2022-08-01 13:33:53
 2167,2167,"C-03-15,Amandesa Resort Condo,","Jalan 5/125,",,Taman Desa Petaling,Kuala Lumpur,57100,2024-07-18 15:08:44,2024-07-18 15:08:44
 820,820,,,,,Kuala Lumpur,,2022-01-12 14:56:20,2022-01-12 14:56:20
@@ -2647,6 +2731,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2350,2350,Twin Palm,,,Kajang,Selangor,43000,2024-09-14 13:49:46,2024-09-14 13:49:46
 1880,1880,"193, Jalan Saujana Indah 3, Summer, S2 Heights",,,Seremban,Negeri Sembilan,70300,2024-03-20 18:36:14,2024-03-20 18:36:14
 1780,1780,"43, Jalan Awan Kecil 1",Overseas Union Garden,,Kuala Lumpur,Kuala Lumpur,"58200,",2024-01-13 16:18:03,2024-01-13 16:18:03
+2832,2832,56ï¼ŒJLN RIMBUN 1,Bandar Seri Alam,,Johor Bahru,Johor,81750,2025-03-16 22:52:32,2025-03-16 22:52:32
 2335,2335,"No 25, Jalan EJ1, Taman Emas Jaya,",,,Dengkil,Selangor,43800,2024-09-11 16:41:16,2024-09-11 16:41:54
 1580,1580,"2471D Lorong Inai 6,",Jalan Pegawai,,Alor Star,Kedah,05050,2023-10-04 06:23:05,2023-10-04 06:23:05
 423,423,-,,,Shah Alam,Selangor,40460,2021-02-02 22:50:25,2021-02-02 22:50:25
@@ -2663,6 +2748,8 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1099,1099,"30, Jalan Palma 2/2D, Twinpalms, Sg long",,,Kajang,Selangor,43000,2022-09-16 19:12:45,2022-09-16 19:12:45
 1627,1627,NO.13 TL JJ 7/6 PTD1458,JALAN JORAK 1,,bukit pasir,Johor,84300,2023-10-31 17:57:57,2023-10-31 17:57:57
 2503,2503,"No 2, Jalan Flora 3C/3, Bandar Rimbayu",,,Telok Panglima Garang,Selangor,42500,2024-11-16 12:49:10,2024-11-16 12:49:10
+2889,2889,"17, Jalan Tun Teja 35/6L, Alam Impian, Shah Alam, Selangor.",,,Shah Alam,Selangor,40470,2025-04-07 16:11:53,2025-04-07 16:11:53
+2833,2833,"2228, Permatang Damar",,,Kepala Batas,Pulau Pinang,13200,2025-03-17 10:56:20,2025-03-17 10:56:20
 2027,2027,176 JALAN UTAMA 2,TAMAN JAYA UTAMA TELOK PANGLIMA GARANG,,KUALA SELANGOR,Selangor,42500,2024-05-21 11:17:42,2024-05-21 11:17:42
 1685,1685,BLOCK A-27-1 CENTRAL PARK  LEBUHRAYA JELUTONG,,,Georgetown,Pulau Pinang,11600,2023-12-06 21:07:35,2023-12-06 21:07:35
 2038,2038,"No 22A, Jalan kemuning bayu 33/32m, kemuning utama, 40400 Shah alam",,,Shah Alam,Selangor,40400,2024-06-01 07:38:41,2024-06-01 07:38:41
@@ -2673,6 +2760,8 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 1826,1826,21 JALAN JEJAWI 5,BANDAR BOTANIC,,KLANG,Selangor,41200,2024-02-08 16:55:40,2024-02-08 16:55:40
 1894,1894,"48 Jalan Danga Sutera 1/3, Taman Danga Sutera 81300 Skudai Johor",,,Johor Bahru,Johor,81300,2024-03-25 21:19:09,2024-03-25 21:19:09
 417,417,"3, Jalan Flora 3B/1A, Bandar Rimbayu,","Telok Panglima Garang,",,Shah Alam,Selangor,42500,2021-02-02 00:01:40,2021-02-02 00:01:40
+2823,2823,"20 Jalan BP 3A, Taman Bukit Permata",,,Batu Caves,Selangor,68100,2025-03-15 13:16:12,2025-03-15 13:16:12
+2883,2883,"33, JALAN 18A,",Aman Sari,,Puchong,Selangor,47100,2025-04-04 17:45:19,2025-04-04 17:45:19
 1609,1609,"7 Jln Markisah,",Taman Markisah,,Bukit Mertajam,Pulau Pinang,14000,2023-10-18 22:38:51,2023-10-18 22:38:51
 2526,2526,4F Lorong Belatok 5,Jalan Lada,,Sibu,Sarawak,96000,2024-12-01 22:26:54,2024-12-01 22:26:54
 968,968,"8, Jalan Puteri 10/15,","Bandar Puteri Puchong,",,Puchong,Selangor,47100,2022-06-01 18:51:41,2022-06-01 18:51:41
@@ -2700,6 +2789,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2309,2309,"A1301 Kalista 2, Jalan S2 G3",,,Seremban,Negeri Sembilan,70300,2024-09-03 22:07:34,2024-09-03 22:07:34
 1837,1837,Avona Residence,,,Kuching,Sarawak,93350,2024-03-02 11:21:17,2024-03-02 11:21:17
 878,878,"No.212, Jalan Sherip Masahor, 6/1, Hui Sing",,,Kuching,Sarawak,93250,2022-03-11 19:51:10,2022-03-11 19:51:10
+2845,2845,"Lot 71, Lorong Selasih 2,","One Villa, Jalan Sibiyu",,Bintulu,Sarawak,97000,2025-03-22 16:45:29,2025-03-22 16:45:29
 895,895,"No.2A,Jalan PP2/7, Taman Putra Prima",,,Puchong,Selangor,47130,2022-03-23 18:12:38,2022-03-23 18:12:38
 1618,1618,"NO 11, JALAN IMPIAN INDAH 1",TAMAN IMPIAN INDAH,,Bukit Mertajam,Pulau Pinang,14000,2023-10-26 21:06:51,2023-10-26 21:06:51
 769,769,"No 8, Jalan 13/105, Taman Midah, Cheras, 56000 Kuala Lumpur.",,,Cheras,Selangor,56000,2021-05-01 21:44:26,2021-05-01 21:44:26
@@ -2740,6 +2830,7 @@ user_id,addressable_id,address_line_1,address_line_2,address_line_3,city,state,p
 2022,2022,"5,Jalan Sering 7, Taman sungai Sering",,,43200,Selangor,43200,2024-05-16 17:33:42,2024-05-16 17:33:42
 2637,2637,"11H, Jalan Indah Timur",,,Sibu,Sarawak,96000,2025-01-18 09:47:19,2025-01-18 09:47:19
 2000,2000,"39, Jalan Tun Teja 35/4B, Alam Impian 40470 SA",,,Shah Alam,Selangor,40470,2024-05-03 23:25:22,2024-05-03 23:25:22
+2822,2822,"40, Medan Sungai Air Putih,",,,balik pulau,Pulau Pinang,11000,2025-03-15 12:32:07,2025-03-15 12:32:07
 2679,2679,"26, LORONG CP 7/62, TAMAN CHERAS PERDANA",,,Batu 11 Cheras,Selangor,43200,2025-02-08 08:34:27,2025-02-08 08:34:27
 2441,2441,"No. 20, Jalan Gita 1/6","The Valley West 1, Horizon Hills",,Iskandar Puteri,Johor,79100,2024-10-12 14:17:24,2024-10-12 14:17:24
 1107,1107,"Garden Ville 22-21-01,",Lintang Sungai Ara 7,,Bayan Lepas,Pulau Pinang,11900,2022-09-26 19:43:11,2022-09-26 19:43:11
