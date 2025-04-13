@@ -111,7 +111,7 @@ class CalendarDestroyView(BaseCustomCalendarView,DestroyAPIView):
         """
         Get blocked dates for a specific year and branch
         """
-        all_events = Calendar.objects.filter(branch_id=branch_id, year=year)
+        all_events = Calendar.objects.filter(branch_id=branch_id, year=year,entry_type='centre holiday')
         blocked_dates = []
         for event in all_events:
             start_date = event.start_datetime.date()
@@ -197,7 +197,7 @@ class CalendarCreateView(GenericViewWithExtractJWTInfo,CreateAPIView):
         """
         Get blocked dates for a specific year and branch
         """
-        all_events = Calendar.objects.filter(branch_id=branch_id, year=year)
+        all_events = Calendar.objects.filter(branch_id=branch_id, year=year,entry_type='centre holiday')
         blocked_dates = []
         for event in all_events:
             start_date = event.start_datetime.date()
@@ -335,7 +335,7 @@ class GenerateCalendarThemeLessonView(APIView):
         """
         Get blocked dates for a specific year and branch
         """
-        all_events = Calendar.objects.filter(branch_id=branch_id, year=year)
+        all_events = Calendar.objects.filter(branch_id=branch_id, year=year,entry_type='centre holiday')
 
         blocked_dates = []
 

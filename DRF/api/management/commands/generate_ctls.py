@@ -114,7 +114,7 @@ class Command(BaseCommand):
         return total_created
 
     def get_blocked_dates(self,year,branch_id):
-        all_events = Calendar.objects.filter(branch_id=branch_id,year=year)
+        all_events = Calendar.objects.filter(branch_id=branch_id,year=year,entry_type='centre holiday')
 
         blockedDate = []
 
