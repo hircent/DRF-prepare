@@ -1,4 +1,5 @@
 from api.global_customViews import GenericViewWithExtractJWTInfo
+from api.logger import Logger
 from api.pagination import CustomPagination
 from accounts.permission import IsTeacherOrHigher ,IsManagerOrHigher
 from accounts.models import User
@@ -177,12 +178,17 @@ class StudentDeleteView(BasedCustomStudentsView,generics.DestroyAPIView):
     def _get_student_enrolments(self,student_id:int) -> List[int]:
         return list(StudentEnrolment.objects.filter(student_id=student_id).values_list('id',flat=True))
 
-class ExportStudentsCSV(APIView):
+class ExportStudentsCSV(APIView,Logger):
     def get(self, request):
+        logger = self.setup_logger('export_students_csv','ExportStudentsCSV')
+
+        logger.info("Starting export students csv")
+        logger.info(f"Request : {request}")
         try:
             branchId = self.request.headers.get('branchId')
 
             if not branchId:
+                logger.error("Branch ID is required")
                 return Response({"message": "Branch ID is required"}, status=status.HTTP_400_BAD_REQUEST)
                 
             # Create the HttpResponse object with CSV header
@@ -217,23 +223,26 @@ class ExportStudentsCSV(APIView):
             students = Students.objects.select_related('branch').all()
             students = students.filter(branch_id=branchId)
             # Write data
-            for student in students:
-                writer.writerow([
-                    student.fullname,
-                    student.gender,
-                    student.dob.strftime('%Y-%m-%d') if student.dob else '',
-                    student.school,
-                    student.deemcee_starting_grade,
-                    student.status,
-                    student.enrolment_date.strftime('%Y-%m-%d'),
-                    student.branch.name,  # Assuming branch has a name field
-                    student.parent.username if student.parent else '',
-                    student.parent.email
-                ])
+            if students:
+                for student in students:
+                    writer.writerow([
+                        student.fullname,
+                        student.gender,
+                        student.dob.strftime('%Y-%m-%d') if student.dob else '',
+                        student.school,
+                        student.deemcee_starting_grade,
+                        student.status,
+                        student.enrolment_date.strftime('%Y-%m-%d'),
+                        student.branch.name,  # Assuming branch has a name field
+                        student.parent.username if student.parent else '',
+                        student.parent.email
+                    ])
+
+            logger.info(f"Successfully exported {len(students)} students")
             return response
         
         except Exception as e:
-            print(f"Export error: {str(e)}")  # Add logging
+            logger.error(f"Export error: {str(e)}")
             return Response({'error': str(e)}, status=500)
 
 class StudentRemarkView(BasedCustomStudentsView,generics.RetrieveAPIView):
