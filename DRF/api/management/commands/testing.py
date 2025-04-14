@@ -37,7 +37,15 @@ class Command(BaseCommand,BlockedDatesMixin):
     help = 'testing function'
 
     def handle(self, *args, **options):
-        pass
+        userN = User.objects.filter(last_name='\\N').select_for_update().update(
+            last_name=''
+        )
+
+        print(userN.count())
+        
+        users = User.objects.filter(last_name='\\N')
+
+        print(users.count())
 
     def annotate_learning(self, *args, **options):
         # Payment.objects.all().delete()
