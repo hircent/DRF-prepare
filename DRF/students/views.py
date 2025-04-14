@@ -179,16 +179,19 @@ class StudentDeleteView(BasedCustomStudentsView,generics.DestroyAPIView):
         return list(StudentEnrolment.objects.filter(student_id=student_id).values_list('id',flat=True))
 
 class ExportStudentsCSV(APIView,Logger):
-    def get(self, request):
-        logger = self.setup_logger('export_students_csv','ExportStudentsCSV')
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.logger = self.setup_logger('export_students_csv','ExportStudentsCSV')
 
-        logger.info("Starting export students csv")
-        logger.info(f"Request : {request}")
+    def get(self, request):
+
+        self.logger.info("Starting export students csv")
+        self.logger.info(f"Request : {request}")
         try:
             branchId = self.request.headers.get('branchId')
 
             if not branchId:
-                logger.error("Branch ID is required")
+                self.logger.error("Branch ID is required")
                 return Response({"message": "Branch ID is required"}, status=status.HTTP_400_BAD_REQUEST)
                 
             # Create the HttpResponse object with CSV header
@@ -237,11 +240,11 @@ class ExportStudentsCSV(APIView,Logger):
                     student.parent.email
                 ])
 
-            logger.info(f"Successfully exported {len(students)} students")
+            self.logger.info(f"Successfully exported {len(students)} students")
             return response
         
         except Exception as e:
-            logger.error(f"Export error: {str(e)}")
+            self.logger.error(f"Export error: {str(e)}")
             return Response({'error': str(e)}, status=500)
 
 class StudentRemarkView(BasedCustomStudentsView,generics.RetrieveAPIView):
