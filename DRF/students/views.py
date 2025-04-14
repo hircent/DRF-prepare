@@ -223,20 +223,19 @@ class ExportStudentsCSV(APIView,Logger):
             students = Students.objects.select_related('branch').all()
             students = students.filter(branch_id=branchId)
             # Write data
-            if students:
-                for student in students:
-                    writer.writerow([
-                        student.fullname,
-                        student.gender,
-                        student.dob.strftime('%Y-%m-%d') if student.dob else '',
-                        student.school,
-                        student.deemcee_starting_grade,
-                        student.status,
-                        student.enrolment_date.strftime('%Y-%m-%d'),
-                        student.branch.name,  # Assuming branch has a name field
-                        student.parent.username if student.parent else '',
-                        student.parent.email
-                    ])
+            for student in students:
+                writer.writerow([
+                    student.fullname,
+                    student.gender,
+                    student.dob.strftime('%Y-%m-%d') if student.dob else '',
+                    student.school,
+                    student.deemcee_starting_grade,
+                    student.status,
+                    student.enrolment_date.strftime('%Y-%m-%d'),
+                    student.branch.name,  # Assuming branch has a name field
+                    student.parent.username if student.parent else '',
+                    student.parent.email
+                ])
 
             logger.info(f"Successfully exported {len(students)} students")
             return response
