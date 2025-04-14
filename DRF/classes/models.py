@@ -58,6 +58,9 @@ class StudentEnrolment(models.Model):
     student             = models.ForeignKey(Students, on_delete=models.CASCADE, related_name='enrolments')
     classroom           = models.ForeignKey(Class, on_delete=models.CASCADE,related_name='enrolments')
     start_date          = models.DateField()
+
+    # For calculating end_date, since it will change classslot
+    calculate_date      = models.DateField()
     is_active           = models.BooleanField(default=True)
     status              = models.CharField(max_length=20, choices=ENROLMENT_STATUS_CHOICES,default='IN_PROGRESS')
     remaining_lessons   = models.IntegerField(default=24)
@@ -74,10 +77,10 @@ class StudentEnrolment(models.Model):
     def __str__(self):
         return self.student.fullname + "'s enrolment " + str(self.start_date.year)
 
-    # def save(self, *args, **kwargs):
-    #     if self.remaining_lessons <= 0:
-    #         self.is_active = False
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        if not self.calculate_date:
+            self.calculate_date = self.start_date
+        super().save(*args, **kwargs)
 
 class ClassLesson(models.Model):
     LESSON_STATUS_CHOICES = [
