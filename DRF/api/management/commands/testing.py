@@ -41,8 +41,6 @@ class Command(BaseCommand,BlockedDatesMixin):
             last_name=''
         )
 
-        print(userN.count())
-        
         users = User.objects.filter(last_name='\\N')
 
         print(users.count())
