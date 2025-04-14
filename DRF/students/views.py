@@ -224,7 +224,7 @@ class ExportStudentsCSV(APIView,Logger):
 
             # Get all students
             students = Students.objects.select_related('branch').all()
-            students = students.filter(branch_id=branchId)
+            students = students.filter(branch_id=int(branchId))
             # Write data
             for student in students:
                 writer.writerow([
