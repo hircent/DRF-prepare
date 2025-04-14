@@ -58,7 +58,7 @@ class VideoAssignmentListSerializer(BlockedDatesMixin,serializers.ModelSerialize
     def get_submit_due_date(self, obj):
         blockedDate = self._get_cached_blocked_dates(obj.enrolment.calculate_date.year, obj.enrolment.branch.id)
 
-        current_date = obj.enrolment.calculate_date
+        current_date = obj.enrolment.start_date
 
         weeks_remaining = self._calculate_video_due_date_weeks(obj.video_number)
 
@@ -302,7 +302,7 @@ class EnrolmentRescheduleClassSerializer(serializers.ModelSerializer):
     )
     class Meta:
         model = StudentEnrolment
-        fields = ['id','classroom']
+        fields = ['id','classroom','calculate_date']
 
     def validate_classroom(self, value):
         if not value:
@@ -313,6 +313,10 @@ class EnrolmentRescheduleClassSerializer(serializers.ModelSerializer):
         return value
     
     def update(self, instance, validated_data):
+        print({
+            "instance": instance,
+            "validated_data": validated_data
+        })
         super().update(instance, validated_data)
         instance.save()
         return instance
