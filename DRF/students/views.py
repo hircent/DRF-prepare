@@ -178,38 +178,50 @@ class StudentDeleteView(BasedCustomStudentsView,generics.DestroyAPIView):
     def _get_student_enrolments(self,student_id:int) -> List[int]:
         return list(StudentEnrolment.objects.filter(student_id=student_id).values_list('id',flat=True))
 
-class ExportStudentsCSV(APIView,Logger):
+class ExportStudentsCSV(APIView, Logger):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.logger = self.setup_logger('export_students_csv','ExportStudentsCSV')
+        self.logger = self.setup_logger('export_students_csv', 'ExportStudentsCSV')
 
     def get(self, request):
-
         self.logger.info("Starting export students csv")
-        self.logger.info(f"Request : {request}")
+        
         try:
-            branchId = self.request.headers.get('branchId')
+            # Try to get branchId from different possible locations
+            branchId = self.request.headers.get('branchId') or \
+                       self.request.GET.get('branchId') or \
+                       self.request.query_params.get('branchId')
+            
+            self.logger.info(f"Received branchId: {branchId}")
 
             if not branchId:
                 self.logger.error("Branch ID is required")
                 return Response({"message": "Branch ID is required"}, status=status.HTTP_400_BAD_REQUEST)
                 
+            branch_exists = Branch.objects.filter(id=branchId).exists()
+            self.logger.info(f"Branch with ID {branchId} exists: {branch_exists}")
+            
+            if not branch_exists:
+                self.logger.error(f"Branch with ID {branchId} does not exist")
+                return Response({"message": f"Branch with ID {branchId} does not exist"}, 
+                                status=status.HTTP_404_NOT_FOUND)
+            
             # Create the HttpResponse object with CSV header
             response = HttpResponse(
-                    content_type='text/csv; charset=utf-8',
-                    headers={
-                        'Content-Disposition': f'attachment; filename="students-{datetime.now().strftime("%Y-%m-%d")}.csv"',
-                        'Access-Control-Allow-Origin': '*',  # Or your specific frontend domain
-                        'Access-Control-Allow-Methods': 'GET, OPTIONS',
-                        'Access-Control-Allow-Headers': 'Accept, Content-Type, X-Requested-With, branchId',
-                    },
-                )
+                content_type='text/csv; charset=utf-8',
+                headers={
+                    'Content-Disposition': f'attachment; filename="students-{datetime.now().strftime("%Y-%m-%d")}.csv"',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+                    'Access-Control-Allow-Headers': 'Accept, Content-Type, X-Requested-With, branchId',
+                },
+            )
 
             # Create CSV writer
             writer = csv.writer(response)
             
             # Write headers
-            writer.writerow([
+            headers = [
                 'Full Name',
                 'Gender',
                 'Date of Birth',
@@ -220,31 +232,66 @@ class ExportStudentsCSV(APIView,Logger):
                 'Branch',
                 'Parent',
                 'Email',
-            ])
+            ]
+            writer.writerow(headers)
+            self.logger.info(f"CSV headers written: {headers}")
 
-            # Get all students
-            students = Students.objects.select_related('branch').all()
-            students = students.filter(branch_id=branchId)
+            # Get all students with appropriate branch filtering
+            # Try both string and integer comparison for branchId
+            try:
+                branchId_int = int(branchId)
+                students = Students.objects.select_related('branch', 'parent').filter(
+                    Q(branch_id=branchId) | Q(branch_id=branchId_int)
+                )
+            except (ValueError, TypeError):
+                # If branchId can't be converted to int, just use the string
+                students = Students.objects.select_related('branch', 'parent').filter(branch_id=branchId)
+            
+            # Log the count and first few students for debugging
+            student_count = students.count()
+            self.logger.info(f"Found {student_count} students for branch_id={branchId}")
+            
+            if student_count == 0:
+                # Check if any students exist at all
+                total_students = Students.objects.count()
+                self.logger.info(f"Total students in database: {total_students}")
+                
+                # Check sample of branch IDs that do have students
+                sample_branches = Students.objects.values_list('branch_id', flat=True).distinct()[:5]
+                self.logger.info(f"Sample branch IDs with students: {list(sample_branches)}")
+                
+                # Just return empty CSV with headers
+                return response
+            
             # Write data
+            rows_written = 0
             for student in students:
-                writer.writerow([
-                    student.fullname,
-                    student.gender,
-                    student.dob.strftime('%Y-%m-%d') if student.dob else '',
-                    student.school,
-                    student.deemcee_starting_grade,
-                    student.status,
-                    student.enrolment_date.strftime('%Y-%m-%d'),
-                    student.branch.name,  # Assuming branch has a name field
-                    student.parent.username if student.parent else '',
-                    student.parent.email
-                ])
-
-            self.logger.info(f"Successfully exported {len(students)} students")
+                try:
+                    row = [
+                        student.fullname or '',
+                        student.gender or '',
+                        student.dob.strftime('%Y-%m-%d') if student.dob else '',
+                        student.school or '',
+                        student.deemcee_starting_grade or '',
+                        student.status or '',
+                        student.enrolment_date.strftime('%Y-%m-%d') if student.enrolment_date else '',
+                        student.branch.name if student.branch else '',
+                        student.parent.username if student.parent else '',
+                        student.parent.email if student.parent and hasattr(student.parent, 'email') else ''
+                    ]
+                    writer.writerow(row)
+                    rows_written += 1
+                except Exception as row_error:
+                    self.logger.error(f"Error processing student {student.id if hasattr(student, 'id') else 'unknown'}: {str(row_error)}")
+            
+            self.logger.info(f"Successfully exported {rows_written} students")
             return response
         
         except Exception as e:
+            import traceback
+            error_details = traceback.format_exc()
             self.logger.error(f"Export error: {str(e)}")
+            self.logger.error(f"Traceback: {error_details}")
             return Response({'error': str(e)}, status=500)
 
 class StudentRemarkView(BasedCustomStudentsView,generics.RetrieveAPIView):
