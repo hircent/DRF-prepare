@@ -53,6 +53,7 @@ python manage.py update_lesson_by_freezed_count
 python manage.py update_all_branch_enrolments
 
 python manage.py generate_ctls --year=2025
+python manage.py update_calculation_date
 
 
 Cronjob Commands:
