@@ -56,9 +56,9 @@ class VideoAssignmentListSerializer(BlockedDatesMixin,serializers.ModelSerialize
         fields = ['id','video_number','submission_date','submit_due_date']
     
     def get_submit_due_date(self, obj):
-        blockedDate = self._get_cached_blocked_dates(obj.enrolment.start_date.year, obj.enrolment.branch.id)
+        blockedDate = self._get_cached_blocked_dates(obj.enrolment.calculate_date.year, obj.enrolment.branch.id)
 
-        current_date = obj.enrolment.start_date
+        current_date = obj.enrolment.calculate_date
 
         weeks_remaining = self._calculate_video_due_date_weeks(obj.video_number)
 
@@ -78,9 +78,9 @@ class VideoAssignmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSerial
         fields = ['id','theme','video_url','video_number','submission_date','submit_due_date']
 
     def get_submit_due_date(self, obj):
-        blockedDate = self._get_cached_blocked_dates(obj.enrolment.start_date.year, obj.enrolment.branch.id)
+        blockedDate = self._get_cached_blocked_dates(obj.enrolment.calculate_date.year, obj.enrolment.branch.id)
 
-        current_date = obj.enrolment.start_date
+        current_date = obj.enrolment.calculate_date
 
         weeks_remaining = self._calculate_video_due_date_weeks(obj.video_number)
 
@@ -173,23 +173,23 @@ class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSeria
             'grade','video_assignments','extensions'
         ]
 
-    def get_extensions(self, obj):
+    def get_extensions(self, obj:StudentEnrolment):
         return {
             "total":obj.extensions.count(),
             "extension":EnrolmentExtensionDetailsSerializer(obj.extensions,many=True).data
         }
     
-    def get_grade(self, obj):
+    def get_grade(self, obj:StudentEnrolment):
         return obj.grade.grade_level
     
-    def get_day(self, obj):
+    def get_day(self, obj:StudentEnrolment):
         return obj.classroom.day
 
-    def get_end_date(self, obj):
-        blocked_dates = self._get_cached_blocked_dates(obj.start_date.year, obj.branch.id)
+    def get_end_date(self, obj:StudentEnrolment):
+        blocked_dates = self._get_cached_blocked_dates(obj.calculate_date.year, obj.branch.id)
     
         today = datetime.today().date()
-        target_weekday = obj.start_date.weekday()
+        target_weekday = obj.calculate_date.weekday()
         initial_weekday = today.weekday()
         
         # Calculate initial days to reach target weekday

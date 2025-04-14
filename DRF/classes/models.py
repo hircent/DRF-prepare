@@ -60,7 +60,7 @@ class StudentEnrolment(models.Model):
     start_date          = models.DateField()
 
     # For calculating end_date, since it will change classslot
-    calculate_date      = models.DateField()
+    calculate_date      = models.DateField(blank=True,null=True)
     is_active           = models.BooleanField(default=True)
     status              = models.CharField(max_length=20, choices=ENROLMENT_STATUS_CHOICES,default='IN_PROGRESS')
     remaining_lessons   = models.IntegerField(default=24)
