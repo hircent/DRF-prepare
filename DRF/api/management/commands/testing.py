@@ -19,6 +19,7 @@ from django.db.models import Q,F ,Value
 from django.db import connection , transaction
 from api.mixins import BlockedDatesMixin
 from django.db.models.query import QuerySet
+from django.utils.timezone import localdate
 
 from typing import List
 
@@ -37,13 +38,9 @@ class Command(BaseCommand,BlockedDatesMixin):
     help = 'testing function'
 
     def handle(self, *args, **options):
-        userN = User.objects.filter(last_name='\\N').select_for_update().update(
-            last_name=''
-        )
+        yesterday = localdate() - timedelta(days=1)
 
-        users = User.objects.filter(last_name='\\N')
-
-        print(users.count())
+        print(yesterday)
 
     def annotate_learning(self, *args, **options):
         # Payment.objects.all().delete()
