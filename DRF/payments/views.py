@@ -244,7 +244,7 @@ class PromoCodeListView(BaseCustomListNoPaginationAPIView):
         return queryset
     
 class PromoCodeListForPaymentView(BaseCustomListNoPaginationAPIView):
-    permission_classes = [IsSuperAdmin]
+    permission_classes = [IsManagerOrHigher]
     serializer_class = PromoCodeSerializer
 
     def get_queryset(self):
