@@ -165,22 +165,39 @@ class StudentEnrolmentListView(BaseCustomListAPIView):
         self.branch_accessible(branch_id)
 
         if name:
-            enrolment = StudentEnrolment.objects.filter(
+            queryset = StudentEnrolment.objects.filter(
                 branch=int(branch_id),
                 student__fullname__icontains=name
-            ).select_related("student","grade")
-
-            return enrolment
-        
-        enrolment = StudentEnrolment.objects.filter(
-            branch=int(branch_id),
-            is_active=is_active
-        ).select_related("student","grade")
+            ).select_related("student", "grade")
+        else:
+            queryset = StudentEnrolment.objects.filter(
+                branch=int(branch_id),
+                is_active=is_active
+            ).select_related("student", "grade")
 
         if category:
-            enrolment.filter(grade__category=category.upper())
+            queryset = queryset.filter(grade__category=category.upper())
+        
+        # First, get all objects and calculate end dates
+        all_objects = list(queryset)
+        
+        # Create temporary dictionary with end_dates for each object
+        temp_serializer = self.get_serializer()
+        end_dates = {}
+        
+        for obj in all_objects:
+            # Get the end date as a string in YYYY-MM-DD format
+            date_str = temp_serializer.get_end_date(obj)
+            # Convert to datetime for proper sorting
+            end_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+            end_dates[obj.id] = end_date
+        
 
-        return enrolment
+        sorted_objects = sorted(all_objects, key=lambda x: end_dates[x.id])
+        
+        # Return the sorted list as queryset
+        return sorted_objects
+        
     
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
