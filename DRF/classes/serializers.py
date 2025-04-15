@@ -126,12 +126,16 @@ class StudentEnrolmentListSerializer(BlockedDatesMixin,serializers.ModelSerializ
     video_assignments = VideoAssignmentListSerializer(many=True)
     student = serializers.SerializerMethodField()
     end_date = serializers.SerializerMethodField()
+    grade = serializers.SerializerMethodField()
     payments = serializers.SerializerMethodField()
     currency = serializers.SerializerMethodField()
 
     class Meta:
         model = StudentEnrolment
         fields = ['id','currency','student','start_date','end_date','grade','remaining_lessons','video_assignments','payments']
+
+    def get_grade(self, obj:StudentEnrolment):
+        return obj.grade.grade_level
 
     def get_end_date(self, obj:StudentEnrolment):
         blocked_dates = self._get_cached_blocked_dates(obj.calculate_date.year, obj.branch.id)
