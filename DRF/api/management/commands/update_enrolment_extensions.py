@@ -3,6 +3,8 @@ from api.mixins import BlockedDatesMixin
 from classes.models import EnrolmentExtension, StudentEnrolment
 from django.db import transaction
 from datetime import datetime
+from django.utils.timezone import localdate
+
 
 class Command(CustomBaseCommand,BlockedDatesMixin):
     help = 'Update enrolment extension'
@@ -12,7 +14,7 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
         self.logger = self.setup_logger("update_enrolment_extension",__name__)
 
     def add_arguments(self, parser):
-        today = datetime.now()
+        today = localdate()
         parser.add_argument('--date', type=str, default=today.strftime("%Y-%m-%d"), help='Date to update enrolment extension')
     
     @transaction.atomic

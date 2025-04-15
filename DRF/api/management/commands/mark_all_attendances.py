@@ -8,6 +8,7 @@ from classes.models import StudentEnrolment
 from django.db import transaction
 from datetime import datetime,date,timedelta
 from typing import List
+from django.utils.timezone import localdate
 
 class Command(CustomBaseCommand,BlockedDatesMixin):
     help = 'Mark all attendances'
@@ -17,7 +18,7 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
         self.logger = self.setup_logger("mark_all_attendances",__name__)
 
     def add_arguments(self, parser):
-        yesterday = datetime.now() - timedelta(days=1)
+        yesterday = localdate() - timedelta(days=1)
         parser.add_argument('--date', type=str, default=yesterday.strftime("%Y-%m-%d"), help='Date to mark attendances')
     
     @transaction.atomic
