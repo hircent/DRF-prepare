@@ -182,6 +182,27 @@ class StudentEnrolmentListView(BaseCustomListAPIView):
 
         return enrolment
     
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        page = self.paginate_queryset(queryset)
+        
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            data = serializer.data
+        else:
+            serializer = self.get_serializer(queryset, many=True)
+            data = serializer.data
+        
+        data = sorted(data, key=lambda x: x['end_date'])
+        
+        if page is not None:
+            return self.get_paginated_response(data)
+        
+        return Response({
+            "success": True,
+            "data": data
+        })
+    
 class StudentEnrolmentCreateView(BaseCustomEnrolmentView, CreateAPIView):
     serializer_class = StudentEnrolmentCreateSerializer
     permission_classes = [IsManagerOrHigher]
