@@ -122,15 +122,38 @@ class StudentEnrolmentListForParentSerializer(serializers.ModelSerializer):
             'id','start_date','status','remaining_lessons','is_active','freeze_lessons','grade'
         ]
 
-class StudentEnrolmentListSerializer(serializers.ModelSerializer):
+class StudentEnrolmentListSerializer(BlockedDatesMixin,serializers.ModelSerializer):
     video_assignments = VideoAssignmentListSerializer(many=True)
     student = serializers.SerializerMethodField()
+    end_date = serializers.SerializerMethodField()
     payments = serializers.SerializerMethodField()
     currency = serializers.SerializerMethodField()
 
     class Meta:
         model = StudentEnrolment
-        fields = ['id','currency','student','start_date','grade','remaining_lessons','video_assignments','payments']
+        fields = ['id','currency','student','start_date','end_date','grade','remaining_lessons','video_assignments','payments']
+
+    def get_end_date(self, obj:StudentEnrolment):
+        blocked_dates = self._get_cached_blocked_dates(obj.calculate_date.year, obj.branch.id)
+    
+        today = datetime.today().date()
+        target_weekday = obj.calculate_date.weekday()
+        initial_weekday = today.weekday()
+        
+        # Calculate initial days to reach target weekday
+        days_to_add = (target_weekday - initial_weekday) % 7
+        
+        # Start with today's date
+        current_date = today + timedelta(days=days_to_add)
+        weeks_remaining = obj.remaining_lessons
+        
+        # Count weeks, skipping blocked dates
+        while weeks_remaining > 0:
+            current_date += timedelta(weeks=1)
+            if current_date not in blocked_dates:
+                weeks_remaining -= 1
+        
+        return current_date.strftime("%Y-%m-%d")
 
     def get_student(self, obj):
         return { "id": obj.student.id, "fullname": obj.student.fullname }
