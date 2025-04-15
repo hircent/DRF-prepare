@@ -38,17 +38,25 @@ class Command(BaseCommand):
     def generate_theme_lessons(self, themes, year, branch_id):
         """
         Generate theme lessons for a specific year and branch
-        Ensures lessons are generated only for the specified year
-        and completes 7 consecutive non-blocked days for each lesson
+        Ensures lessons start on January 1st but positioned correctly as if
+        the sequence started on the previous Monday.
         """
         branch = Branch.objects.get(id=branch_id)
         blocked_dates = self.get_blocked_dates(year, branch_id)
         
         calendar_theme_lessons = []
         total_created = 0
-        lesson_date = datetime(year, 1, 1).date()
+        
+        # Find what day of the week January 1st falls on
+        jan_first = datetime(year, 1, 1).date()
+        day_of_week = jan_first.weekday()  # 0 is Monday, 1 is Tuesday, etc.
+        
+        # Calculate what lesson day January 1st would be if the sequence started on a Monday
+        # For example, if Jan 1 is Wednesday (day_of_week=2), it would be lesson day 3
+        jan_first_lesson_day = day_of_week + 1  # +1 because we start counting from 1
+        
+        lesson_date = jan_first
         end_date = datetime(year, 12, 31).date()
-
         processed_themes_count = 0
 
         while lesson_date <= end_date and processed_themes_count < 12:
@@ -56,11 +64,16 @@ class Command(BaseCommand):
                 if processed_themes_count >= 12:
                     break
                 for lesson in theme.theme_lessons.all():
-                    # Track consecutive non-blocked days for this lesson
-                    lesson_days_created = 0
+                    # Start from the correct position in the sequence for January 1st
+                    current_lesson_day = jan_first_lesson_day
                     current_lesson_date = lesson_date
+                    lesson_days_created = 0
 
-                    while lesson_days_created < 7 and current_lesson_date <= end_date:
+                    # For the first sequence starting on Jan 1, we need to create 
+                    # (8 - jan_first_lesson_day) lessons to complete the 7-day cycle
+                    lessons_to_create = 8 - jan_first_lesson_day if current_lesson_date == jan_first else 7
+
+                    while lesson_days_created < lessons_to_create and current_lesson_date <= end_date:
                         # Skip blocked dates
                         if current_lesson_date not in blocked_dates:
                             ctl = CalendarThemeLesson(
@@ -70,11 +83,14 @@ class Command(BaseCommand):
                                 lesson_date=current_lesson_date.strftime("%Y-%m-%d"),
                                 day=current_lesson_date.strftime("%A"),
                                 month=current_lesson_date.month,
-                                year=current_lesson_date.year,
+                                year=current_lesson_date.year
                             )
 
                             calendar_theme_lessons.append(ctl)
                             lesson_days_created += 1
+                            
+                            # Increment the lesson day counter (1-7)
+                            current_lesson_day = (current_lesson_day % 7) + 1
 
                             # Batch create to prevent memory issues
                             if len(calendar_theme_lessons) >= 500:
@@ -85,24 +101,23 @@ class Command(BaseCommand):
                         # Move to next date regardless of whether a lesson was created
                         current_lesson_date += timedelta(days=1)
 
-                        # Break if we've gone beyond the specified year
-                        if current_lesson_date.year > year:
-                            break
+                    # After completing this lesson sequence, find the next Monday
+                    next_monday = current_lesson_date
+                    while next_monday.weekday() != 0:  # 0 is Monday
+                        next_monday += timedelta(days=1)
+                    lesson_date = next_monday
 
-                    # Move lesson_date forward
-                    lesson_date = current_lesson_date
-
-                    # Break out of loops if we've gone into next year
+                    # Break out of loops if we've gone beyond the specified year
                     if lesson_date.year > year:
                         break
 
-                # Break out of theme loop if we've gone into next year
+                # Break out of theme loop if we've gone beyond the specified year
                 if lesson_date.year > year:
                     break
 
                 processed_themes_count += 1
 
-            # Break out of main loop if we've gone into next year
+            # Break out of main loop if we've gone beyond the specified year
             if lesson_date.year > year:
                 break
 
@@ -112,6 +127,7 @@ class Command(BaseCommand):
             total_created += len(calendar_theme_lessons)
 
         return total_created
+
 
     def get_blocked_dates(self,year,branch_id):
         all_events = Calendar.objects.filter(branch_id=branch_id,year=year,entry_type='centre holiday')
