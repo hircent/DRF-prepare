@@ -32,6 +32,8 @@ class Command(CustomBaseCommand):
 
             remaining_lessons = should_have_total_lessons - e.attendances.count()
 
+            if remaining_lessons < 0:
+                remaining_lessons = 0
             e.remaining_lessons = remaining_lessons
 
         StudentEnrolment.objects.bulk_update(enrolments,['remaining_lessons'])
