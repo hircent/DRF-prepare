@@ -17,16 +17,9 @@ class Command(CustomBaseCommand):
         self._branch_enrolments(total_branch)
 
     def _branch_enrolments(self,total_branch):
-        
-        # enrolments = StudentEnrolment.objects.filter(branch__id=2)
-
-        # self._update_enrolments(enrolments)
-
         for i in range(total_branch):
             if i+1 == 26:
                 continue
-            print("================================")
-            print(f"Branch: {i+1}")
             enrolments = StudentEnrolment.objects.filter(branch__id=i+1)
 
             self._update_enrolments(enrolments)
@@ -38,14 +31,7 @@ class Command(CustomBaseCommand):
                 for e in enrolments:
                     attendance_count = e.attendances.count()
                     
-                    if e.status == 'IN_PROGRESS' and e.is_active == True:
-                        print("================================")
-                        print(f"Remaining lessons before: {e.remaining_lessons}")
-                        print(f"Total attendances: {attendance_count}")
-                        print(f"Student's name: {e.student.fullname}")
-                        print(f"Start date: {e.start_date}")
-                        print(f"Enrolment's status: {e.status}")
-                        print(f"Enrolment's is_active: {e.is_active}")
+                    if e.status == 'IN_PROGRESS':
 
                         if attendance_count == e.remaining_lessons:
                             e.remaining_lessons = 0
@@ -67,11 +53,6 @@ class Command(CustomBaseCommand):
                             )
                         else:
                             e.remaining_lessons -= attendance_count
-
-                        print("*** After ***")
-                        print(f"Remaining lessons after: {e.remaining_lessons}")
-                        print(f"Enrolment's status: {e.status}")
-                        print(f"Enrolment's is_active: {e.is_active}")
 
                     elif e.status == 'COMPLETED':
                         e.remaining_lessons = 0
