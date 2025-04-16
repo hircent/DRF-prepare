@@ -17,10 +17,6 @@ class Command(CustomBaseCommand):
         self._branch_enrolments(total_branch)
 
     def _branch_enrolments(self,total_branch):
-        
-        # enrolments = StudentEnrolment.objects.filter(branch__id=2)
-
-        # self._update_enrolments(enrolments)
 
         for i in range(total_branch):
             if i+1 == 26:
@@ -38,7 +34,7 @@ class Command(CustomBaseCommand):
                 for e in enrolments:
                     attendance_count = e.attendances.count()
                     
-                    if e.status == 'IN_PROGRESS' and e.is_active == True:
+                    if e.status == 'IN_PROGRESS':
                         print("================================")
                         print(f"Remaining lessons before: {e.remaining_lessons}")
                         print(f"Total attendances: {attendance_count}")
