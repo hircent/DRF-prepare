@@ -167,12 +167,14 @@ class StudentEnrolmentListView(BaseCustomListAPIView):
         if name:
             queryset = StudentEnrolment.objects.filter(
                 branch=int(branch_id),
-                student__fullname__icontains=name
+                student__fullname__icontains=name,
+                student__status='IN_PROGRESS'
             ).select_related("student", "grade")
         else:
             queryset = StudentEnrolment.objects.filter(
                 branch=int(branch_id),
-                is_active=is_active
+                is_active=is_active,
+                student__status='IN_PROGRESS'
             ).select_related("student", "grade")
 
         if category:
