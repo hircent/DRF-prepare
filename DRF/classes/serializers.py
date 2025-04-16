@@ -151,8 +151,8 @@ class StudentEnrolmentListSerializer(BlockedDatesMixin,serializers.ModelSerializ
         current_date = today + timedelta(days=days_to_add)
         weeks_remaining = obj.remaining_lessons
 
-        if weeks_remaining == 0 and obj.is_active == False:
-            return obj.attendances.last().date
+        if weeks_remaining == 0:
+            return obj.attendances.last().date.strftime("%Y-%m-%d")
         
         # Count weeks, skipping blocked dates
         while weeks_remaining > 0:
