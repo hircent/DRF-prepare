@@ -54,6 +54,7 @@ python manage.py update_all_branch_enrolments
 
 python manage.py generate_ctls --year=2025
 python manage.py update_calculation_date
+python manage.py activate_last_enrolment
 
 
 Cronjob Commands:
