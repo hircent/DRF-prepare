@@ -691,7 +691,7 @@ class EnrolmentLessonListView(BaseCustomListNoPaginationAPIView):
 
         self.require_id(enrolment_id,"enrolment id")
 
-        student_lessons = StudentEnrolment.objects.get(id=enrolment_id).attendances.all()
+        student_lessons = StudentEnrolment.objects.get(id=enrolment_id).attendances.all().order_by('date')
 
         return student_lessons
 
