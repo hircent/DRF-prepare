@@ -61,7 +61,11 @@ class PaymentDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Payment
-        fields = ['id','status','amount','discount','paid_amount','pre_outstanding','post_outstanding','start_date','grade','student','currency']
+        fields = [
+            'id','status','amount','discount',
+            'paid_amount','pre_outstanding','post_outstanding','start_date',
+            'grade','student','currency'
+        ]
         
     def get_grade(self, obj:Payment):
         return obj.enrolment.grade.grade_level
@@ -200,15 +204,25 @@ class PaymentInvoiceDetailsForPrintSerializer(serializers.ModelSerializer):
     enrolment_type = serializers.SerializerMethodField()
     amount_to_pay = serializers.SerializerMethodField()
     promo_code = serializers.SerializerMethodField()
+    start_date = serializers.SerializerMethodField()
+    paid_at = serializers.SerializerMethodField()
 
     class Meta:
         model = Payment
         fields = [
             'id','student','grade','invoice','parent','enrolment_type',
             'amount','amount_to_pay','discount','promo_code','early_advance_rebate',
-            'paid_amount','pre_outstanding','post_outstanding',
+            'paid_amount','paid_at','pre_outstanding','post_outstanding',
             'start_date','status','branch'
         ]
+    
+    def get_paid_at(self, obj:Payment):
+        if not obj.invoice:
+            return None
+        return obj.invoice.paid_at.strftime("%Y-%m-%d")
+    
+    def get_start_date(self, obj:Payment):
+        return obj.start_date.strftime("%Y-%m-%d")
 
     def get_promo_code(self, obj:Payment):
         return obj.promo_code.code if obj.promo_code else "Promo 1"
@@ -227,7 +241,7 @@ class PaymentInvoiceDetailsForPrintSerializer(serializers.ModelSerializer):
         return obj.invoice.invoice_sequence.invoice_number
     
     def get_student(self, obj:Payment):
-        return obj.enrolment.student.fullname.capitalize()
+        return obj.enrolment.student.fullname
     
     def get_enrolment_type(self, obj:Payment):
         return obj.get_enrolment_type_display() if obj.enrolment_type else None
@@ -236,8 +250,8 @@ class PaymentInvoiceDetailsForPrintSerializer(serializers.ModelSerializer):
         user:User = User.objects.prefetch_related('user_profile','user_address').get(id=obj.parent.id)
         return {
             "id": user.id,
-            "first_name": user.first_name.capitalize() if user.first_name else "-",
-            "last_name": user.last_name.capitalize() if user.last_name else "-",
+            "first_name": user.first_name if user.first_name else "-",
+            "last_name": user.last_name if user.last_name else "-",
             "username": user.username,
             "email": user.email,
             "details": {
