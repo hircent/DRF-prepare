@@ -9,4 +9,6 @@ class Command(CustomBaseCommand):
         self.logger = self.setup_logger("testing_cronjob",__name__)
 
     def handle(self, *args, **kwargs):
-        self.logger.info(f"Cronjob started at {datetime.now()}")
+        message = f"Cronjob started at {datetime.now()}"
+        self.logger.info(message)
+        print(message) 
