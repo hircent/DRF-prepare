@@ -34,6 +34,7 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
                 if not has_lessons:
                     self.stdout.write(self.style.WARNING(f"No class lessons found for date {date} and branch {branch_id},creating class lesson..."))
                     self.logger.warning(f"No class lessons found for date {date} and branch {branch_id},creating class lesson...")
+                    print(f"No class lessons found for date {date} and branch {branch_id},creating class lesson...")
                     self._create_class_lesson(date,branch_id)
 
                 class_lessons = self._get_class_lessons(date,branch_id)
@@ -59,6 +60,7 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
         except Exception as e:
             self.stderr.write(self.style.ERROR(f"Error during attendance marking: {str(e)}"))
             self.logger.error(f"Error during attendance marking: {str(e)}")
+            print(f"Error during attendance marking: {str(e)}")
 
     def _create_class_lesson(self,date:date,branch_id:int):
 
@@ -86,9 +88,13 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
 
             if class_lessons_arr:
                 ClassLesson.objects.bulk_create(class_lessons_arr)
+
+                self.logger.info(f"Class lesson created for date {date} and branch {branch_id}")
+                print(f"Class lesson created for date {date} and branch {branch_id}")
         else:
             self.stdout.write(self.style.WARNING(f"Is an event! Stopped create class lesson on {date} for branch {branch_id}"))
             self.logger.warning(f"Is an event! Stopped create class lesson on {date} for branch {branch_id}")
+            print(f"Is an event! Stopped create class lesson on {date} for branch {branch_id}")
 
     def _get_class_instance_by_day(self,date:date,branch_id:int) -> List[Class]:
         return Class.objects.filter(branch_id=branch_id,day=date.strftime("%A"))
@@ -136,6 +142,7 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
             StudentAttendance.objects.bulk_create(att_arr)
             self.stdout.write(self.style.SUCCESS(f"Attendances created for date {date} and branch {branch_id}"))
             self.logger.info(f"Attendances created for date {date} and branch {branch_id}")
+            print(f"Attendances created for date {date} and branch {branch_id}")
 
     def _is_attendance_exists(self,date:date,branch_id:int,enrollment_id:int) -> bool:
         return StudentAttendance.objects.filter(branch_id=branch_id,date=date,enrollment_id=enrollment_id).exists()
@@ -149,4 +156,5 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
         ReplacementAttendance.objects.bulk_update(replacement_students,["status"])
         self.stdout.write(self.style.SUCCESS(f"Replacement attendances has been updated for branch id {branch_id}"))
         self.logger.info(f"Replacement attendances has been updated for branch id {branch_id}")
+        print(f"Replacement attendances has been updated for branch id {branch_id}")
         

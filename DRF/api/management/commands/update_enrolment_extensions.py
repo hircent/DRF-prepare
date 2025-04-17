@@ -38,12 +38,19 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
 
                 if enrolments:
                     self.update_enrolment_remaining_lesson(enrolments)
+
+                self.logger.info(f"Enrolment extension operation success on date:{str(date)}")
+                print(f"Enrolment extension operation success on date:{str(date)}")
             else:
                 self.logger.info(f"No enrolment extension to be operated for date :{str(date)}")
+                print(f"No enrolment extension to be operated for date :{str(date)}")
 
         except Exception as e:
             self.logger.warning(f"Enrolment extension operation failed on date:{str(date)}")
             self.logger.warning(f"Msg :{str(e)}")
+
+            print(f"Enrolment extension operation failed on date:{str(date)}")
+            print(f"Msg :{str(e)}")
             raise
 
     def update_enrolment_remaining_lesson(self,enrolments:list[StudentEnrolment]):
