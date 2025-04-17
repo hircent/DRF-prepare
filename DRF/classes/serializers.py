@@ -1,4 +1,4 @@
-from api.mixins import BlockedDatesMixin
+from api.mixins import BlockedDatesMixin, UtilsMixin
 from branches.models import Branch
 
 from category.models import Theme
@@ -123,7 +123,7 @@ class StudentEnrolmentListForParentSerializer(serializers.ModelSerializer):
             'id','start_date','status','remaining_lessons','is_active','freeze_lessons','grade'
         ]
 
-class StudentEnrolmentListSerializer(BlockedDatesMixin,serializers.ModelSerializer):
+class StudentEnrolmentListSerializer(BlockedDatesMixin,UtilsMixin,serializers.ModelSerializer):
     video_assignments = VideoAssignmentListSerializer(many=True)
     student = serializers.SerializerMethodField()
     end_date = serializers.SerializerMethodField()
@@ -141,29 +141,8 @@ class StudentEnrolmentListSerializer(BlockedDatesMixin,serializers.ModelSerializ
     def get_end_date(self, obj:StudentEnrolment):
         blocked_dates = self._get_cached_blocked_dates(obj.start_date.year, obj.branch.id)
     
-        extensions_acount = obj.extensions.count()
-        attendances : QuerySet[StudentAttendance] = obj.attendances.all()
-        freeze_count = attendances.filter(status='FREEZED').count()
-        remaining_lesson = obj.remaining_lessons
-
-        student_should_have_remaining_lessons = (
-            24 + 
-            (extensions_acount * 12) + 
-            freeze_count
-        ) - 1
-
-        if remaining_lesson == 0:
-            return attendances.last().date
-        else:
-            
-            start_date = obj.start_date
-
-            while student_should_have_remaining_lessons > 0:
-                start_date += timedelta(weeks=1)
-                if start_date not in blocked_dates:
-                    student_should_have_remaining_lessons -= 1
-            
-            return start_date
+        final_date = self.calculate_end_date(obj,blocked_dates)
+        return final_date
 
     def get_student(self, obj):
         return { "id": obj.student.id, "fullname": obj.student.fullname }
@@ -191,7 +170,7 @@ class StudentEnrolmentListForClassSerializer(serializers.ModelSerializer):
     def get_student(self, obj):
         return { "id": obj.student.id, "fullname": obj.student.fullname ,"grade": obj.grade.grade_level}
 
-class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSerializer):
+class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,UtilsMixin,serializers.ModelSerializer):
     end_date = serializers.SerializerMethodField()
     video_assignments = VideoAssignmentListSerializer(many=True)
     day = serializers.SerializerMethodField()
@@ -221,29 +200,8 @@ class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSeria
     def get_end_date(self, obj:StudentEnrolment):
         blocked_dates = self._get_cached_blocked_dates(obj.start_date.year, obj.branch.id)
     
-        extensions_acount = obj.extensions.count()
-        attendances : QuerySet[StudentAttendance] = obj.attendances.all()
-        freeze_count = attendances.filter(status='FREEZED').count()
-        remaining_lesson = obj.remaining_lessons
-
-        student_should_have_remaining_lessons = (
-            24 + 
-            (extensions_acount * 12) + 
-            freeze_count
-        ) - 1
-
-        if remaining_lesson == 0:
-            return attendances.last().date
-        else:
-            
-            start_date = obj.start_date
-
-            while student_should_have_remaining_lessons > 0:
-                start_date += timedelta(weeks=1)
-                if start_date not in blocked_dates:
-                    student_should_have_remaining_lessons -= 1
-            
-            return start_date
+        final_date = self.calculate_end_date(obj,blocked_dates)
+        return final_date
 
 class StudentEnrolmentCreateSerializer(serializers.ModelSerializer):
 
