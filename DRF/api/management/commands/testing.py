@@ -34,14 +34,40 @@ class CustomError(Exception):
     def __str__(self):
         return f"Error {self.code}: {self.message}"
 
-class Command(BaseCommand,BlockedDatesMixin):
+class Command(BlockedDatesMixin,BaseCommand):
     help = 'testing function'
 
     def handle(self, *args, **options):
-        EnrolmentExtension.objects.all().update(status='EXTENDED')
-        print("done")
+        enrolment  = StudentEnrolment.objects.get(id=5403)
+        blocked_dates = self._get_cached_blocked_dates(enrolment.calculate_date.year, enrolment.branch.id)
+        extensions_acount = enrolment.extensions.count()
+        attendances : QuerySet[StudentAttendance] = enrolment.attendances.all()
+        freeze_count = attendances.filter(status='FREEZED').count()
+        remaining_lesson = enrolment.remaining_lessons
 
+        student_should_have_remaining_lessons = (
+            24 + 
+            (extensions_acount * 12) + 
+            freeze_count
+        ) - 1
+        print({
+            "student_should_have_remaining_lessons": student_should_have_remaining_lessons,
+            "remaining_lesson": remaining_lesson,
+            "extensions_acount": extensions_acount,
+            "freeze_count": freeze_count
+        })
+        if remaining_lesson == 0:
+            print(f"last lesson : {attendances.last().date}")
+        else:
+            
+            start_date = enrolment.start_date
 
+            while student_should_have_remaining_lessons > 0:
+                start_date += timedelta(weeks=1)
+                if start_date not in blocked_dates:
+                    student_should_have_remaining_lessons -= 1
+            
+            print(start_date)
 
     def annotate_learning(self, *args, **options):
         # Payment.objects.all().delete()

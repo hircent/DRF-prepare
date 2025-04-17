@@ -21,6 +21,7 @@ from rest_framework import serializers
 from payments.serializers import PaymentListSerializer
 from payments.service import PaymentService
 from payments.models import Payment
+from django.db.models import QuerySet
 
 '''
 Class Serializer
@@ -138,29 +139,31 @@ class StudentEnrolmentListSerializer(BlockedDatesMixin,serializers.ModelSerializ
         return obj.grade.grade_level
 
     def get_end_date(self, obj:StudentEnrolment):
-        blocked_dates = self._get_cached_blocked_dates(obj.calculate_date.year, obj.branch.id)
+        blocked_dates = self._get_cached_blocked_dates(obj.start_date.year, obj.branch.id)
     
-        today = datetime.today().date()
-        target_weekday = obj.calculate_date.weekday()
-        initial_weekday = today.weekday()
-        
-        # Calculate initial days to reach target weekday
-        days_to_add = (target_weekday - initial_weekday) % 7
-        
-        # Start with today's date
-        current_date = today + timedelta(days=days_to_add)
-        weeks_remaining = obj.remaining_lessons
+        extensions_acount = obj.extensions.count()
+        attendances : QuerySet[StudentAttendance] = obj.attendances.all()
+        freeze_count = attendances.filter(status='FREEZED').count()
+        remaining_lesson = obj.remaining_lessons
 
-        if weeks_remaining == 0:
-            return obj.attendances.last().date.strftime("%Y-%m-%d")
-        
-        # Count weeks, skipping blocked dates
-        while weeks_remaining > 0:
-            current_date += timedelta(weeks=1)
-            if current_date not in blocked_dates:
-                weeks_remaining -= 1
-        
-        return current_date.strftime("%Y-%m-%d")
+        student_should_have_remaining_lessons = (
+            24 + 
+            (extensions_acount * 12) + 
+            freeze_count
+        ) - 1
+
+        if remaining_lesson == 0:
+            return attendances.last().date
+        else:
+            
+            start_date = obj.start_date
+
+            while student_should_have_remaining_lessons > 0:
+                start_date += timedelta(weeks=1)
+                if start_date not in blocked_dates:
+                    student_should_have_remaining_lessons -= 1
+            
+            return start_date
 
     def get_student(self, obj):
         return { "id": obj.student.id, "fullname": obj.student.fullname }
@@ -216,29 +219,31 @@ class StudentEnrolmentDetailsSerializer(BlockedDatesMixin,serializers.ModelSeria
         return obj.classroom.day
 
     def get_end_date(self, obj:StudentEnrolment):
-        blocked_dates = self._get_cached_blocked_dates(obj.calculate_date.year, obj.branch.id)
+        blocked_dates = self._get_cached_blocked_dates(obj.start_date.year, obj.branch.id)
     
-        today = datetime.today().date()
-        target_weekday = obj.calculate_date.weekday()
-        initial_weekday = today.weekday()
-        
-        # Calculate initial days to reach target weekday
-        days_to_add = (target_weekday - initial_weekday) % 7
-        
-        # Start with today's date
-        current_date = today + timedelta(days=days_to_add)
-        weeks_remaining = obj.remaining_lessons
+        extensions_acount = obj.extensions.count()
+        attendances : QuerySet[StudentAttendance] = obj.attendances.all()
+        freeze_count = attendances.filter(status='FREEZED').count()
+        remaining_lesson = obj.remaining_lessons
 
-        if weeks_remaining == 0:
-            return obj.attendances.last().date
-        
-        # Count weeks, skipping blocked dates
-        while weeks_remaining > 0:
-            current_date += timedelta(weeks=1)
-            if current_date not in blocked_dates:
-                weeks_remaining -= 1
-        
-        return current_date.strftime("%Y-%m-%d")
+        student_should_have_remaining_lessons = (
+            24 + 
+            (extensions_acount * 12) + 
+            freeze_count
+        ) - 1
+
+        if remaining_lesson == 0:
+            return attendances.last().date
+        else:
+            
+            start_date = obj.start_date
+
+            while student_should_have_remaining_lessons > 0:
+                start_date += timedelta(weeks=1)
+                if start_date not in blocked_dates:
+                    student_should_have_remaining_lessons -= 1
+            
+            return start_date
 
 class StudentEnrolmentCreateSerializer(serializers.ModelSerializer):
 

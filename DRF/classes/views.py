@@ -191,7 +191,7 @@ class StudentEnrolmentListView(BaseCustomListAPIView):
             # Get the end date as a string in YYYY-MM-DD format
             date_str = temp_serializer.get_end_date(obj)
             # Convert to datetime for proper sorting
-            end_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+            end_date = datetime.strptime(date_str.strftime("%Y-%m-%d"), "%Y-%m-%d").date()
             end_dates[obj.id] = end_date
         
 
