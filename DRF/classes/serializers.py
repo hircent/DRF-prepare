@@ -792,10 +792,25 @@ class TimeslotListSerializer(serializers.ModelSerializer):
 
 class EnrolmentLessonListSerializer(serializers.ModelSerializer):
     class_lesson = ClassLessonDetailsSerializer(read_only=True)
+    replacement = serializers.SerializerMethodField()
 
     class Meta:
         model = StudentAttendance
-        fields = ['id','class_lesson','date','day','start_time','end_time','has_attended','status']
+        fields = [
+            'id','class_lesson','date','day',
+            'start_time','end_time','has_attended','status',
+            'replacement'
+        ]
+
+    def get_replacement(self, obj:StudentAttendance):
+        if obj.status == 'REPLACEMENT':
+            replacement = ReplacementAttendance.objects.get(id=obj.replacement_attendances.id)
+            return {
+                "date": replacement.date,
+                "status": replacement.status
+            }
+        return None
+    
 
 class EnrolmentExtensionSerializer(serializers.ModelSerializer):
     class Meta:
