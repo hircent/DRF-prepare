@@ -1,6 +1,8 @@
 from calendars.models import Calendar
 from datetime import timedelta, datetime, date
 from typing import Set
+from django.db.models import QuerySet
+from classes.models import StudentEnrolment,StudentAttendance
 
 class BlockedDatesMixin:
     def __init__(self, *args, **kwargs):
@@ -77,3 +79,40 @@ class UtilsMixin:
 
     def format_decimal_points(self, value, precision=2) -> str:
         return f"{float(value):,.{precision}f}"
+    
+    def calculate_end_date(self, obj:StudentEnrolment,blocked_dates):
+
+        extensions_acount = obj.extensions.count()
+        attendances : QuerySet[StudentAttendance] = obj.attendances.all()
+        freeze_count = attendances.filter(status='FREEZED').count()
+        remaining_lesson = obj.remaining_lessons
+
+        student_should_have_remaining_lessons = (
+            24 + 
+            (extensions_acount * 12) + 
+            freeze_count
+        ) - 1
+
+        if remaining_lesson == 0:
+            return attendances.last().date
+        
+        if obj.start_date != obj.calculate_date:
+            final_date = attendances.last().date
+            while remaining_lesson > 0:
+                final_date += timedelta(weeks=1)
+                if final_date not in blocked_dates:
+                    remaining_lesson -= 1
+            
+            return final_date
+        
+        else:
+            
+            final_date = obj.start_date
+
+            while student_should_have_remaining_lessons > 0:
+                final_date += timedelta(weeks=1)
+                if final_date not in blocked_dates:
+                    student_should_have_remaining_lessons -= 1
+            
+            return final_date
+
