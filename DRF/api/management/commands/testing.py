@@ -38,9 +38,10 @@ class Command(BaseCommand,BlockedDatesMixin):
     help = 'testing function'
 
     def handle(self, *args, **options):
-        yesterday = localdate() - timedelta(days=1)
+        EnrolmentExtension.objects.all().update(status='EXTENDED')
+        print("done")
 
-        print(yesterday)
+
 
     def annotate_learning(self, *args, **options):
         # Payment.objects.all().delete()
