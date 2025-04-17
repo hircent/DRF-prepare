@@ -670,7 +670,8 @@ class ClassLessonListSerializer(serializers.ModelSerializer):
                 "id": replacement.id,
                 "student":{
                     "id": replacement.attendances.enrollment.student.id,
-                    "fullname": replacement.attendances.enrollment.student.fullname
+                    "fullname": replacement.attendances.enrollment.student.fullname,
+                    "grade": replacement.attendances.enrollment.grade.grade_level,
                     },
                 "is_active": replacement.attendances.enrollment.is_active,
                 "status": replacement.status,
