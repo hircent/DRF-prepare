@@ -733,7 +733,7 @@ class TodayClassLessonSerializer(serializers.ModelSerializer):
     
     def get_unmarked_enrolments(self, obj):
         # Get all active enrollments for this class
-        all_enrollments = obj.class_instance.enrolments.filter(is_active=True)
+        all_enrollments = obj.class_instance.enrolments.filter(is_active=True,student__status='IN_PROGRESS')
         # Get IDs of students who already have attendance marked
         marked_student_ids = obj.attendances.values_list('enrollment__student__id', flat=True)
         # Filter enrollments to get only unmarked students
