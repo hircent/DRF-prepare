@@ -703,7 +703,8 @@ class TodayClassLessonSerializer(serializers.ModelSerializer):
         all_enrollments = obj.class_instance.enrolments.filter(
             is_active=True,
             student__status='IN_PROGRESS',
-            start_date__lte=date
+            start_date__lte=date,
+            remaining_lessons__gt=0,
         )
         # Get IDs of students who already have attendance marked
         marked_student_ids = obj.attendances.values_list('enrollment__student__id', flat=True)
