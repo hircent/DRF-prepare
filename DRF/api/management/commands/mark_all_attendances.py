@@ -42,7 +42,7 @@ class Command(CustomBaseCommand,BlockedDatesMixin):
                 if class_lessons:
                     for cl in class_lessons:
                         class_instance = cl.class_instance
-                        enrolments = cl.class_instance.enrolments.filter(is_active=True)
+                        enrolments = cl.class_instance.enrolments.filter(is_active=True,remaining_lessons__gt=0)
                         replacement_students = cl.class_instance.replacement_attendances.filter(
                             date=date
                         ).select_related(
