@@ -97,7 +97,11 @@ class UtilsMixin:
             return attendances.last().date
         
         if obj.start_date != obj.calculate_date:
-            final_date = attendances.last().date
+
+            if attendances.exists():
+                final_date = attendances.last().date
+            else:
+                final_date = obj.calculate_date
             while remaining_lesson > 0:
                 final_date += timedelta(weeks=1)
                 if final_date not in blocked_dates:
