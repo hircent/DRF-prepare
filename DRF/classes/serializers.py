@@ -492,12 +492,14 @@ class ClassEnrolmentListSerializer(serializers.ModelSerializer):
 
     def get_unmarked_enrolments(self, obj):
         check_after_week = self.context.get('check_after_week')
+        date = self.context.get('date')
 
         enrolments = obj.enrolments.annotate(
             future_remaining_lessons= F('remaining_lessons') - Value(check_after_week)
         ).filter(
             future_remaining_lessons__gt=0,
-            is_active=True
+            is_active=True,
+            start_date__lte=date
         )
 
         serializer = StudentEnrolmentListForClassSerializer(enrolments, many=True)
@@ -696,8 +698,13 @@ class TodayClassLessonSerializer(serializers.ModelSerializer):
         return serialized_attendances
     
     def get_unmarked_enrolments(self, obj):
+        date = self.context.get('date')
         # Get all active enrollments for this class
-        all_enrollments = obj.class_instance.enrolments.filter(is_active=True,student__status='IN_PROGRESS')
+        all_enrollments = obj.class_instance.enrolments.filter(
+            is_active=True,
+            student__status='IN_PROGRESS',
+            start_date__lte=date
+        )
         # Get IDs of students who already have attendance marked
         marked_student_ids = obj.attendances.values_list('enrollment__student__id', flat=True)
         # Filter enrollments to get only unmarked students
