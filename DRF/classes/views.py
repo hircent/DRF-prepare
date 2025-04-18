@@ -1301,13 +1301,13 @@ class EnrolmentExtensionRevertView(BaseAPIView):
             if not enrolment:
                 raise PermissionDenied("Invalid enrolment id.")
             
-            if enrolment.remaining_lessons < 12:
+            extension_status = enrolment.extensions.last().status
+
+            if enrolment.remaining_lessons < 12 and extension_status == 'EXTENDED':
                 return Response({
                     "success": False,
                     "msg": "The student has attended extension lessons, cannot revert."
                 }, status=status.HTTP_400_BAD_REQUEST)
-            
-            extension_status = enrolment.extensions.last().status
             
             enrolment.extensions.last().delete()
             enrolment.video_assignments.last().delete()
