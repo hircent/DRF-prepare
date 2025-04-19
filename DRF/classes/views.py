@@ -321,6 +321,14 @@ class StudentEnrolmentDeleteView(BaseCustomEnrolmentView,DestroyAPIView):
             student_id = instance.student.id
             grade_level = instance.grade.grade_level
 
+            has_attendances = StudentAttendance.objects.filter(enrollment=instance).exists()
+
+            if has_attendances:
+                return Response({
+                    "success": False,
+                    "msg": "Student has attendances, cannot delete."
+                }, status=status.HTTP_400_BAD_REQUEST)
+
             PaymentService.void_payments(
                 enrolment_ids=[id],
                 description=f"Student {instance.student.fullname}'s enrolment has been deleted at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
