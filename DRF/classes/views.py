@@ -601,6 +601,7 @@ class ClassLessonTodayListByDateView(BaseClassLessonView):
         context['date'] = self.request.query_params.get('date')
         return context
 
+    @transaction.atomic
     def get_queryset(self):
         branch_id = self.get_branch_id()
         self.branch_accessible(branch_id)
@@ -628,31 +629,30 @@ class ClassLessonTodayListByDateView(BaseClassLessonView):
         ).order_by('start_time')
         
         # Create missing lessons
-        existing_class_ids = set(lesson.class_instance_id for lesson in existing_lessons)
-        lessons_to_create = []
-        
-        for class_instance in today_classes:
-            if class_instance.id not in existing_class_ids:
-                lessons_to_create.append(
-                    ClassLesson(
-                        branch_id=branch_id,
-                        class_instance=class_instance,
-                        date=today,
-                        start_datetime=datetime.combine(today, class_instance.start_time),
-                        end_datetime=datetime.combine(today, class_instance.end_time)
-                    )
-                )
-        
-        if lessons_to_create:
-            ClassLesson.objects.bulk_create(lessons_to_create)
+        with transaction.atomic():
+            existing_class_ids = set(lesson.class_instance_id for lesson in existing_lessons)
+            lessons_to_create = []
             
-        # Get all lessons for today after creation
-        all_lessons = ClassLesson.objects.filter(
+            for class_instance in today_classes:
+                if class_instance.id not in existing_class_ids:
+                    lessons_to_create.append(
+                        ClassLesson(
+                            branch_id=branch_id,
+                            class_instance=class_instance,
+                            date=today,
+                            start_datetime=datetime.combine(today, class_instance.start_time),
+                            end_datetime=datetime.combine(today, class_instance.end_time)
+                        )
+                    )
+            
+            if lessons_to_create:
+                ClassLesson.objects.bulk_create(lessons_to_create)
+        
+        # Return the combined set of lessons
+        return ClassLesson.objects.filter(
             branch_id=branch_id,
             date=today
         ).order_by('class_instance__start_time')
-            
-        return all_lessons
 
     
 class ClassLessonListByDateView(APIView):
