@@ -7,7 +7,7 @@ from .models import (
 class ClassAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'label', 'start_time', 'end_time', 'day', 'branch')
     search_fields = ('name', 'label', 'description')
-    list_filter = ('branch',)
+    list_filter = ('branch','day',)
     
 class StudentEnrolmentAdmin(admin.ModelAdmin):
     list_display = ('id', 'student',  'branch', 'start_date', 'calculate_date', 'status', 'remaining_lessons','is_active',)
