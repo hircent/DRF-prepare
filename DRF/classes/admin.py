@@ -15,7 +15,7 @@ class StudentEnrolmentAdmin(admin.ModelAdmin):
     list_filter = ('status','branch','student__fullname','is_active',)
 
 class ClassLessonAdmin(admin.ModelAdmin):
-    list_display = ('id', 'branch','theme_lesson','theme_lesson__theme__name','teacher__username','status', 'date')
+    list_display = ('id', 'branch','class_instance','theme_lesson','theme_lesson__theme__name','teacher__username','status', 'date')
     search_fields = ('branch', 'theme_lesson','theme_lesson__theme__name')
     list_filter = ('status','branch',)
 
